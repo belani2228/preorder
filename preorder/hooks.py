@@ -34,6 +34,10 @@ app_include_css = "assets/css/custom.css"
 
 # Home Pages
 # ----------
+website_context = {
+	"favicon": 	"/files/logo.jpg"
+#	"splash_image": "/files/splash-rss.png"
+}
 
 # application home page (will override Website Settings)
 # home_page = "login"
