@@ -4,8 +4,18 @@
 frappe.ui.form.on('Inquiry', {
 	refresh: function(frm) {
 		frm.set_df_property("inquiry_type", "read_only", frm.doc.__islocal ? 0 : 1);
+		if(frm.doc.docstatus == 1) {
+			cur_frm.add_custom_button(__('Request for Sales Quotation'), cur_frm.cscript['Request for Sales Quotation'], __("Make"));
+			cur_frm.page.set_inner_btn_group_as_primary(__("Make"));
+		}
 	}
 });
+cur_frm.cscript['Request for Sales Quotation'] = function() {
+	frappe.model.open_mapped_doc({
+		method: "preorder.preorder.doctype.inquiry.inquiry.make_rfsq",
+		frm: cur_frm
+	})
+}
 cur_frm.set_query("contact_person",  function (frm) {
 		return {
         filters: [
