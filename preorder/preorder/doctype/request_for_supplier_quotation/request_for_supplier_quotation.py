@@ -9,34 +9,31 @@ from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
 
 class RequestforSupplierQuotation(Document):
-
 	def validate(self):
+		self.update_rfsq_inquiry()
+
+	def on_update(self):
 		self.update_rfsq_inquiry()
 
 	def update_rfsq_inquiry(self):
 		tampung = []
-		ada = []
 		for row in self.items:
-			inquiry_id = frappe.db.sql("""select parent from `tabInquiry Item` where `name` = %s""", row.inquiry_detail)[0][0]
+			inquiry_id = frappe.db.get_value("Inquiry Item", row.inquiry_detail, "parent")
 			if inquiry_id not in tampung:
 				tampung.append(inquiry_id)
 				cek_inquiry_id = frappe.db.get_value("Request for Supplier Quotation Inquiry", {"parent": self.name, "inquiry": inquiry_id}, "name")
 				if not cek_inquiry_id:
-					ada.append("tidak ada")
-					aa = frappe.get_doc({
+					inq = frappe.db.get_value("Inquiry", inquiry_id, ["customer", "customer_name"], as_dict=1)
+					doc = frappe.get_doc({
 						"doctype": "Request for Supplier Quotation Inquiry",
 						"parent": self.name,
 						"parentfield": "inquiry",
 						"parenttype": "Request for Supplier Quotation",
 						"inquiry": inquiry_id,
-						"customer": "CUSTOMER 01",
-						"customer_name": "CUSTOMER 01",
+						"customer": inq.customer,
+						"customer_name": inq.customer_name,
 						"transaction_date": self.date
 					}).insert()
-				else:
-					ada.append("ada")
-		temp = ', '.join(ada)
-		frappe.throw(temp)
 
 	def get_items(self):
 #		tampung = []

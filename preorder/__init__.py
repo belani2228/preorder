@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.0.6'
+__version__ = '0.0.7'
 
+#0.0.7:
+#   - Fixed Request for Supplier Quotation
 #0.0.6:
 #   - Update Request for Supplier Quotation
 #0.0.5:

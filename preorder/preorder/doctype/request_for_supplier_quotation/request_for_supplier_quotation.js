@@ -14,6 +14,9 @@ frappe.ui.form.on('Request for Supplier Quotation', {
 		});
 	},
 });
+frappe.ui.form.on("Request for Supplier Quotation", "onload", function(frm) {
+   frm.refresh();
+});
 frappe.ui.form.on("Request for Supplier Quotation", {
 	refresh: function() {
 		cur_frm.add_custom_button(__("Inquiry"), function() {
