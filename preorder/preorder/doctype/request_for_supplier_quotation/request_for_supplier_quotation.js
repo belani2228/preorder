@@ -8,6 +8,22 @@ frappe.ui.form.on('Request for Supplier Quotation', {
 			cur_frm.page.set_inner_btn_group_as_primary(__("Make"));
 		}
 	},
+	refresh: function(frm, cdt, cdn) {
+		if (frm.doc.docstatus === 1) {
+			frm.add_custom_button(__("Send Email to Supplier"), function() {
+				frappe.call({
+					method: 'erpnext.buying.doctype.request_for_quotation.request_for_quotation.send_supplier_emails',
+					freeze: true,
+					args: {
+						rfq_name: frm.doc.name
+					},
+					callback: function(r){
+						frm.reload_doc();
+					}
+				});
+			});
+		}
+	},
 	get_items: function(frm) {
 		return frappe.call({
 			method: "get_items",

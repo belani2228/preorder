@@ -84,6 +84,12 @@ website_context = {
 # ---------------
 # Hook on document methods and events
 
+doc_events = {
+	"Quotation": {
+		"on_submit": "preorder.preorder.operan.submit_quotation",
+		"before_cancel": "preorder.preorder.operan.cancel_quotation"
+	}
+}
 # doc_events = {
 # 	"*": {
 # 		"on_update": "method",
