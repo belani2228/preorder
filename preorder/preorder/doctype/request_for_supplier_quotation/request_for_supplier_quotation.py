@@ -32,7 +32,7 @@ class RequestforSupplierQuotation(Document):
 						"inquiry": inquiry_id,
 						"customer": inq.customer,
 						"customer_name": inq.customer_name,
-						"transaction_date": self.date
+						"transaction_date": self.transaction_date
 					}).insert()
 
 	def get_items(self):
@@ -54,3 +54,30 @@ class RequestforSupplierQuotation(Document):
 #			tampung.append(row.inquiry)
 #		temp = ', '.join(tampung)
 #		frappe.throw(temp)
+
+@frappe.whitelist()
+def make_supplier_quotation(source_name, target_doc=None):
+	def set_missing_values(source, target):
+		target.run_method("set_missing_values")
+
+	def update_item(source, target, source_parent):
+		target.item_code = "Tampungan"
+		target.conversion_factor = 1
+
+	sq = get_mapped_doc("Request for Supplier Quotation", source_name, {
+		"Request for Supplier Quotation": {
+			"doctype": "Supplier Quotation",
+			"field_no_map": [
+				"naming_series"
+			],
+		},
+		"Request for Supplier Quotation Item":{
+			"doctype": "Supplier Quotation Item",
+			"field_map": {
+				"uom": "stock_uom",
+				"name": "request_for_supplier_quotation_item"
+			},
+			"postprocess": update_item
+		}
+	}, target_doc, set_missing_values)
+	return sq
