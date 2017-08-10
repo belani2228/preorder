@@ -3,10 +3,6 @@
 
 frappe.ui.form.on('Request for Supplier Quotation', {
 	refresh: function(frm) {
-		if(cur_frm.doc.docstatus == 1) {
-			cur_frm.add_custom_button(__('Supplier Quotation'), cur_frm.cscript['Supplier Quotation'], __("Make"));
-			cur_frm.page.set_inner_btn_group_as_primary(__("Make"));
-		}
 	},
 	refresh: function(frm, cdt, cdn) {
 		if (frm.doc.docstatus === 1) {
@@ -22,6 +18,8 @@ frappe.ui.form.on('Request for Supplier Quotation', {
 					}
 				});
 			});
+			cur_frm.add_custom_button(__('Supplier Quotation'), cur_frm.cscript['Supplier Quotation'], __("Make"));
+			cur_frm.page.set_inner_btn_group_as_primary(__("Make"));
 		}
 	},
 	get_items: function(frm) {
