@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.0.9'
+__version__ = '0.0.10'
 
+#0.0.10:
+#   - Update filter inquiry di quotation, hanya Inquiry yg sudah ada Supplier Quotation saja yg akan tampil
+#   - Update hooks.py on_submit Quotation
+#   - Update hooks.py before_cancel Quotation
+#   - Update hooks.py on_submit Supplier Quotation
+#   - Update hooks.py before_cancel Supplier Quotation
 #0.0.9:
 #   - Add operan.py
 #0.0.8:

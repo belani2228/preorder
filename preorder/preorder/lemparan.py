@@ -13,8 +13,8 @@ def get_items_selling_quotation(source_name, target_doc=None):
             target_doc = frappe.get_doc(json.loads(target_doc))
         target_doc.set("items", [])
 
-	query = frappe.db.sql_list("""select distinct(sq.`name`) from `tabSupplier Quotation` sq, `tabSupplier Quotation Item` sqi 
-    where sq.`name` = sqi.parent and sqi.inquiry = %s and sqi.quotation_detail is null order by sq.`name` asc""", source_name)
+	query = frappe.db.sql_list("""select distinct(sq.`name`) from `tabSupplier Quotation` sq, `tabSupplier Quotation Item` sqi
+    where sq.`name` = sqi.parent and sq.docstatus = '1' and sqi.inquiry = %s and sqi.quotation_detail is null order by sq.`name` asc""", source_name)
     if query:
         for row in query:
         	doclist = get_mapped_doc("Supplier Quotation", row, {

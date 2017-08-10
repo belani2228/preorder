@@ -88,6 +88,10 @@ doc_events = {
 	"Quotation": {
 		"on_submit": "preorder.preorder.operan.submit_quotation",
 		"before_cancel": "preorder.preorder.operan.cancel_quotation"
+	},
+	"Supplier Quotation": {
+		"on_submit": "preorder.preorder.operan.submit_supplier_quotation",
+		"before_cancel": "preorder.preorder.operan.cancel_supplier_quotation"
 	}
 }
 # doc_events = {
