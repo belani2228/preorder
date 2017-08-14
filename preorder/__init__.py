@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.0.11'
+__version__ = '0.0.12'
 
+#0.0.12:
+#   - Fixed get_items in Quotation
 #0.0.11:
 #   - Add ignore price list from RFSQ to Supplier Quotation
 #   - Add Dashboard in Inquiry

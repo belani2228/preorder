@@ -27,7 +27,7 @@ def get_items_selling_quotation(source_name, target_doc=None):
         			"field_map":{
         				"name": "supplier_quotation_item"
         			},
-                    "condition":lambda doc: doc.quotation_detail is None
+                    "condition":lambda doc: doc.quotation_detail is None and doc.inquiry == source_name
         		},
         	}, target_doc)
         return doclist
