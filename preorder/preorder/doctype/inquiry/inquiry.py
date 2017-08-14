@@ -27,12 +27,6 @@ def make_rfsq(source_name, target_doc=None):
 			},
 		},
 		"Inquiry Item":{
-			"doctype": "Request for Supplier Quotation Inquiry",
-			"field_map": {
-				"parent":"inquiry"
-			},
-		},
-		"Inquiry Item":{
 			"doctype": "Request for Supplier Quotation Item",
 			"field_map": {
 				"name":"inquiry_detail"

@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 __version__ = '0.0.10'
 
+#   - Add ignore price list from RFSQ to Supplier Quotation
 #0.0.10:
 #   - Update filter inquiry di quotation, hanya Inquiry yg sudah ada Supplier Quotation saja yg akan tampil
 #   - Update hooks.py on_submit Quotation

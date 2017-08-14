@@ -31,6 +31,15 @@ frappe.ui.form.on('Request for Supplier Quotation', {
 			}
 		});
 	},
+	refresh_tbl: function(frm) {
+		return frappe.call({
+			method: "refresh_tbl_inquiry",
+			doc: frm.doc,
+			callback: function(r, rt) {
+				frm.refresh()
+			}
+		});
+	},
 });
 frappe.ui.form.on("Request for Supplier Quotation Inquiry", "onload", function(frm) {
    frm.refresh();
@@ -60,7 +69,7 @@ cur_frm.cscript['Supplier Quotation'] = function() {
 		frm: cur_frm
 	})
 }
-cur_frm.set_query("inquiry", "inquiry",  function (doc, cdt, cdn) {
+cur_frm.set_query("inquiry", "inquiry_tbl",  function (doc, cdt, cdn) {
 	var c_doc= locals[cdt][cdn];
     return {
         filters: {
@@ -83,3 +92,17 @@ frappe.ui.form.on("Request for Supplier Quotation Inquiry", "inquiry", function(
 				}
     })
 });
+/*
+cur_frm.cscript.refresh_tbl = function( doc, cdt, cdn) {
+	cur_frm.refresh_field("inquiry_tbl");
+}
+*/
+frappe.ui.form.on("Request for Supplier Quotation", "refresh_tbl", function(frm) {
+	frm.refresh_field("inquiry_tbl");
+/*
+	erpnext.utils.map_current_doc({
+		method: "preorder.preorder.lemparan.get_items_selling_quotation",
+		source_name: cur_frm.doc.name,
+	});
+	*/
+})

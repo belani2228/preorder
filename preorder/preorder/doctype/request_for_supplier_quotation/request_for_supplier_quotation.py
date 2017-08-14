@@ -27,7 +27,7 @@ class RequestforSupplierQuotation(Document):
 					doc = frappe.get_doc({
 						"doctype": "Request for Supplier Quotation Inquiry",
 						"parent": self.name,
-						"parentfield": "inquiry",
+						"parentfield": "inquiry_tbl",
 						"parenttype": "Request for Supplier Quotation",
 						"inquiry": inquiry_id,
 						"customer": inq.customer,
@@ -38,7 +38,7 @@ class RequestforSupplierQuotation(Document):
 	def get_items(self):
 #		tampung = []
 		self.set('items', [])
-		for row in self.inquiry:
+		for row in self.inquiry_tbl:
 			komponen = frappe.db.sql("""SELECT b.item_description, b.qty, b.uom, b.`name`
 				FROM `tabInquiry` a, `tabInquiry Item` b
 				WHERE a.`name` = b.parent AND a.docstatus = '1' AND a.`name` = %s
@@ -50,14 +50,17 @@ class RequestforSupplierQuotation(Document):
 				nl.qty = d.qty
 				nl.uom = d.uom
 				nl.inquiry_detail = d.name
-
 #			tampung.append(row.inquiry)
 #		temp = ', '.join(tampung)
 #		frappe.throw(temp)
 
+	def refresh_tbl_inquiry(self):
+		pass
+
 @frappe.whitelist()
 def make_supplier_quotation(source_name, target_doc=None):
 	def set_missing_values(source, target):
+		target.ignore_pricing_rule = 1
 		target.run_method("set_missing_values")
 
 	def update_item(source, target, source_parent):
