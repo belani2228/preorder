@@ -39,7 +39,7 @@ class RequestforSupplierQuotation(Document):
 #		tampung = []
 		self.set('items', [])
 		for row in self.inquiry_tbl:
-			komponen = frappe.db.sql("""SELECT b.item_description, b.qty, b.uom, b.`name`
+			komponen = frappe.db.sql("""SELECT b.item_description, b.qty, b.uom, a.`name` as inq, b.`name` as inq_det
 				FROM `tabInquiry` a, `tabInquiry Item` b
 				WHERE a.`name` = b.parent AND a.docstatus = '1' AND a.`name` = %s
 				ORDER by b.idx ASC""", row.inquiry, as_dict=1)
@@ -49,7 +49,8 @@ class RequestforSupplierQuotation(Document):
 				nl.item_description = d.item_description
 				nl.qty = d.qty
 				nl.uom = d.uom
-				nl.inquiry_detail = d.name
+				nl.inquiry = d.inq
+				nl.inquiry_detail = d.inq_det
 #			tampung.append(row.inquiry)
 #		temp = ', '.join(tampung)
 #		frappe.throw(temp)
