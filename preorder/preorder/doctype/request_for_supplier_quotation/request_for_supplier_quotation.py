@@ -41,7 +41,7 @@ class RequestforSupplierQuotation(Document):
 		for row in self.inquiry_tbl:
 			komponen = frappe.db.sql("""SELECT b.item_description, b.qty, b.uom, a.`name` as inq, b.`name` as inq_det
 				FROM `tabInquiry` a, `tabInquiry Item` b
-				WHERE a.`name` = b.parent AND a.docstatus = '1' AND a.`name` = %s
+				WHERE a.`name` = b.parent AND a.docstatus = '1' AND a.`name` = %s AND a.status != "Lost"
 				ORDER by b.idx ASC""", row.inquiry, as_dict=1)
 
 			for d in komponen:

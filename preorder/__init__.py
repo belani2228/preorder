@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.0.12'
+__version__ = '0.0.13'
 
+#0.0.13:
+#   - Add status di Inquiry
 #0.0.12:
 #   - Fixed get_items in Quotation
 #0.0.11:

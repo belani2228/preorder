@@ -31,18 +31,6 @@ frappe.ui.form.on('Request for Supplier Quotation', {
 			}
 		});
 	},
-	refresh_tbl: function(frm) {
-		return frappe.call({
-			method: "refresh_tbl_inquiry",
-			doc: frm.doc,
-			callback: function(r, rt) {
-				frm.refresh()
-			}
-		});
-	},
-});
-frappe.ui.form.on("Request for Supplier Quotation Inquiry", "onload", function(frm) {
-   frm.refresh();
 });
 frappe.ui.form.on("Request for Supplier Quotation", {
 	refresh: function() {
@@ -57,6 +45,7 @@ frappe.ui.form.on("Request for Supplier Quotation", {
 					},
 					get_query_filters: {
 						docstatus: 1,
+						status: ["!=", "Lost"],
 					}
 				})
 			}, __("Get items from"));
@@ -73,7 +62,8 @@ cur_frm.set_query("inquiry", "inquiry_tbl",  function (doc, cdt, cdn) {
 	var c_doc= locals[cdt][cdn];
     return {
         filters: {
-            'docstatus': 1
+            'docstatus': 1,
+						'status': ["!=", "Lost"]
         }
     }
 });
@@ -86,9 +76,11 @@ frappe.ui.form.on("Request for Supplier Quotation Inquiry", "inquiry", function(
 						name: row.inquiry
         },
         callback: function (data) {
+					if(data.message.status != "Lost"){
             frappe.model.set_value(cdt, cdn, "transaction_date", data.message.transaction_date);
 						frappe.model.set_value(cdt, cdn, "customer", data.message.customer);
 						frappe.model.set_value(cdt, cdn, "customer_name", data.message.customer_name);
+					}
 				}
     })
 });

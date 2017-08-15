@@ -5,7 +5,6 @@ def get_data():
 		'fieldname': 'inquiry',
 		'transactions': [
 			{
-				'label': _('Related Document'),
 				'items': ['Request for Supplier Quotation', 'Supplier Quotation', 'Quotation']
 			},
 		]
