@@ -38,14 +38,41 @@ def cancel_quotation(doc, method):
         update_supplier_quotation(sq)
 
 def submit_supplier_quotation(doc, method):
+    sq = doc.name
     items = frappe.db.sql("""select * from `tabSupplier Quotation Item` where parent = %s""", doc.name, as_dict=1)
     for row in items:
         frappe.db.sql("""update `tabInquiry` set sq = 'Yes' where `name` = %s""", row.inquiry)
+        frappe.db.sql("""update `tabInquiry Item` set rate_1 = '0', rate_2 = 0, rate_3 = 0, supplier_1 = null, supplier_2 = null, supplier_3 = null where `name` = %s""", row.inquiry_detail)
+
+    update_inquiry_items(sq)
+
+def update_inquiry_items(sq):
+    items = frappe.db.sql("""select * from `tabSupplier Quotation Item` where parent = %s""", sq, as_dict=1)
+    for row in items:
+        sqi1 = frappe.db.sql("""select a.rate, b.supplier from `tabSupplier Quotation Item` a inner join `tabSupplier Quotation` b on a.parent = b.`name` where b.docstatus = '1' and a.inquiry_detail = %s order by b.`name` asc limit 0,1""", row.inquiry_detail, as_dict=1)
+        for a1 in sqi1:
+            frappe.db.sql("""update `tabInquiry Item` set rate_1 = %s, supplier_1 = %s where `name` = %s""", (a1.rate, a1.supplier, row.inquiry_detail))
+        sqi2 = frappe.db.sql("""select a.rate, b.supplier from `tabSupplier Quotation Item` a inner join `tabSupplier Quotation` b on a.parent = b.`name` where b.docstatus = '1' and a.inquiry_detail = %s order by b.`name` asc limit 1,1""", row.inquiry_detail, as_dict=1)
+        for a2 in sqi2:
+            frappe.db.sql("""update `tabInquiry Item` set rate_2 = %s, supplier_2 = %s where `name` = %s""", (a2.rate, a2.supplier, row.inquiry_detail))
+        sqi3 = frappe.db.sql("""select a.rate, b.supplier from `tabSupplier Quotation Item` a inner join `tabSupplier Quotation` b on a.parent = b.`name` where b.docstatus = '1' and a.inquiry_detail = %s order by b.`name` asc limit 2,1""", row.inquiry_detail, as_dict=1)
+        for a3 in sqi3:
+            frappe.db.sql("""update `tabInquiry Item` set rate_3 = %s, supplier_3 = %s where `name` = %s""", (a3.rate, a3.supplier, row.inquiry_detail))
 
 def cancel_supplier_quotation(doc, method):
     tampung = []
     items = frappe.db.sql("""select * from `tabSupplier Quotation Item` where parent = %s""", doc.name, as_dict=1)
     for row in items:
+        frappe.db.sql("""update `tabInquiry Item` set rate_1 = '0', rate_2 = 0, rate_3 = 0, supplier_1 = null, supplier_2 = null, supplier_3 = null where `name` = %s""", row.inquiry_detail)
+        sqi1 = frappe.db.sql("""select a.rate, b.supplier from `tabSupplier Quotation Item` a inner join `tabSupplier Quotation` b on a.parent = b.`name` where b.docstatus = '1' and a.inquiry_detail = %s and b.`name` != %s order by b.`name` asc limit 0,1""", (row.inquiry_detail, sq), as_dict=1)
+        for a1 in sqi1:
+            frappe.db.sql("""update `tabInquiry Item` set rate_1 = %s, supplier_1 = %s where `name` = %s""", (a1.rate, a1.supplier, row.inquiry_detail))
+        sqi2 = frappe.db.sql("""select a.rate, b.supplier from `tabSupplier Quotation Item` a inner join `tabSupplier Quotation` b on a.parent = b.`name` where b.docstatus = '1' and a.inquiry_detail = %s and b.`name` != %s order by b.`name` asc limit 1,1""", (row.inquiry_detail, sq), as_dict=1)
+        for a2 in sqi2:
+            frappe.db.sql("""update `tabInquiry Item` set rate_2 = %s, supplier_2 = %s where `name` = %s""", (a2.rate, a2.supplier, row.inquiry_detail))
+        sqi3 = frappe.db.sql("""select a.rate, b.supplier from `tabSupplier Quotation Item` a inner join `tabSupplier Quotation` b on a.parent = b.`name` where b.docstatus = '1' and a.inquiry_detail = %s and b.`name` != %s order by b.`name` asc limit 2,1""", (row.inquiry_detail, sq), as_dict=1)
+        for a3 in sqi3:
+            frappe.db.sql("""update `tabInquiry Item` set rate_3 = %s, supplier_3 = %s where `name` = %s""", (a3.rate, a3.supplier, row.inquiry_detail))
         if row.inquiry not in tampung:
             tampung.append(row.inquiry)
     if tampung:
