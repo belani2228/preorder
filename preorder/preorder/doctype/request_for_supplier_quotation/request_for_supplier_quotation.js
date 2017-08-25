@@ -5,7 +5,8 @@ frappe.ui.form.on('Request for Supplier Quotation', {
 	refresh: function(frm) {
 	},
 	refresh: function(frm, cdt, cdn) {
-		if (frm.doc.docstatus === 1) {
+		if (frm.doc.docstatus == 1 && frm.doc.status == "Submitted") {
+			frm.add_custom_button(__('Set as Lost'), cur_frm.cscript['Declare Order Lost']);
 			frm.add_custom_button(__("Send Email to Supplier"), function() {
 				frappe.call({
 					method: 'erpnext.buying.doctype.request_for_quotation.request_for_quotation.send_supplier_emails',
@@ -32,6 +33,36 @@ frappe.ui.form.on('Request for Supplier Quotation', {
 		});
 	},
 });
+cur_frm.cscript['Declare Order Lost'] = function(){
+	var dialog = new frappe.ui.Dialog({
+		title: "Set as Lost",
+		fields: [
+			{"fieldtype": "Text", "label": __("Reason for losing"), "fieldname": "reason",
+				"reqd": 1 },
+			{"fieldtype": "Button", "label": __("Update"), "fieldname": "update"},
+		]
+	});
+
+	dialog.fields_dict.update.$input.click(function() {
+		var args = dialog.get_values();
+		if(!args) return;
+		return cur_frm.call({
+			method: "declare_order_lost",
+			doc: cur_frm.doc,
+			args: args.reason,
+			callback: function(r) {
+				if(r.exc) {
+					frappe.msgprint(__("There were errors."));
+					return;
+				}
+				dialog.hide();
+				cur_frm.refresh();
+			},
+			btn: this
+		})
+	});
+	dialog.show();
+}
 frappe.ui.form.on("Request for Supplier Quotation", {
 	refresh: function() {
 		if(cur_frm.doc.docstatus == 0 || cur_frm.doc.__islocal){
@@ -66,6 +97,20 @@ cur_frm.set_query("inquiry", "inquiry_tbl",  function (doc, cdt, cdn) {
 						'status': ["!=", "Lost"]
         }
     }
+});
+frappe.ui.form.on("Request for Supplier Quotation", "supplier", function(frm, cdt, cdn) {
+	    frappe.call({
+	        method: "frappe.client.get",
+	        args: {
+	            doctype: "Supplier",
+							filters:{
+								name: cur_frm.doc.supplier
+							}
+	        },
+	        callback: function (data) {
+							frappe.model.set_value(cdt, cdn, "title", data.message.supplier_name);
+					}
+	    })
 });
 frappe.ui.form.on("Request for Supplier Quotation Inquiry", "inquiry", function(frm, cdt, cdn) {
     row = locals[cdt][cdn];

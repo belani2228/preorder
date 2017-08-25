@@ -58,6 +58,10 @@ class RequestforSupplierQuotation(Document):
 	def refresh_tbl_inquiry(self):
 		pass
 
+	def declare_order_lost(self, arg):
+		frappe.db.set(self, 'status', 'Lost')
+		frappe.db.set(self, 'order_lost_reason', arg)
+
 @frappe.whitelist()
 def make_supplier_quotation(source_name, target_doc=None):
 	def set_missing_values(source, target):

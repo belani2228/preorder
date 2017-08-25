@@ -48,7 +48,6 @@ cur_frm.cscript['Declare Order Lost'] = function(){
 		})
 	});
 	dialog.show();
-
 }
 
 cur_frm.set_query("contact_person",  function (frm) {

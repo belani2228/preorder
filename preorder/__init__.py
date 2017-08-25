@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.0.16'
+__version__ = '0.0.17'
 
+#0.0.17:
+#   - Add Set as Lost in Request for Supplier Quotation
+#   - Add request_for_supplier_quotation_list.js
+#   - Update Request for Supplier Quotation
 #0.0.16:
-#   - Update lemparan
+#   - Update operan.py
 #0.0.15:
 #   - Update lemparan.py get_items_selling_quotation
 #   - Add 3 rate & 3 supplier in Quotation
