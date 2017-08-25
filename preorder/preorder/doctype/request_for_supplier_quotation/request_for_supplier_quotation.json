@@ -545,7 +545,7 @@
  "issingle": 0, 
  "istable": 0, 
  "max_attachments": 0, 
- "modified": "2017-08-25 10:44:18.817029", 
+ "modified": "2017-08-25 11:30:27.935228", 
  "modified_by": "Administrator", 
  "module": "Preorder", 
  "name": "Request for Supplier Quotation", 
@@ -553,7 +553,7 @@
  "owner": "Administrator", 
  "permissions": [
   {
-   "amend": 0, 
+   "amend": 1, 
    "apply_user_permissions": 0, 
    "cancel": 1, 
    "create": 1, 
