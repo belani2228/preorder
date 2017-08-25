@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.0.15'
+__version__ = '0.0.16'
 
+#0.0.16:
+#   - Update lemparan
 #0.0.15:
 #   - Update lemparan.py get_items_selling_quotation
 #   - Add 3 rate & 3 supplier in Quotation

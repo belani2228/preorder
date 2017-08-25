@@ -78,7 +78,7 @@ def cancel_supplier_quotation(doc, method):
     if tampung:
         for i in tampung:
             a = frappe.db.sql("""select count(*) from `tabSupplier Quotation Item` where docstatus = '1' and inquiry = %s and parent != %s""", (i, doc.name))[0][0]
-            if cstr(a) <= 1:
+            if cstr(a) >= 1:
                 frappe.db.sql("""update `tabInquiry` set sq = 'Yes' where `name` = %s""", i)
             else:
                 frappe.db.sql("""update `tabInquiry` set sq = 'No' where `name` = %s""", i)
