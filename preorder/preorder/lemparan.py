@@ -6,6 +6,11 @@ from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
 
 @frappe.whitelist()
+def reset_rate(doc):
+    #msgprint(_(doc{"customer"}))
+    pass
+
+@frappe.whitelist()
 def get_items_selling_quotation(source_name, target_doc=None):
     cek = frappe.db.get_value("Inquiry", source_name, "status")
     if cek != "Lost":
@@ -29,6 +34,10 @@ def get_items_selling_quotation(source_name, target_doc=None):
     		},
     		"Inquiry Item": {
     			"doctype": "Quotation Item",
+    			"field_map":{
+    				"parent": "inquiry",
+    				"name": "inquiry_item",
+    			},
                 "postprocess": update_item
     		},
     	}, target_doc)

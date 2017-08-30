@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.0.17'
+__version__ = '0.0.18'
 
+#0.0.18:
+#   - Add status Completed in RfSQ, if Supplier Quotation submit
 #0.0.17:
 #   - Add Set as Lost in Request for Supplier Quotation
 #   - Add request_for_supplier_quotation_list.js
