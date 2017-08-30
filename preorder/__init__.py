@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.0.18'
+__version__ = '0.0.19'
 
+#0.0.19:
+#   - Update Inquiry & Inquiry Item
 #0.0.18:
 #   - Add status Completed in RfSQ, if Supplier Quotation submit
 #0.0.17:
