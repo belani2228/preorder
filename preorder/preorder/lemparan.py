@@ -43,31 +43,38 @@ def get_items_selling_quotation(source_name, target_doc=None):
     	}, target_doc)
         return doc
 
-#    	def update_item(source, target, source_parent):
-#			target.supplier_code = source_parent.supplier
-#			target.supplier_name = source_parent.supplier_name
+@frappe.whitelist()
+def get_items_from_sales_order(source_name, target_doc=None):
+    if target_doc:
+        if isinstance(target_doc, basestring):
+            import json
+            target_doc = frappe.get_doc(json.loads(target_doc))
+        target_doc.set("items", [])
 
-#    	query = frappe.db.sql_list("""select distinct(sq.`name`) from `tabSupplier Quotation` sq, `tabSupplier Quotation Item` sqi
-#        where sq.`name` = sqi.parent and sq.docstatus = '1' and sqi.inquiry = %s and sqi.quotation_detail is null order by sq.`name` asc""", source_name)
-#        if query:
-#            for row in query:
-#            	doclist = get_mapped_doc("Supplier Quotation", row, {
-#            		"Supplier Quotation": {
-#            			"doctype": "Quotation",
-#            			"field_no_map":["customer", "posting_date", "due_date", "items"]
-#            		},
-#            		"Supplier Quotation Item": {
-#            			"doctype": "Quotation Item",
-#            			"field_map":{
-#            				"name": "supplier_quotation_item",
-#                            "rate": "buying_rate"
-#            			},
-#                        "postprocess": update_item,
-#                        "condition":lambda doc: doc.quotation_detail is None and doc.inquiry == source_name
-#            		},
-#            	}, target_doc)
-#            return doclist
-#        else:
-#            frappe.throw(_("No Items Found"))
-#    else:
-#        frappe.throw(_("Inquiry Not Found"))
+    komponen = frappe.db.sql_list("""select distinct(so.`name`) from `tabSales Order Item` soi inner join `tabSales Order` so on soi.parent = so.`name` where so.docstatus = '1' and soi.selected_supplier = %s""", source_name)
+
+    for d in komponen:
+    	si = get_mapped_doc("Sales Order", d, {
+    		"Sales Order": {
+    			"doctype": "Purchase Order",
+    			"validation": {
+    				"docstatus": ["=", 1],
+                },
+                "field_no_map": [
+                    "customer", "customer_name", "address_display", "shipping_address", "total", "grand_total"
+                ],
+    		},
+    		"Sales Order Item": {
+    			"doctype": "Purchase Order Item",
+                "field_map": {
+                    "parent": "sales_order",
+                    "name": "sales_order_item"
+                },
+                "condition":lambda doc: doc.po_no is None and doc.selected_supplier == source_name
+    		},
+    	}, target_doc)
+    return si
+#    return si
+#
+
+#	for d in komponen:

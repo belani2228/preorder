@@ -85,3 +85,25 @@ def cancel_supplier_quotation(doc, method):
                 frappe.db.sql("""update `tabInquiry` set sq = 'Yes' where `name` = %s""", i)
             else:
                 frappe.db.sql("""update `tabInquiry` set sq = 'No' where `name` = %s""", i)
+
+def submit_sales_order(doc, method):
+    items = frappe.db.sql("""select * from `tabSales Order Item` where parent = %s""", doc.name, as_dict=1)
+    for row in items:
+        if row.gunakan_1:
+            frappe.db.sql("""update `tabSales Order Item` set selected_supplier = %s, approved_price = %s where `name` = %s""", (row.supplier_1, row.rate_1, row.name))
+        if row.gunakan_2:
+            frappe.db.sql("""update `tabSales Order Item` set selected_supplier = %s, approved_price = %s where `name` = %s""", (row.supplier_2, row.rate_2, row.name))
+        if row.gunakan_3:
+            frappe.db.sql("""update `tabSales Order Item` set selected_supplier = %s, approved_price = %s where `name` = %s""", (row.supplier_3, row.rate_3, row.name))
+
+def submit_purchase_order(doc, method):
+    items = frappe.db.sql("""select * from `tabPurchase Order Item` where parent = %s""", doc.name, as_dict=1)
+    for row in items:
+        if row.sales_order_item:
+            frappe.db.sql("""update `tabSales Order Item` set po_no = %s where `name` = %s""", (doc.name, row.sales_order_item))
+
+def cancel_purchase_order(doc, method):
+    items = frappe.db.sql("""select * from `tabPurchase Order Item` where parent = %s""", doc.name, as_dict=1)
+    for row in items:
+        if row.sales_order_item:
+            frappe.db.sql("""update `tabSales Order Item` set po_no = null where `name` = %s""", row.sales_order_item)

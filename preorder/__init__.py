@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.0.19'
+__version__ = '0.0.20'
 
+#0.0.20:
+#   - Add in hooks.py: on_submit Sales Order
+#   - Add in hooks.py: on_submit Purchase Order
+#   - Add in hooks.py: before_cancel Purchase Order
+#   - Update lemparan, get_items_from_sales_order
 #0.0.19:
 #   - Update Inquiry & Inquiry Item
 #0.0.18:
