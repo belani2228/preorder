@@ -52,28 +52,30 @@ def get_items_from_sales_order(source_name, target_doc=None):
         target_doc.set("items", [])
 
     komponen = frappe.db.sql_list("""select distinct(so.`name`) from `tabSales Order Item` soi inner join `tabSales Order` so on soi.parent = so.`name` where so.docstatus = '1' and soi.selected_supplier = %s""", source_name)
-
-    for d in komponen:
-    	si = get_mapped_doc("Sales Order", d, {
-    		"Sales Order": {
-    			"doctype": "Purchase Order",
-    			"validation": {
-    				"docstatus": ["=", 1],
-                },
-                "field_no_map": [
-                    "customer", "customer_name", "address_display", "shipping_address", "total", "grand_total"
-                ],
-    		},
-    		"Sales Order Item": {
-    			"doctype": "Purchase Order Item",
-                "field_map": {
-                    "parent": "sales_order",
-                    "name": "sales_order_item"
-                },
-                "condition":lambda doc: doc.po_no is None and doc.selected_supplier == source_name
-    		},
-    	}, target_doc)
-    return si
+    if komponen:
+        for d in komponen:
+        	si = get_mapped_doc("Sales Order", d, {
+        		"Sales Order": {
+        			"doctype": "Purchase Order",
+        			"validation": {
+        				"docstatus": ["=", 1],
+                    },
+                    "field_no_map": [
+                        "customer", "customer_name", "address_display", "shipping_address", "total", "grand_total"
+                    ],
+        		},
+        		"Sales Order Item": {
+        			"doctype": "Purchase Order Item",
+                    "field_map": {
+                        "parent": "sales_order",
+                        "name": "sales_order_item"
+                    },
+                    "condition":lambda doc: doc.po_no is None and doc.selected_supplier == source_name
+        		},
+        	}, target_doc)
+        return si
+    else:
+        msgprint(_("No Inquiry found for this supplier"))
 #    return si
 #
 

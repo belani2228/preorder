@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.0.21'
+__version__ = '0.0.22'
 
+#0.0.22:
+#   - Update lemparan, get_items_from_sales_order
 #0.0.21:
 #   - Update on_submit in RfSQ
 #0.0.20:
