@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.0.20'
+__version__ = '0.0.21'
 
+#0.0.21:
+#   - Update on_submit in RfSQ
 #0.0.20:
 #   - Add in hooks.py: on_submit Sales Order
 #   - Add in hooks.py: on_submit Purchase Order

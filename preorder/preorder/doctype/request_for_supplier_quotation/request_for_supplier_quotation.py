@@ -14,6 +14,13 @@ class RequestforSupplierQuotation(Document):
 
 	def on_update(self):
 		self.update_rfsq_inquiry()
+		frappe.db.set(self, 'status', 'Draft')
+
+	def on_submit(self):
+		frappe.db.set(self, 'status', 'Submitted')
+
+	def on_cancel(self):
+		frappe.db.set(self, 'status', 'Cancelled')
 
 	def update_rfsq_inquiry(self):
 		tampung = []
