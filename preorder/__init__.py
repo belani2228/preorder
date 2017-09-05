@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.0.22'
+__version__ = '0.0.23'
 
+#0.0.23:
+#   - Update lemparan, get_items_selling_quotation
 #0.0.22:
 #   - Update lemparan, get_items_from_sales_order
 #0.0.21:

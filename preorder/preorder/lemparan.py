@@ -68,7 +68,8 @@ def get_items_from_sales_order(source_name, target_doc=None):
         			"doctype": "Purchase Order Item",
                     "field_map": {
                         "parent": "sales_order",
-                        "name": "sales_order_item"
+                        "name": "sales_order_item",
+                        "approved_price": "rate"
                     },
                     "condition":lambda doc: doc.po_no is None and doc.selected_supplier == source_name
         		},
