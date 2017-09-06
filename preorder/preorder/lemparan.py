@@ -67,6 +67,7 @@ def get_items_from_sales_order(source_name, target_doc=None):
         		"Sales Order Item": {
         			"doctype": "Purchase Order Item",
                     "field_map": {
+                        "item_description": "description",
                         "parent": "sales_order",
                         "name": "sales_order_item",
                         "approved_price": "rate"
