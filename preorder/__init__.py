@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.0.23'
+__version__ = '0.1.0'
 
+#0.1.0:
+#   - Pindah file custom.css ke files
 #0.0.23:
 #   - Update lemparan, get_items_selling_quotation
 #0.0.22:

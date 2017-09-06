@@ -16,7 +16,7 @@ app_license = "GNU General Public License"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/preorder/css/preorder.css"
-app_include_css = "assets/css/custom.css"
+app_include_css = "/files/custom.css"
 # app_include_js = "/assets/preorder/js/preorder.js"
 
 # include js, css files in header of web template
