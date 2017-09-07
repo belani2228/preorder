@@ -33,7 +33,7 @@ def make_rfsq(source_name, target_doc=None):
 		"Inquiry": {
 			"doctype": "Request for Supplier Quotation",
 			"field_no_map": [
-				"naming_series"
+				"naming_series", "title"
 			],
 			"field_map": {
 				"transaction_date":"date"

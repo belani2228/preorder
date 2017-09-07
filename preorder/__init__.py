@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
+#0.1.1:
+#   - Fix no copy for title in RfSQ when get item from Inquiry
 #0.1.0:
 #   - Pindah file custom.css ke files
 #0.0.23:
