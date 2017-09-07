@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
+#0.1.3:
+#   - Add supplier name in inquiry, quotation & sales order
 #0.1.2:
 #   - Fix supplier quotation tidak bisa hapus jika sudah ada quotation
 #0.1.1:
