@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
+#0.1.2:
+#   - Fix supplier quotation tidak bisa hapus jika sudah ada quotation
 #0.1.1:
 #   - Fix no copy for title in RfSQ when get item from Inquiry
 #0.1.0:

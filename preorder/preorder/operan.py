@@ -6,15 +6,18 @@ from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
 
 def submit_quotation(doc, method):
-    sq = []
     items = frappe.db.sql("""select * from `tabQuotation Item` where parent = %s""", doc.name, as_dict=1)
+    test = frappe.db.sql("""select `customer` from `tabQuotation` where name = %s""", doc.name)
     for row in items:
-        if row.supplier_quotation_item != None:
-            frappe.db.sql("""update `tabSupplier Quotation Item` set quotation_detail = %s where `name` = %s""", (row.name, row.supplier_quotation_item))
-            if row.supplier_quotation not in sq:
-                sq.append(row.supplier_quotation)
-    if sq:
-        update_supplier_quotation(sq)
+        if row.gunakan_1:
+            sqtn = frappe.db.sql("""select sq.`name` from `tabSupplier Quotation Item` sqi inner join `tabSupplier Quotation` sq on sqi.parent = sq.`name` where sq.docstatus = '1' and sqi.inquiry_detail = %s and sq.supplier = %s""", (row.inquiry_item, row.supplier_1))
+            frappe.db.sql("""update `tabQuotation Item` set supplier_quotation = %s where `name` = %s""", (sqtn, row.name))
+        if row.gunakan_2:
+            sqtn = frappe.db.sql("""select sq.`name` from `tabSupplier Quotation Item` sqi inner join `tabSupplier Quotation` sq on sqi.parent = sq.`name` where sq.docstatus = '1' and sqi.inquiry_detail = %s and sq.supplier = %s""", (row.inquiry_item, row.supplier_2))
+            frappe.db.sql("""update `tabQuotation Item` set supplier_quotation = %s where `name` = %s""", (sqtn, row.name))
+        if row.gunakan_3:
+            sqtn = frappe.db.sql("""select sq.`name` from `tabSupplier Quotation Item` sqi inner join `tabSupplier Quotation` sq on sqi.parent = sq.`name` where sq.docstatus = '1' and sqi.inquiry_detail = %s and sq.supplier = %s""", (row.inquiry_item, row.supplier_3))
+            frappe.db.sql("""update `tabQuotation Item` set supplier_quotation = %s where `name` = %s""", (sqtn, row.name))
 
 def update_supplier_quotation(sq):
     ada = []
