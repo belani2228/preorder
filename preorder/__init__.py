@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 __version__ = '0.1.4'
 
+#0.1.5:
+#   - Minor fix Inquiry
 #0.1.4:
 #   - Minor fix ketika submit supplier quotation
 #0.1.3:

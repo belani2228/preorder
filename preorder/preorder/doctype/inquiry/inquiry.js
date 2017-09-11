@@ -5,7 +5,7 @@ frappe.ui.form.on('Inquiry', {
 	refresh: function(frm) {
 		frm.set_df_property("inquiry_type", "read_only", frm.doc.__islocal ? 0 : 1);
 		if(frm.doc.docstatus == 1 && frm.doc.status == "Submitted") {
-			cur_frm.add_custom_button(__('Request for Sales Quotation'), cur_frm.cscript['Request for Sales Quotation'], __("Make"));
+			cur_frm.add_custom_button(__('Request for Supplier Quotation'), cur_frm.cscript['Request for Supplier Quotation'], __("Make"));
 			cur_frm.page.set_inner_btn_group_as_primary(__("Make"));
 		}
 		if(frm.doc.status == "Submitted") {
@@ -13,7 +13,7 @@ frappe.ui.form.on('Inquiry', {
 		}
 	}
 });
-cur_frm.cscript['Request for Sales Quotation'] = function() {
+cur_frm.cscript['Request for Supplier Quotation'] = function() {
 	frappe.model.open_mapped_doc({
 		method: "preorder.preorder.doctype.inquiry.inquiry.make_rfsq",
 		frm: cur_frm
