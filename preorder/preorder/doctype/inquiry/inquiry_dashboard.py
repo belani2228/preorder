@@ -5,7 +5,7 @@ def get_data():
 		'fieldname': 'inquiry',
 		'transactions': [
 			{
-				'items': ['Request for Supplier Quotation', 'Supplier Quotation', 'Quotation']
+				'items': ['Request for Supplier Quotation', 'Quotation']
 			},
 		]
     }

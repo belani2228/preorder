@@ -6,7 +6,7 @@ frappe.ui.form.on('Request for Supplier Quotation', {
 	},
 	refresh: function(frm, cdt, cdn) {
 		if (frm.doc.docstatus == 1 && frm.doc.status == "Submitted") {
-			frm.add_custom_button(__('Set as Lost'), cur_frm.cscript['Declare Order Lost']);
+			//frm.add_custom_button(__('Set as Lost'), cur_frm.cscript['Declare Order Lost']);
 			frm.add_custom_button(__("Send Email to Supplier"), function() {
 				frappe.call({
 					method: 'erpnext.buying.doctype.request_for_quotation.request_for_quotation.send_supplier_emails',
@@ -19,8 +19,8 @@ frappe.ui.form.on('Request for Supplier Quotation', {
 					}
 				});
 			});
-			cur_frm.add_custom_button(__('Supplier Quotation'), cur_frm.cscript['Supplier Quotation'], __("Make"));
-			cur_frm.page.set_inner_btn_group_as_primary(__("Make"));
+			//cur_frm.add_custom_button(__('Supplier Quotation'), cur_frm.cscript['Supplier Quotation'], __("Make"));
+			//cur_frm.page.set_inner_btn_group_as_primary(__("Make"));
 		}
 	},
 	get_items: function(frm) {

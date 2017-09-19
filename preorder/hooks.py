@@ -86,20 +86,24 @@ website_context = {
 
 doc_events = {
 	"Quotation": {
+		"on_update": "preorder.preorder.operan.update_quotation",
 		"on_submit": "preorder.preorder.operan.submit_quotation",
 		"before_cancel": "preorder.preorder.operan.cancel_quotation"
 	},
-	"Supplier Quotation": {
-		"on_submit": "preorder.preorder.operan.submit_supplier_quotation",
-		"before_cancel": "preorder.preorder.operan.cancel_supplier_quotation"
-	},
+#	"Supplier Quotation": {
+#		"on_submit": "preorder.preorder.operan.submit_supplier_quotation",
+#		"before_cancel": "preorder.preorder.operan.cancel_supplier_quotation"
+#	},
 	"Sales Order": {
 		"on_submit": "preorder.preorder.operan.submit_sales_order"
 	},
 	"Purchase Order": {
 		"on_submit": "preorder.preorder.operan.submit_purchase_order",
 		"before_cancel": "preorder.preorder.operan.cancel_purchase_order"
-	}
+	},
+	"Sales Invoice": {
+		"on_submit": "preorder.preorder.operan.submit_sales_invoice"
+	},
 }
 # doc_events = {
 # 	"*": {

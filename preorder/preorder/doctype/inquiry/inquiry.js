@@ -54,7 +54,7 @@ cur_frm.set_query("contact_person",  function (frm) {
 		return {
         filters: [
             ['customer', '=', cur_frm.doc.customer]
-        ]
+        ],
 		}
 });
 frappe.ui.form.on("Inquiry", "validate", function(frm) {

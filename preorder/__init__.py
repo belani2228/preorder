@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.1.4'
+__version__ = '0.2.0'
 
+#0.2.0:
+#   - Tdk pakai supplier quotation lagi
 #0.1.5:
 #   - Minor fix Inquiry
 #0.1.4:

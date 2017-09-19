@@ -5,19 +5,23 @@ from frappe import msgprint, _
 from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
 
+def update_quotation(doc, method):
+    if doc.inquiry != None:
+        cek = frappe.db.get_value("Inquiry", doc.inquiry, "quotation")
+        if cek != None:
+            frappe.throw(_("Inquiry "+doc.inquiry+" has been used in other Quotation"))
+
 def submit_quotation(doc, method):
-    items = frappe.db.sql("""select * from `tabQuotation Item` where parent = %s""", doc.name, as_dict=1)
-    test = frappe.db.sql("""select `customer` from `tabQuotation` where name = %s""", doc.name)
-    for row in items:
-        if row.gunakan_1:
-            sqtn = frappe.db.sql("""select sq.`name` from `tabSupplier Quotation Item` sqi inner join `tabSupplier Quotation` sq on sqi.parent = sq.`name` where sq.docstatus = '1' and sqi.inquiry_detail = %s and sq.supplier = %s""", (row.inquiry_item, row.supplier_1))
-            frappe.db.sql("""update `tabQuotation Item` set supplier_quotation = %s where `name` = %s""", (sqtn, row.name))
-        if row.gunakan_2:
-            sqtn = frappe.db.sql("""select sq.`name` from `tabSupplier Quotation Item` sqi inner join `tabSupplier Quotation` sq on sqi.parent = sq.`name` where sq.docstatus = '1' and sqi.inquiry_detail = %s and sq.supplier = %s""", (row.inquiry_item, row.supplier_2))
-            frappe.db.sql("""update `tabQuotation Item` set supplier_quotation = %s where `name` = %s""", (sqtn, row.name))
-        if row.gunakan_3:
-            sqtn = frappe.db.sql("""select sq.`name` from `tabSupplier Quotation Item` sqi inner join `tabSupplier Quotation` sq on sqi.parent = sq.`name` where sq.docstatus = '1' and sqi.inquiry_detail = %s and sq.supplier = %s""", (row.inquiry_item, row.supplier_3))
-            frappe.db.sql("""update `tabQuotation Item` set supplier_quotation = %s where `name` = %s""", (sqtn, row.name))
+    if doc.inquiry != None:
+        cek = frappe.db.get_value("Inquiry", doc.inquiry, "quotation")
+        if cek != None:
+            frappe.throw(_("Inquiry "+doc.inquiry+" has been used in other Quotation"))
+        else:
+            frappe.db.sql("""update `tabInquiry` set quotation = %s where `name` = %s""", (doc.name, doc.inquiry))
+
+def cancel_quotation(doc, method):
+    if doc.inquiry != None:
+        frappe.db.sql("""update `tabInquiry` set quotation = null where `name` = %s""", doc.inquiry)
 
 def update_supplier_quotation(sq):
     ada = []
@@ -28,17 +32,6 @@ def update_supplier_quotation(sq):
             frappe.db.sql("""update `tabSupplier Quotation` set terpakai = 'Full' where `name` = %s""", i)
         else:
             frappe.db.sql("""update `tabSupplier Quotation` set terpakai = null where `name` = %s""", i)
-
-def cancel_quotation(doc, method):
-    sq = []
-    items = frappe.db.sql("""select * from `tabQuotation Item` where parent = %s""", doc.name, as_dict=1)
-    for row in items:
-        if row.supplier_quotation_item != None:
-            frappe.db.sql("""update `tabSupplier Quotation Item` set quotation_detail = null where `name` = %s""", row.supplier_quotation_item)
-            if row.supplier_quotation not in sq:
-                sq.append(row.supplier_quotation)
-    if sq:
-        update_supplier_quotation(sq)
 
 def submit_supplier_quotation(doc, method):
     sq = doc.name

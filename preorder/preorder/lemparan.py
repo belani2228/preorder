@@ -78,7 +78,26 @@ def get_items_from_sales_order(source_name, target_doc=None):
         return si
     else:
         msgprint(_("No Inquiry found for this supplier"))
-#    return si
-#
 
-#	for d in komponen:
+@frappe.whitelist()
+def make_purchase_order(source_name, target_doc=None):
+	pi = get_mapped_doc("Sales Order", source_name, {
+		"Sales Order": {
+			"doctype": "Purchase Order",
+			"validation": {
+				"docstatus": ["=", 1]
+			}
+		},
+		"Sales Order Item": {
+			"doctype": "Purchase Order Item",
+			"field_map": {
+				"parent": "sales_order"
+			},
+            "field_no_map": [
+                "price_list_rate", "rate"
+            ],
+			"add_if_empty": True
+		}
+	}, target_doc)
+
+	return pi
