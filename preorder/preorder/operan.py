@@ -103,3 +103,6 @@ def cancel_purchase_order(doc, method):
     for row in items:
         if row.sales_order_item:
             frappe.db.sql("""update `tabSales Order Item` set po_no = null where `name` = %s""", row.sales_order_item)
+
+def submit_sales_invoice(doc, method):
+    pass
