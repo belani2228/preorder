@@ -101,3 +101,46 @@ def make_purchase_order(source_name, target_doc=None):
 	}, target_doc)
 
 	return pi
+
+@frappe.whitelist()
+def get_items_tampungan(source_name, target_doc=None):
+    sales_order,persen,inquiry_id = source_name.split("|")
+    if target_doc:
+        if isinstance(target_doc, basestring):
+            import json
+            target_doc = frappe.get_doc(json.loads(target_doc))
+        target_doc.set("items", [])
+
+    def update_item(source, target, source_parent):
+        target.item_code = "Tampungan"
+        item = frappe.db.get_value("Item", "Tampungan", ["item_name", "description", "stock_uom", "income_account", "expense_account"], as_dict=1)
+        target.item_name = item.item_name
+        target.description = item.description
+        target.uom = item.stock_uom
+        target.income_account = item.income_account
+        target.expense_account = item.expense_account
+        target.qty = "1"
+        so = frappe.db.get_value("Sales Order", sales_order, ["net_total"], as_dict=1)
+        rate = (flt(persen)/100) * flt(so.net_total)
+        target.rate = rate
+        target.net_rate = rate
+        target.net_amount = rate
+
+    doc = get_mapped_doc("Inquiry", inquiry_id, {
+    	"Inquiry": {
+    		"doctype": "Sales Invoice",
+    		"validation": {
+    			"docstatus": ["=", 1],
+    		},
+    	},
+    	"Inquiry Item": {
+    		"doctype": "Sales Invoice Item",
+    		"field_map":{
+    			"parent": "inquiry",
+    			"name": "inquiry_item",
+    		},
+            "condition":lambda doc: doc.idx == 1,
+            "postprocess": update_item
+    	},
+    }, target_doc)
+    return doc

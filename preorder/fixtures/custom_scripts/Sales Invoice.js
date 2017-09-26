@@ -1,3 +1,9 @@
+frappe.ui.form.on("Sales Invoice", "get_items", function(frm) {
+	erpnext.utils.map_current_doc({
+		method: "preorder.preorder.lemparan.get_items_tampungan",
+		source_name: cur_frm.doc.sales_order+"|"+cur_frm.doc.percentage_dp+"|"+cur_frm.doc.inquiry,
+	});
+})
 frappe.ui.form.on("Sales Invoice", {
 	refresh: function() {
 		cur_frm.add_custom_button(__("Inquiry"), function() {
