@@ -17,5 +17,15 @@ def get_data():
 					"description": _("Request for Supplier Quotation")
 				},
 			]
+		},
+		{
+			"label": _("Settings"),
+			"items": [
+				{
+					"type": "doctype",
+					"name": "Item Settings",
+					"description": _("Item Settings")
+				},
+			]
 		}
 	]

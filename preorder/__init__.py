@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.3.1'
+__version__ = '0.3.2'
 
+#0.3.2:
+#   - Sales Invoice with DP, progress payment, pelunasan & retensi
+#   - Sales Invoice, Button Addjust taxes jika tipe invoice retensi
 #0.3.1:
 #   - Sales Invoice: Tambah get_items ketika tipe invoice pilih Down Payment
 #0.3.0:
