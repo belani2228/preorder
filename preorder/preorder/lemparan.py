@@ -154,7 +154,7 @@ def get_items_tampungan(source_name, target_doc=None):
 def get_delivery_note(inquiry):
     if inquiry:
         dn_list = []
-        invoice_list = frappe.db.sql("""select `name`, posting_date, net_total from `tabDelivery Note` where docstatus = '1' and inquiry = %s""", inquiry, as_dict=True)
+        invoice_list = frappe.db.sql("""select `name`, posting_date, net_total from `tabDelivery Note` where docstatus = '1' and inquiry = %s and sales_invoice is null""", inquiry, as_dict=True)
         for d in invoice_list:
             dn_list.append(frappe._dict({
                 'delivery_note': d.name,

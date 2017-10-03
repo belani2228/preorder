@@ -105,4 +105,13 @@ def cancel_purchase_order(doc, method):
             frappe.db.sql("""update `tabSales Order Item` set po_no = null where `name` = %s""", row.sales_order_item)
 
 def submit_sales_invoice(doc, method):
-    pass
+    if doc.type_of_invoice == 'Pelunasan':
+        dn = frappe.db.sql("""select * from `tabSales Invoice DN` where parent = %s""", doc.name, as_dict=1)
+        for d in dn:
+            frappe.db.sql("""update `tabDelivery Note` set sales_invoice = %s where `name` = %s""", (doc.name, d.delivery_note))
+
+def cancel_sales_invoice(doc, method):
+    if doc.type_of_invoice == 'Pelunasan':
+        dn = frappe.db.sql("""select * from `tabSales Invoice DN` where parent = %s""", doc.name, as_dict=1)
+        for d in dn:
+            frappe.db.sql("""update `tabDelivery Note` set sales_invoice = null where `name` = %s""", d.delivery_note)

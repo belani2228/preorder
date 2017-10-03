@@ -10,6 +10,7 @@ app_icon = "octicon octicon-diff"
 app_color = "#FF686B"
 app_email = "develop@ridhosribumi.com"
 app_license = "GNU General Public License"
+fixtures = ["Custom Field","Custom Script"]
 
 # Includes in <head>
 # ------------------
