@@ -102,8 +102,9 @@ doc_events = {
 		"before_cancel": "preorder.preorder.operan.cancel_purchase_order"
 	},
 	"Sales Invoice": {
-		"on_submit": "preorder.preorder.operan.submit_sales_invoice"
-	},
+		"on_submit": "preorder.preorder.operan.submit_sales_invoice",
+		"before_cancel": "preorder.preorder.operan.cancel_sales_invoice"
+	}
 }
 # doc_events = {
 # 	"*": {
