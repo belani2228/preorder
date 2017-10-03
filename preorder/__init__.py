@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.3.4'
+__version__ = '0.3.5'
 
+#0.3.5:
+#   - Update fixture
 #0.3.4:
 #   - Fix sales invoice dp, progress payment, pelunasan & retensi
 #0.3.3:

@@ -3824,7 +3824,7 @@
   "modified": "2017-09-18 12:01:50.914757", 
   "name": "Sales Invoice-type_of_invoice", 
   "no_copy": 0, 
-  "options": "\nStandard\nDown Payment\nProgress Payment\nPelunasan\nRetensi", 
+  "options": "\nStandard\nDown Payment\nProgress Payment\nPelunasan\nRetensi\nPelunasan non Project", 
   "permlevel": 0, 
   "precision": "", 
   "print_hide": 0, 
