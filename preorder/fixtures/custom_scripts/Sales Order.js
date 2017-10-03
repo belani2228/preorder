@@ -1,3 +1,4 @@
+/*
 frappe.ui.form.on("Sales Order", "refresh", function(frm) {
     if(frm.doc.docstatus==1){
 	cur_frm.add_custom_button(__('Purchase Order'), cur_frm.cscript['Purchase Order'], __("Make"));
@@ -9,7 +10,7 @@ cur_frm.cscript['Purchase Order'] = function() {
 		method: "preorder.preorder.lemparan.make_purchase_order",
 		frm: cur_frm
 	})
-}
+}*/
 frappe.ui.form.on("Sales Order", "refresh", function(frm, cdt, cdn) {
     var tbl = frm.doc.items || [];
     var i = tbl.length;
