@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.3.5'
+__version__ = '0.3.6'
 
+#0.3.6:
+#   - Add down payment partial in sales invoice
 #0.3.5:
 #   - Update fixture
 #0.3.4:
