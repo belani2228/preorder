@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.3.7'
+__version__ = '0.3.8'
 
+#0.3.8:
+#   - Update Purchase Order, Purchase Receipt, Purchase Invoice custom script
 #0.3.7:
 #   - Update related document in inquiry
 #   - Set null in sales invoice unnecessary field if type of invoice has change

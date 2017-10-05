@@ -83,14 +83,6 @@ def cancel_supplier_quotation(doc, method):
                 frappe.db.sql("""update `tabInquiry` set sq = 'No' where `name` = %s""", i)
 
 def submit_sales_order(doc, method):
-    items = frappe.db.sql("""select * from `tabSales Order Item` where parent = %s""", doc.name, as_dict=1)
-    for row in items:
-        if row.gunakan_1:
-            frappe.db.sql("""update `tabSales Order Item` set selected_supplier = %s, approved_price = %s where `name` = %s""", (row.supplier_1, row.rate_1, row.name))
-        if row.gunakan_2:
-            frappe.db.sql("""update `tabSales Order Item` set selected_supplier = %s, approved_price = %s where `name` = %s""", (row.supplier_2, row.rate_2, row.name))
-        if row.gunakan_3:
-            frappe.db.sql("""update `tabSales Order Item` set selected_supplier = %s, approved_price = %s where `name` = %s""", (row.supplier_3, row.rate_3, row.name))
     if doc.inquiry:
         total_so = frappe.db.sql("""select sum(net_total) from `tabSales Order` where docstatus = '1' and inquiry = %s""", doc.inquiry)[0][0]
         frappe.db.sql("""update `tabInquiry` set nominal_sales_order = %s where `name` = %s""", (total_so, doc.inquiry))
@@ -99,18 +91,6 @@ def cancel_sales_order(doc, method):
     if doc.inquiry:
         total_so = frappe.db.sql("""select sum(net_total) from `tabSales Order` where docstatus = '1' and inquiry = %s and `name` != %s""", (doc.inquiry, doc.name))[0][0]
         frappe.db.sql("""update `tabInquiry` set nominal_sales_order = %s where `name` = %s""", (total_so, doc.inquiry))
-
-def submit_purchase_order(doc, method):
-    items = frappe.db.sql("""select * from `tabPurchase Order Item` where parent = %s""", doc.name, as_dict=1)
-    for row in items:
-        if row.sales_order_item:
-            frappe.db.sql("""update `tabSales Order Item` set po_no = %s where `name` = %s""", (doc.name, row.sales_order_item))
-
-def cancel_purchase_order(doc, method):
-    items = frappe.db.sql("""select * from `tabPurchase Order Item` where parent = %s""", doc.name, as_dict=1)
-    for row in items:
-        if row.sales_order_item:
-            frappe.db.sql("""update `tabSales Order Item` set po_no = null where `name` = %s""", row.sales_order_item)
 
 def submit_sales_invoice(doc, method):
     if doc.type_of_invoice == 'Standard':
@@ -143,3 +123,32 @@ def cancel_sales_invoice(doc, method):
         frappe.db.sql("""update `tabInquiry` set nominal_sales_invoice = %s where `name` = %s""", (total_so, doc.inquiry))
         total_so = frappe.db.sql("""select nominal_sales_order from `tabInquiry` where docstatus = '1' and `name` = %s""", doc.inquiry)[0][0]
         frappe.db.sql("""update `tabInquiry` set status = 'Submitted' where `name` = %s""", doc.inquiry)
+
+def submit_purchase_order(doc, method):
+    items = frappe.db.sql("""select * from `tabPurchase Order Item` where parent = %s""", doc.name, as_dict=1)
+    for row in items:
+        if row.sales_order_item:
+            frappe.db.sql("""update `tabSales Order Item` set po_no = %s where `name` = %s""", (doc.name, row.sales_order_item))
+
+def cancel_purchase_order(doc, method):
+    items = frappe.db.sql("""select * from `tabPurchase Order Item` where parent = %s""", doc.name, as_dict=1)
+    for row in items:
+        if row.sales_order_item:
+            frappe.db.sql("""update `tabSales Order Item` set po_no = null where `name` = %s""", row.sales_order_item)
+
+def submit_purchase_receipt(doc, method):
+    po = frappe.db.sql("""select purchase_order from `tabPurchase Receipt Item` where parent = %s and purchase_order is not null order by idx asc limit 1""", doc.name)[0][0]
+    if po:
+        frappe.db.sql("""update `tabPurchase Receipt` set purchase_order = %s where `name` = %s""", (po, doc.name))
+
+def submit_purchase_invoice(doc, method):
+    if doc.type_of_invoice == "Payment":
+        pr = frappe.db.sql("""select purchase_receipt from `tabPurchase Invoice PR` where parent = %s""", doc.name, as_dict=1)
+        for row in pr:
+            frappe.db.sql("""update `tabPurchase Receipt` set invoice_payment = %s where `name` = %s""", (doc.name, row.purchase_receipt))
+
+def cancel_purchase_invoice(doc, method):
+    if doc.type_of_invoice == "Payment":
+        pr = frappe.db.sql("""select purchase_receipt from `tabPurchase Invoice PR` where parent = %s""", doc.name, as_dict=1)
+        for row in pr:
+            frappe.db.sql("""update `tabPurchase Receipt` set invoice_payment = null where `name` = %s""", row.purchase_receipt)

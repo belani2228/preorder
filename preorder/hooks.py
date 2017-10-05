@@ -99,13 +99,20 @@ doc_events = {
 		"on_submit": "preorder.preorder.operan.submit_sales_order",
 		"before_cancel": "preorder.preorder.operan.cancel_sales_order"
 	},
+	"Sales Invoice": {
+		"on_submit": "preorder.preorder.operan.submit_sales_invoice",
+		"before_cancel": "preorder.preorder.operan.cancel_sales_invoice"
+	},
 	"Purchase Order": {
 		"on_submit": "preorder.preorder.operan.submit_purchase_order",
 		"before_cancel": "preorder.preorder.operan.cancel_purchase_order"
 	},
-	"Sales Invoice": {
-		"on_submit": "preorder.preorder.operan.submit_sales_invoice",
-		"before_cancel": "preorder.preorder.operan.cancel_sales_invoice"
+	"Purchase Receipt": {
+		"on_submit": "preorder.preorder.operan.submit_purchase_receipt",
+	},
+	"Purchase Invoice": {
+		"on_submit": "preorder.preorder.operan.submit_purchase_invoice",
+		"before_cancel": "preorder.preorder.operan.cancel_purchase_invoice"
 	}
 }
 # doc_events = {
