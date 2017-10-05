@@ -91,6 +91,14 @@ def submit_sales_order(doc, method):
             frappe.db.sql("""update `tabSales Order Item` set selected_supplier = %s, approved_price = %s where `name` = %s""", (row.supplier_2, row.rate_2, row.name))
         if row.gunakan_3:
             frappe.db.sql("""update `tabSales Order Item` set selected_supplier = %s, approved_price = %s where `name` = %s""", (row.supplier_3, row.rate_3, row.name))
+    if doc.inquiry:
+        total_so = frappe.db.sql("""select sum(net_total) from `tabSales Order` where docstatus = '1' and inquiry = %s""", doc.inquiry)[0][0]
+        frappe.db.sql("""update `tabInquiry` set nominal_sales_order = %s where `name` = %s""", (total_so, doc.inquiry))
+
+def cancel_sales_order(doc, method):
+    if doc.inquiry:
+        total_so = frappe.db.sql("""select sum(net_total) from `tabSales Order` where docstatus = '1' and inquiry = %s and `name` != %s""", (doc.inquiry, doc.name))[0][0]
+        frappe.db.sql("""update `tabInquiry` set nominal_sales_order = %s where `name` = %s""", (total_so, doc.inquiry))
 
 def submit_purchase_order(doc, method):
     items = frappe.db.sql("""select * from `tabPurchase Order Item` where parent = %s""", doc.name, as_dict=1)
@@ -105,17 +113,33 @@ def cancel_purchase_order(doc, method):
             frappe.db.sql("""update `tabSales Order Item` set po_no = null where `name` = %s""", row.sales_order_item)
 
 def submit_sales_invoice(doc, method):
-    if doc.type_of_invoice == 'Down Payment':
+    if doc.type_of_invoice == 'Standard':
+        frappe.db.sql("""update `tabSales Invoice` set sales_order = null, delivery_note = null where `name` = %s""", doc.name)
+    elif doc.type_of_invoice == 'Down Payment':
         frappe.db.sql("""update `tabSales Order` set down_payment = %s where `name` = %s""", (doc.name, doc.sales_order))
-    if doc.type_of_invoice == 'Pelunasan':
+        frappe.db.sql("""update `tabSales Invoice` set delivery_note = null where `name` = %s""", doc.name)
+    elif doc.type_of_invoice == 'Progress Payment':
+        frappe.db.sql("""update `tabSales Invoice` set sales_order = null where `name` = %s""", doc.name)
+    elif doc.type_of_invoice == 'Payment':
         dn = frappe.db.sql("""select * from `tabSales Invoice DN` where parent = %s""", doc.name, as_dict=1)
         for d in dn:
             frappe.db.sql("""update `tabDelivery Note` set sales_invoice = %s where `name` = %s""", (doc.name, d.delivery_note))
+    if doc.inquiry:
+        total_si = frappe.db.sql("""select sum(net_total)-sum(total_related_invoices) as nominal from `tabSales Invoice` where docstatus = '1' and inquiry = %s""", doc.inquiry)[0][0]
+        frappe.db.sql("""update `tabInquiry` set nominal_sales_invoice = %s where `name` = %s""", (total_si, doc.inquiry))
+        total_so = frappe.db.sql("""select nominal_sales_order from `tabInquiry` where docstatus = '1' and `name` = %s""", doc.inquiry)[0][0]
+        if flt(total_so) == flt(total_si):
+            frappe.db.sql("""update `tabInquiry` set status = 'Completed' where `name` = %s""", doc.inquiry)
 
 def cancel_sales_invoice(doc, method):
     if doc.type_of_invoice == 'Down Payment':
         frappe.db.sql("""update `tabSales Order` set down_payment = null where `name` = %s""", doc.sales_order)
-    if doc.type_of_invoice == 'Pelunasan':
+    elif doc.type_of_invoice == 'Payment':
         dn = frappe.db.sql("""select * from `tabSales Invoice DN` where parent = %s""", doc.name, as_dict=1)
         for d in dn:
             frappe.db.sql("""update `tabDelivery Note` set sales_invoice = null where `name` = %s""", d.delivery_note)
+    if doc.inquiry:
+        total_so = frappe.db.sql("""select sum(net_total)-sum(total_related_invoices) as nominal from `tabSales Invoice` where docstatus = '1' and inquiry = %s and `name` != %s""", (doc.inquiry, doc.name))[0][0]
+        frappe.db.sql("""update `tabInquiry` set nominal_sales_invoice = %s where `name` = %s""", (total_so, doc.inquiry))
+        total_so = frappe.db.sql("""select nominal_sales_order from `tabInquiry` where docstatus = '1' and `name` = %s""", doc.inquiry)[0][0]
+        frappe.db.sql("""update `tabInquiry` set status = 'Submitted' where `name` = %s""", doc.inquiry)

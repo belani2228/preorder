@@ -45,39 +45,29 @@ def get_items_selling_quotation(source_name, target_doc=None):
 
 @frappe.whitelist()
 def get_items_from_sales_order(source_name, target_doc=None):
-    if target_doc:
-        if isinstance(target_doc, basestring):
-            import json
-            target_doc = frappe.get_doc(json.loads(target_doc))
-        target_doc.set("items", [])
+    doc = get_mapped_doc("Sales Order", source_name, {
+    	"Sales Order": {
+    		"doctype": "Purchase Order",
+    		"validation": {
+    			"docstatus": ["=", 1],
+    		},
+            "field_no_map": [
+                "contact_person", "contact_display"
+            ],
+    	},
+    	"Sales Order Item": {
+    		"doctype": "Purchase Order Item",
+    		"field_map":{
+    			"name": "sales_order_item"
+    		},
+            "field_no_map": [
+                "price_list_rate", "rate", "amount"
+            ],
+			"add_if_empty": True
+    	},
+    }, target_doc)
 
-    komponen = frappe.db.sql_list("""select distinct(so.`name`) from `tabSales Order Item` soi inner join `tabSales Order` so on soi.parent = so.`name` where so.docstatus = '1' and soi.selected_supplier = %s""", source_name)
-    if komponen:
-        for d in komponen:
-        	si = get_mapped_doc("Sales Order", d, {
-        		"Sales Order": {
-        			"doctype": "Purchase Order",
-        			"validation": {
-        				"docstatus": ["=", 1],
-                    },
-                    "field_no_map": [
-                        "customer", "customer_name", "address_display", "shipping_address", "total", "grand_total"
-                    ],
-        		},
-        		"Sales Order Item": {
-        			"doctype": "Purchase Order Item",
-                    "field_map": {
-                        "item_description": "description",
-                        "parent": "sales_order",
-                        "name": "sales_order_item",
-                        "approved_price": "rate"
-                    },
-                    "condition":lambda doc: doc.po_no is None and doc.selected_supplier == source_name
-        		},
-        	}, target_doc)
-        return si
-    else:
-        msgprint(_("No Inquiry found for this supplier"))
+    return doc
 
 @frappe.whitelist()
 def make_purchase_order(source_name, target_doc=None):
@@ -212,13 +202,17 @@ def get_items_from_pelunasan(source_name, target_doc=None):
 def get_sales_invoice(inquiry, tipe, net_total):
     if inquiry:
         si_list = []
-        invoice_list = frappe.db.sql("""select `name`, posting_date, net_total from `tabSales Invoice` where docstatus = '1' and inquiry = %s""", inquiry, as_dict=True)
+        if tipe == 'Non Project Payment':
+            invoice_list = frappe.db.sql("""select `name`, posting_date, net_total from `tabSales Invoice` where docstatus = '1' and type_of_invoice = 'Down Payment' and inquiry = %s""", inquiry, as_dict=True)
+        else:
+            invoice_list = frappe.db.sql("""select `name`, posting_date, net_total from `tabSales Invoice` where docstatus = '1' and inquiry = %s""", inquiry, as_dict=True)
         for d in invoice_list:
-            total_so = frappe.db.sql("""select net_total from `tabSales Order` where docstatus = '1' and inquiry = %s""", inquiry)[0][0]
+            total_so = frappe.db.sql("""select net_total from `tabSales Order` where docstatus = '1' and inquiry = %s""", nquiry)[0][0]
             alokasi = (flt(net_total) / flt(total_so)) * flt(d.net_total)
-            si_list.append(frappe._dict({
-                'sales_invoice': d.name,
-                'posting_date': d.posting_date,
-                'net_total': alokasi
-            }))
+            if alokasi >= 1:
+                si_list.append(frappe._dict({
+                    'sales_invoice': d.name,
+                    'posting_date': d.posting_date,
+                    'net_total': alokasi
+                }))
         return si_list

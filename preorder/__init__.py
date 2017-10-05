@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.3.6'
+__version__ = '0.3.7'
 
+#0.3.7:
+#   - Update related document in inquiry
+#   - Set null in sales invoice unnecessary field if type of invoice has change
+#   - Partial down payment when type of invoice sales invoice is non project payment
+#   - Add purchase.py for accommodate all documents related to purchase
 #0.3.6:
 #   - Add down payment partial in sales invoice
 #0.3.5:
