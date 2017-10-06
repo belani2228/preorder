@@ -6,6 +6,37 @@ from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
 
 @frappe.whitelist()
+def make_purchase_order(source_name, target_doc=None):
+	def set_missing_values(source, target):
+		target.ignore_pricing_rule = 1
+		target.run_method("set_missing_values")
+		target.run_method("get_schedule_dates")
+		target.run_method("calculate_taxes_and_totals")
+
+	def update_item(obj, target, source_parent):
+		target.stock_qty = flt(obj.qty) * flt(obj.conversion_factor)
+
+	doclist = get_mapped_doc("Sales Order", source_name, {
+		"Sales Order": {
+			"doctype": "Purchase Order",
+			"validation": {
+				"docstatus": ["=", 1],
+			}
+		},
+		"Sales Order Item": {
+			"doctype": "Purchase Order Item",
+			"field_map": [
+				["name", "sales_order_item"],
+				["parent", "sales_order"],
+			],
+            "condition":lambda doc: doc.po_no is None,
+			"postprocess": update_item
+		},
+	}, target_doc, set_missing_values)
+
+	return doclist
+
+@frappe.whitelist()
 def get_po_items(source_name, target_doc=None):
     invoice_type,related_doc,percent = source_name.split("|")
     if target_doc:
@@ -13,6 +44,7 @@ def get_po_items(source_name, target_doc=None):
             import json
             target_doc = frappe.get_doc(json.loads(target_doc))
         target_doc.set("items", [])
+        target_doc.set("taxes", [])
 
     def update_item(source, target, source_parent):
         item_dp = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_dp'""")[0][0]

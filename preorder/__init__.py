@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.3.8'
+__version__ = '0.3.9'
 
+#0.3.9:
+#   - Add get items from sales order in purchase order
+#   - Minor fix purchase invoice DP taxes
 #0.3.8:
 #   - Update Purchase Order, Purchase Receipt, Purchase Invoice custom script
 #0.3.7:

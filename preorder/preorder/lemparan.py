@@ -200,19 +200,18 @@ def get_items_from_pelunasan(source_name, target_doc=None):
 
 @frappe.whitelist()
 def get_sales_invoice(inquiry, tipe, net_total):
-    if inquiry:
-        si_list = []
-        if tipe == 'Non Project Payment':
-            invoice_list = frappe.db.sql("""select `name`, posting_date, net_total from `tabSales Invoice` where docstatus = '1' and type_of_invoice = 'Down Payment' and inquiry = %s""", inquiry, as_dict=True)
-        else:
-            invoice_list = frappe.db.sql("""select `name`, posting_date, net_total from `tabSales Invoice` where docstatus = '1' and inquiry = %s""", inquiry, as_dict=True)
-        for d in invoice_list:
-            total_so = frappe.db.sql("""select net_total from `tabSales Order` where docstatus = '1' and inquiry = %s""", nquiry)[0][0]
-            alokasi = (flt(net_total) / flt(total_so)) * flt(d.net_total)
-            if alokasi >= 1:
-                si_list.append(frappe._dict({
-                    'sales_invoice': d.name,
-                    'posting_date': d.posting_date,
-                    'net_total': alokasi
-                }))
-        return si_list
+    si_list = []
+    if tipe == 'Non Project Payment':
+        invoice_list = frappe.db.sql("""select `name`, posting_date, net_total from `tabSales Invoice` where docstatus = '1' and type_of_invoice = 'Down Payment' and inquiry = %s""", inquiry, as_dict=True)
+    else:
+        invoice_list = frappe.db.sql("""select `name`, posting_date, net_total from `tabSales Invoice` where docstatus = '1' and inquiry = %s""", inquiry, as_dict=True)
+    for d in invoice_list:
+        total_so = frappe.db.sql("""select net_total from `tabSales Order` where docstatus = '1' and inquiry = %s""", inquiry)[0][0]
+        alokasi = (flt(net_total) / flt(total_so)) * flt(d.net_total)
+        if alokasi >= 1:
+            si_list.append(frappe._dict({
+                'sales_invoice': d.name,
+                'posting_date': d.posting_date,
+                'net_total': alokasi
+            }))
+    return si_list
