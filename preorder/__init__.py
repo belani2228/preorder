@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.3.9'
+__version__ = '0.4.0'
 
+#0.4.0:
+#   - Percentage should not be greater than 100 or less than 0 in Purchase Invoice
+#   - Adjustment taxes and charges in Purchase Invoice if taxes is exist
 #0.3.9:
 #   - Add get items from sales order in purchase order
 #   - Minor fix purchase invoice DP taxes
