@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.4.1'
+__version__ = '0.4.2'
 
+#0.4.2:
+#   - Add Urgency Level on Inquiry
 #0.4.1:
 #   - Minor fix in Purchase Invoice custom script
 #0.4.0:

@@ -15,6 +15,7 @@ def make_purchase_order(source_name, target_doc=None):
 
 	def update_item(obj, target, source_parent):
 		target.stock_qty = flt(obj.qty) * flt(obj.conversion_factor)
+		target.rate = 0
 
 	doclist = get_mapped_doc("Sales Order", source_name, {
 		"Sales Order": {
@@ -29,7 +30,7 @@ def make_purchase_order(source_name, target_doc=None):
 				["name", "sales_order_item"],
 				["parent", "sales_order"],
 			],
-            "condition":lambda doc: doc.po_no is None,
+			"field_no_map":["price_list_rate", "rate", "amount", "net_rate", "net_amount"],
 			"postprocess": update_item
 		},
 	}, target_doc, set_missing_values)
