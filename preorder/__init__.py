@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.4.2'
+__version__ = '0.4.3'
 
+#0.4.3:
+#   - Write off account in sales invoice & purchase invoice now automatic when type_of_invoice: Retention or Non Project Payment
+#   - Update doctype Item Settings
+#   - Sales Order tidak bisa save jika masih ada item tampungan
 #0.4.2:
 #   - Add Urgency Level on Inquiry
 #0.4.1:

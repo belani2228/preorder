@@ -82,6 +82,11 @@ def cancel_supplier_quotation(doc, method):
             else:
                 frappe.db.sql("""update `tabInquiry` set sq = 'No' where `name` = %s""", i)
 
+def validate_sales_order(doc, method):
+    for i in doc.items:
+        if i.item_code == 'Tampungan':
+            frappe.throw(_("Please change the item to the actual item"))
+
 def submit_sales_order(doc, method):
     if doc.inquiry:
         total_so = frappe.db.sql("""select sum(net_total) from `tabSales Order` where docstatus = '1' and inquiry = %s""", doc.inquiry)[0][0]

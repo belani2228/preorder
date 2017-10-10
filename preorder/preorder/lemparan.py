@@ -214,4 +214,5 @@ def get_sales_invoice(inquiry, tipe, net_total):
                 'posting_date': d.posting_date,
                 'net_total': alokasi
             }))
+
     return si_list

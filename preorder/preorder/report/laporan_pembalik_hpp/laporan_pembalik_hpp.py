@@ -12,7 +12,7 @@ def execute(filters=None):
 	data = []
 
 	for ri in sl_entries:
-		data.append([ri.name, ri.net_total, ri.hpp])
+		data.append([ri.dn_date, ri.delivery, ri.dn_total, ri.hpp, ri.si_date, ri.no_si, ri.si_total])
 
 	return columns, data
 
@@ -20,9 +20,13 @@ def get_columns():
 	"""return columns"""
 
 	columns = [
+		_("Tgl DN")+":Date:100",
 		_("No DN")+":Link/Delivery Note:100",
 		_("Nilai DN")+":Currency:100",
 		_("HPP")+":Currency:100",
+		_("Tgl SI")+":Date:100",
+		_("No SI")+":Link/Sales Invoice:100",
+		_("Nilai SI")+":Currency:100",
 	]
 
 	return columns
@@ -39,4 +43,4 @@ def get_conditions(filters):
 
 def get_entries(filters):
 	conditions = get_conditions(filters)
-	return frappe.db.sql("""select dn.`name`, dn.net_total, (select sum(valuation_rate) from `tabStock Ledger Entry` WHERE voucher_no = dn.`name`) as hpp FROM `tabDelivery Note` dn where dn.docstatus = '1' %s order by `name` asc""" % conditions, as_dict=1)
+	return frappe.db.sql("""select dn.posting_date as dn_date, dn.`name` as delivery, dn.net_total as dn_total, (select sum(valuation_rate) from `tabStock Ledger Entry` where voucher_no = dn.`name`) as hpp, si.posting_date as si_date, si.`name` as no_si, si.net_total as si_total from `tabDelivery Note` dn left join `tabSales Invoice` si on dn.inquiry = si.inquiry and si.docstatus = '1' and si.type_of_invoice in ('Retention', 'Non Project Payment') where dn.docstatus = '1' %s order by dn.`name` asc""" % conditions, as_dict=1)
