@@ -4,6 +4,20 @@
 frappe.ui.form.on('Item Settings', {
 	refresh: function(frm) {
 
+	},
+	default_item_for_inquiry: function(frm){
+		frappe.call({
+			method: "frappe.client.get",
+			args: {
+					doctype: "Item",
+					name: frm.doc.default_item_for_inquiry,
+			},
+			callback: function (data) {
+					frm.set_value("inquiry_item_name", data.message.item_name);
+					frm.set_value("inquiry_item_descrition", data.message.description);
+					frm.set_value("inquiry_item_uom", data.message.stock_uom);
+			}
+		})
 	}
 });
 cur_frm.fields_dict.selling_write_off_account.get_query = function(doc) {

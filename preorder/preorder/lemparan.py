@@ -21,9 +21,9 @@ def get_items_selling_quotation(source_name, target_doc=None):
             target_doc.set("items", [])
 
         def update_item(source, target, source_parent):
-            target.item_code = "Tampungan"
-            target.item_name = "Tampungan"
-            target.description = "Tampungan"
+            target.item_code = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_inquiry'""")[0][0]
+            target.item_name = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'inquiry_item_name'""")[0][0]
+            target.description = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'inquiry_item_descrition'""")[0][0]
 
         doc = get_mapped_doc("Inquiry", source_name, {
     		"Inquiry": {

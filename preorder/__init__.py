@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.4.3'
+__version__ = '0.4.4'
 
+#0.4.4:
+#   - Menghubungkan Item Settings dengan Quotation Item
 #0.4.3:
 #   - Write off account in sales invoice & purchase invoice now automatic when type_of_invoice: Retention or Non Project Payment
 #   - Update doctype Item Settings
