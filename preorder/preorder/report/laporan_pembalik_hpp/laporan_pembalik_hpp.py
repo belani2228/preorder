@@ -12,7 +12,25 @@ def execute(filters=None):
 	data = []
 
 	for ri in sl_entries:
-		data.append([ri.dn_date, ri.delivery, ri.dn_total, ri.hpp, ri.si_date, ri.no_si, ri.si_total])
+		if ri.dn_date:
+			a_dn_date = ri.dn_date.strftime("%B %Y")
+		else:
+			a_dn_date = ""
+		if ri.si_date:
+			a_si_date = ri.si_date.strftime("%B %Y")
+		else:
+			a_si_date = ""
+		if ri.delivery and ri.no_si:
+			if a_dn_date == a_si_date:
+				check = "&#10004;"
+			else:
+				if ri.jv_name and ri.re_name:
+					check = "&#10004;"
+				else:
+					check = ""
+		else:
+			check = ""
+		data.append([a_dn_date, ri.delivery, ri.dn_total, ri.hpp, a_si_date, ri.no_si, ri.si_total, ri.jv_date, ri.jv_name, ri.re_date, ri.re_name, check])
 
 	return columns, data
 
@@ -20,13 +38,18 @@ def get_columns():
 	"""return columns"""
 
 	columns = [
-		_("Tgl DN")+":Date:100",
+		_("Tgl DN")+"::100",
 		_("No DN")+":Link/Delivery Note:100",
 		_("Nilai DN")+":Currency:100",
 		_("HPP")+":Currency:100",
-		_("Tgl SI")+":Date:100",
+		_("Tgl SI")+"::100",
 		_("No SI")+":Link/Sales Invoice:100",
 		_("Nilai SI")+":Currency:100",
+		_("Tgl JV")+"::100",
+		_("No JV")+":Link/Journal Entry:100",
+		_("Tgl RJV")+"::100",
+		_("No RJV")+":Link/Journal Entry:100",
+		_("Check")+"::50",
 	]
 
 	return columns
@@ -43,4 +66,4 @@ def get_conditions(filters):
 
 def get_entries(filters):
 	conditions = get_conditions(filters)
-	return frappe.db.sql("""select dn.posting_date as dn_date, dn.`name` as delivery, dn.net_total as dn_total, (select sum(valuation_rate) from `tabStock Ledger Entry` where voucher_no = dn.`name`) as hpp, si.posting_date as si_date, si.`name` as no_si, si.net_total as si_total from `tabDelivery Note` dn left join `tabSales Invoice` si on dn.inquiry = si.inquiry and si.docstatus = '1' and si.type_of_invoice in ('Retention', 'Non Project Payment') where dn.docstatus = '1' %s order by dn.`name` asc""" % conditions, as_dict=1)
+	return frappe.db.sql("""select dn.posting_date as dn_date, dn.`name` as delivery, dn.net_total as dn_total, (select sum(valuation_rate) from `tabStock Ledger Entry` where voucher_no = dn.`name`) as hpp, si.posting_date as si_date, si.`name` as no_si, si.net_total as si_total, je.posting_date as jv_date, je.`name` as jv_name, re.posting_date as re_date, re.`name` as re_name from `tabDelivery Note` dn left join `tabSales Invoice` si on dn.inquiry = si.inquiry and si.docstatus = '1' and si.type_of_invoice in ('Retention', 'Non Project Payment') left join `tabJournal Entry` je on dn.`name` = je.delivery_note and je.docstatus = '1' and je.reversing_entry = '0' left join `tabJournal Entry` re on dn.`name` = re.delivery_note and re.docstatus = '1' and re.reversing_entry = '1' where dn.docstatus = '1' and dn.inquiry is not null %s order by dn.`name` asc""" % conditions, as_dict=1)

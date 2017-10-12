@@ -160,3 +160,17 @@ def cancel_purchase_invoice(doc, method):
         pr = frappe.db.sql("""select purchase_receipt from `tabPurchase Invoice PR` where parent = %s""", doc.name, as_dict=1)
         for row in pr:
             frappe.db.sql("""update `tabPurchase Receipt` set invoice_payment = null where `name` = %s""", row.purchase_receipt)
+
+def submit_journal_entry(doc, method):
+    if doc.delivery_note:
+        if doc.reversing_entry:
+            frappe.db.sql("""update `tabDelivery Note` set reversing_entry = %s where `name` = %s""", (doc.name, doc.delivery_note))
+        else:
+            frappe.db.sql("""update `tabDelivery Note` set journal_entry = %s where `name` = %s""", (doc.name, doc.delivery_note))
+
+def cancel_journal_entry(doc, method):
+    if doc.delivery_note:
+        if doc.reversing_entry:
+            frappe.db.sql("""update `tabDelivery Note` set reversing_entry = null where `name` = %s""", doc.delivery_note)
+        else:
+            frappe.db.sql("""update `tabDelivery Note` set journal_entry = null where `name` = %s""", doc.delivery_note)

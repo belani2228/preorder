@@ -216,3 +216,60 @@ def get_sales_invoice(inquiry, tipe, net_total):
             }))
 
     return si_list
+
+@frappe.whitelist()
+def make_journal_entry(source_name, target_doc=None):
+	def set_missing_values(source, target):
+		target.run_method("set_missing_values")
+
+	jv = get_mapped_doc("Delivery Note", source_name, {
+		"Delivery Note": {
+			"doctype": "Journal Entry",
+    		"field_map":{
+    			"posting_date": "posting_date"
+    		},
+		},
+	}, target_doc, set_missing_values)
+	return jv
+
+@frappe.whitelist()
+def make_reverse_journal(source_name, target_doc=None):
+	def set_missing_values(source, target):
+		target.reversing_entry = 1
+		target.run_method("set_missing_values")
+
+	jv = get_mapped_doc("Journal Entry", source_name, {
+		"Journal Entry": {
+			"doctype": "Journal Entry",
+    		"field_map":{
+    			"posting_date": "posting_date"
+    		},
+		},
+		"Journal Entry Account": {
+			"doctype": "Journal Entry Account",
+    		"field_map":{
+				"credit_in_account_currency": "debit_in_account_currency",
+                "debit_in_account_currency": "credit_in_account_currency",
+    		},
+		},
+	}, target_doc, set_missing_values)
+	return jv
+
+@frappe.whitelist()
+def get_amount(dn):
+    dn_list = []
+    list1 = frappe.db.sql("""select sum(valuation_rate) as debit from `tabStock Ledger Entry` where voucher_no = %s""", dn, as_dict=True)
+    for d in list1:
+        dn_list.append(frappe._dict({
+            'party_type': 'Customer',
+            'debit': d.debit,
+            'credit': ''
+        }))
+    list2 = frappe.db.sql("""select sum(valuation_rate) as credit from `tabStock Ledger Entry` where voucher_no = %s""", dn, as_dict=True)
+    for d in list2:
+        dn_list.append(frappe._dict({
+            'party_type': 'Customer',
+            'debit': '',
+            'credit': d.credit
+        }))
+    return dn_list

@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.4.4'
+__version__ = '0.4.5'
 
+#0.4.5:
+#   - Add Laporan Pembalik HPP
+#   - Update Delivery Note utk membuat Journal Entry
+#   - Update Journal Entry utk menampung Reversing Entry
+#   - Update hooks.py
 #0.4.4:
 #   - Menghubungkan Item Settings dengan Quotation Item
 #0.4.3:

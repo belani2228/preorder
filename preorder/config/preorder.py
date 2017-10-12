@@ -27,5 +27,16 @@ def get_data():
 					"description": _("Item Settings")
 				},
 			]
-		}
+		},
+		{
+			"label": _("Report"),
+			"items": [
+				{
+					"type": "report",
+					"name": "Laporan Pembalik HPP",
+					"doctype": "Delivery Note",
+					"is_query_report": True
+				},
+			]
+		},
 	]
