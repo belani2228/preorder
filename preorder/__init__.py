@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.4.5'
+__version__ = '0.4.6'
 
+#0.4.6:
+#   - Minor update on sales invoice write off account
 #0.4.5:
 #   - Add Laporan Pembalik HPP
 #   - Update Delivery Note utk membuat Journal Entry
