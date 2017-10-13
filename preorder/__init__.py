@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.4.7'
+__version__ = '0.4.8'
 
+#0.4.8:
+#   - Remove Get Items in Request for Supplier Quotation
+#   - Fix & update in Request for Supplier Quotation
 #0.4.7:
 #   - Fix buying write off account in Item Settings js
 #0.4.6:

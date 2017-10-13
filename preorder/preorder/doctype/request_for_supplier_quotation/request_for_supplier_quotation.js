@@ -63,6 +63,7 @@ cur_frm.cscript['Declare Order Lost'] = function(){
 	});
 	dialog.show();
 }
+/*
 frappe.ui.form.on("Request for Supplier Quotation", {
 	refresh: function() {
 		if(cur_frm.doc.docstatus == 0 || cur_frm.doc.__islocal){
@@ -83,6 +84,7 @@ frappe.ui.form.on("Request for Supplier Quotation", {
 		}
 	},
 });
+*/
 cur_frm.cscript['Supplier Quotation'] = function() {
 	frappe.model.open_mapped_doc({
 		method: "preorder.preorder.doctype.request_for_supplier_quotation.request_for_supplier_quotation.make_supplier_quotation",

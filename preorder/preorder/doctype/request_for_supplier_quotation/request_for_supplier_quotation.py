@@ -23,24 +23,27 @@ class RequestforSupplierQuotation(Document):
 		frappe.db.set(self, 'status', 'Cancelled')
 
 	def update_rfsq_inquiry(self):
+		temp_inquiry = []
+		for inq in self.inquiry_tbl:
+			temp_inquiry.append(inq.inquiry)
 		tampung = []
 		for row in self.items:
-			inquiry_id = frappe.db.get_value("Inquiry Item", row.inquiry_detail, "parent")
-			if inquiry_id not in tampung:
-				tampung.append(inquiry_id)
-				cek_inquiry_id = frappe.db.get_value("Request for Supplier Quotation Inquiry", {"parent": self.name, "inquiry": inquiry_id}, "name")
-				if not cek_inquiry_id:
-					inq = frappe.db.get_value("Inquiry", inquiry_id, ["customer", "customer_name"], as_dict=1)
-					doc = frappe.get_doc({
-						"doctype": "Request for Supplier Quotation Inquiry",
-						"parent": self.name,
-						"parentfield": "inquiry_tbl",
-						"parenttype": "Request for Supplier Quotation",
-						"inquiry": inquiry_id,
-						"customer": inq.customer,
-						"customer_name": inq.customer_name,
-						"transaction_date": self.transaction_date
-					}).insert()
+			if row.inquiry:
+				if row.inquiry not in tampung and row.inquiry not in temp_inquiry:
+					tampung.append(row.inquiry)
+					cek_inquiry_id = frappe.db.get_value("Request for Supplier Quotation Inquiry", {"parent": self.name, "inquiry": row.inquiry}, "name")
+					if not cek_inquiry_id:
+						inq = frappe.db.get_value("Inquiry", row.inquiry, ["customer", "customer_name", "transaction_date"], as_dict=1)
+						doc = frappe.get_doc({
+							"doctype": "Request for Supplier Quotation Inquiry",
+							"parent": self.name,
+							"parentfield": "inquiry_tbl",
+							"parenttype": "Request for Supplier Quotation",
+							"inquiry": row.inquiry,
+							"customer": inq.customer,
+							"customer_name": inq.customer_name,
+							"transaction_date": inq.transaction_date
+						}).insert()
 
 	def get_items(self):
 #		tampung = []
