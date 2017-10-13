@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.4.6'
+__version__ = '0.4.7'
 
+#0.4.7:
+#   - Fix buying write off account in Item Settings js
 #0.4.6:
 #   - Minor update on sales invoice write off account
 #0.4.5:
