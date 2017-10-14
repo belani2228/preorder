@@ -258,14 +258,14 @@ def make_reverse_journal(source_name, target_doc=None):
 @frappe.whitelist()
 def get_amount(dn):
     dn_list = []
-    list1 = frappe.db.sql("""select sum(valuation_rate) as debit from `tabStock Ledger Entry` where voucher_no = %s""", dn, as_dict=True)
+    list1 = frappe.db.sql("""select sum((actual_qty * -1) * valuation_rate) as debit from `tabStock Ledger Entry` where voucher_no = %s""", dn, as_dict=True)
     for d in list1:
         dn_list.append(frappe._dict({
             'party_type': 'Customer',
             'debit': d.debit,
             'credit': ''
         }))
-    list2 = frappe.db.sql("""select sum(valuation_rate) as credit from `tabStock Ledger Entry` where voucher_no = %s""", dn, as_dict=True)
+    list2 = frappe.db.sql("""select sum((actual_qty * -1) * valuation_rate) as credit from `tabStock Ledger Entry` where voucher_no = %s""", dn, as_dict=True)
     for d in list2:
         dn_list.append(frappe._dict({
             'party_type': 'Customer',

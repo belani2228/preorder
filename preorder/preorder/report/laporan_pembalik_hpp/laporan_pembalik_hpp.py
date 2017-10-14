@@ -30,7 +30,14 @@ def execute(filters=None):
 					check = ""
 		else:
 			check = ""
-		data.append([a_dn_date, ri.delivery, ri.dn_total, ri.hpp, a_si_date, ri.no_si, ri.si_total, ri.jv_date, ri.jv_name, ri.re_date, ri.re_name, check])
+		if ri.jv_name:
+			a_jv_date = ri.jv_date
+		else:
+			if a_dn_date != a_si_date and ri.no_si:
+				a_jv_date = "<a href='/desk#Form/Journal%20Entry/New%20Journal%20Entry%201?delivery_note="+ri.delivery+"&'>Make JV</a>"
+			else:
+				a_jv_date = ""
+		data.append([a_dn_date, ri.delivery, ri.dn_total, ri.hpp, a_si_date, ri.no_si, ri.si_total, a_jv_date, ri.jv_name, ri.re_date, ri.re_name, check])
 
 	return columns, data
 
@@ -58,12 +65,12 @@ def get_conditions(filters):
 	conditions = ""
 #	if filters.get("customer"):
 #		conditions += " and customer = '%s'" % frappe.db.escape(filters["customer"])
-#	if filters.get("from_date"):
+#	if filters.get("fiscal_year"):
 #		conditions += " and date >= '%s'" % frappe.db.escape(filters["from_date"])
-#	if filters.get("to_date"):
-#		conditions += " and date <= '%s'" % frappe.db.escape(filters["to_date"])
+	if filters.get("from_date"):
+		conditions += " and dn.posting_date <= '%s'" % frappe.db.escape(filters["from_date"])
 	return conditions
 
 def get_entries(filters):
 	conditions = get_conditions(filters)
-	return frappe.db.sql("""select dn.posting_date as dn_date, dn.`name` as delivery, dn.net_total as dn_total, (select sum(valuation_rate) from `tabStock Ledger Entry` where voucher_no = dn.`name`) as hpp, si.posting_date as si_date, si.`name` as no_si, si.net_total as si_total, je.posting_date as jv_date, je.`name` as jv_name, re.posting_date as re_date, re.`name` as re_name from `tabDelivery Note` dn left join `tabSales Invoice` si on dn.inquiry = si.inquiry and si.docstatus = '1' and si.type_of_invoice in ('Retention', 'Non Project Payment') left join `tabJournal Entry` je on dn.`name` = je.delivery_note and je.docstatus = '1' and je.reversing_entry = '0' left join `tabJournal Entry` re on dn.`name` = re.delivery_note and re.docstatus = '1' and re.reversing_entry = '1' where dn.docstatus = '1' and dn.inquiry is not null %s order by dn.`name` asc""" % conditions, as_dict=1)
+	return frappe.db.sql("""select dn.posting_date as dn_date, dn.`name` as delivery, dn.net_total as dn_total, (select sum((actual_qty * -1) * valuation_rate) from `tabStock Ledger Entry` where voucher_no = dn.`name`) as hpp, si.posting_date as si_date, si.`name` as no_si, si.net_total as si_total, je.posting_date as jv_date, je.`name` as jv_name, re.posting_date as re_date, re.`name` as re_name from `tabDelivery Note` dn left join `tabSales Invoice` si on dn.inquiry = si.inquiry and si.docstatus = '1' and si.type_of_invoice in ('Retention', 'Non Project Payment', 'Standard') left join `tabJournal Entry` je on dn.`name` = je.delivery_note and je.docstatus = '1' and je.reversing_entry = '0' left join `tabJournal Entry` re on dn.`name` = re.delivery_note and re.docstatus = '1' and re.reversing_entry = '1' where dn.docstatus = '1' and dn.inquiry is not null %s order by dn.`name` asc""" % conditions, as_dict=1)

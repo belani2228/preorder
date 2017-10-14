@@ -98,6 +98,18 @@ def cancel_sales_order(doc, method):
         total_so = frappe.db.sql("""select sum(net_total) from `tabSales Order` where docstatus = '1' and inquiry = %s and `name` != %s""", (doc.inquiry, doc.name))[0][0]
         frappe.db.sql("""update `tabInquiry` set nominal_sales_order = %s where `name` = %s""", (total_so, doc.inquiry))
 
+def validate_delivery_note(doc, method):
+    so_list = []
+    error = 0
+    for i in doc.items:
+        if i.against_sales_order and i.against_sales_order not in so_list:
+            so_list.append(i.against_sales_order)
+            status_so = frappe.db.sql("""select `status` from `tabSales Order` where `name` = %s""", i.against_sales_order)[0][0]
+            if doc.customer_group == 'Reseller' and status_so != 'To Deliver':
+                error = 1
+    if error == 1:
+        frappe.throw(_("For customer <b>reseler</b>, the invoice must be paid off"))
+
 def submit_sales_invoice(doc, method):
     if doc.type_of_invoice == 'Standard':
         frappe.db.sql("""update `tabSales Invoice` set sales_order = null, delivery_note = null where `name` = %s""", doc.name)

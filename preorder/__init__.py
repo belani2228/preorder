@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.4.8'
+__version__ = '0.4.9'
 
+#0.4.9:
+#   - Tidak bisa save delivery note jika group customernya reseler yang blm lunas
+#   - Update & fix laporan pembalik hpp
+#   - update get ammount injournal entry
 #0.4.8:
 #   - Remove Get Items in Request for Supplier Quotation
 #   - Fix & update in Request for Supplier Quotation
