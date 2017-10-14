@@ -27,14 +27,14 @@ def execute(filters=None):
 				if ri.jv_name and ri.re_name:
 					check = "&#10004;"
 				else:
-					check = ""
+					check = "-"
 		else:
-			check = ""
+			check = "-"
 		if ri.jv_name:
 			a_jv_date = ri.jv_date
 		else:
 			if a_dn_date != a_si_date and ri.no_si:
-				a_jv_date = "<a href='/desk#Form/Journal%20Entry/New%20Journal%20Entry%201?delivery_note="+ri.delivery+"&'>Make JV</a>"
+				a_jv_date = "<a href='/desk#Form/Journal%20Entry/New%20Journal%20Entry%201?delivery_note="+ri.delivery+"'>Make JV</a>"
 			else:
 				a_jv_date = ""
 		data.append([a_dn_date, ri.delivery, ri.dn_total, ri.hpp, a_si_date, ri.no_si, ri.si_total, a_jv_date, ri.jv_name, ri.re_date, ri.re_name, check])
@@ -63,10 +63,6 @@ def get_columns():
 
 def get_conditions(filters):
 	conditions = ""
-#	if filters.get("customer"):
-#		conditions += " and customer = '%s'" % frappe.db.escape(filters["customer"])
-#	if filters.get("fiscal_year"):
-#		conditions += " and date >= '%s'" % frappe.db.escape(filters["from_date"])
 	if filters.get("from_date"):
 		conditions += " and dn.posting_date <= '%s'" % frappe.db.escape(filters["from_date"])
 	return conditions

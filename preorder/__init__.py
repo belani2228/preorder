@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.4.9'
+__version__ = '0.4.10'
 
+#0.4.10:
+#   - Add Proforma Invoice No in Sales Order
+#   - Update Laporan Pembalik HPP
 #0.4.9:
 #   - Tidak bisa save delivery note jika group customernya reseler yang blm lunas
 #   - Update & fix laporan pembalik hpp
