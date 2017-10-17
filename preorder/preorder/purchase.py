@@ -13,8 +13,10 @@ def make_purchase_order(source_name, target_doc=None):
 		target.run_method("get_schedule_dates")
 		target.run_method("calculate_taxes_and_totals")
 
-	def update_item(obj, target, source_parent):
-		target.stock_qty = flt(obj.qty) * flt(obj.conversion_factor)
+	def update_item(source, target, source_parent):
+		target.stock_qty = flt(source.qty) * flt(source.conversion_factor)
+        #target.projected_qty = flt(frappe.db.sql("""select projected_qty from `tabBin` where item_code = %s""", obj.item_code)[0][0])
+		target.price_list_rate = 0
 		target.rate = 0
 
 	doclist = get_mapped_doc("Sales Order", source_name, {

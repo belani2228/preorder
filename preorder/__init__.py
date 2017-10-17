@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.4.10'
+__version__ = '0.4.11'
 
+#0.4.11:
+#   - Add projected_qty in Purchase Order
 #0.4.10:
 #   - Add Proforma Invoice No in Sales Order
 #   - Update Laporan Pembalik HPP
