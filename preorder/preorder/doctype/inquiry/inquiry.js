@@ -11,6 +11,32 @@ frappe.ui.form.on('Inquiry', {
 		if(frm.doc.status == "Submitted") {
 			cur_frm.add_custom_button(__('Set as Lost'), cur_frm.cscript['Declare Order Lost']);
 		}
+	},
+	on_submit: function(frm){
+		frm.refresh_fields();
+	},
+	validate: function(frm){
+		if(frm.doc.inquiry_type == 'Request'){
+			frm.doc.naming_series = 'R.YY.-.####'
+		}else if (frm.doc.inquiry_type == 'Request Project') {
+			frm.doc.naming_series = 'RP.YY.-.####'
+		}else if (frm.doc.inquiry_type == 'Request Service') {
+			frm.doc.naming_series = 'RS.YY.-.####'
+		}else if (frm.doc.inquiry_type == 'Request BST') {
+			frm.doc.naming_series = 'RBST.YY.-.####'
+		}else {
+			frm.doc.naming_series = 'RPBST.YY.-.####'
+		}
+	},
+	validate: function(frm, cdt, cdn){
+		var tbl = frm.doc.items || [];
+		var i = tbl.length;
+		while (i--) {
+			frm.doc.items[i].transaction_date = frm.doc.transaction_date;
+			frm.doc.items[i].customer = frm.doc.customer;
+			frm.doc.items[i].customer_name = frm.doc.customer_name;
+			frm.refresh_field("items");
+		}
 	}
 });
 cur_frm.cscript['Request for Supplier Quotation'] = function() {
@@ -57,16 +83,3 @@ cur_frm.set_query("contact_person",  function (frm) {
         ],
 		}
 });
-frappe.ui.form.on("Inquiry", "validate", function(frm) {
-	if(cur_frm.doc.inquiry_type == 'Request'){
-		cur_frm.doc.naming_series = 'R.YY.-.####'
-	}else if (cur_frm.doc.inquiry_type == 'Request Project') {
-		cur_frm.doc.naming_series = 'RP.YY.-.####'
-	}else if (cur_frm.doc.inquiry_type == 'Request Service') {
-		cur_frm.doc.naming_series = 'RS.YY.-.####'
-	}else if (cur_frm.doc.inquiry_type == 'Request BST') {
-		cur_frm.doc.naming_series = 'RBST.YY.-.####'
-	}else {
-		cur_frm.doc.naming_series = 'RPBST.YY.-.####'
-	}
-})

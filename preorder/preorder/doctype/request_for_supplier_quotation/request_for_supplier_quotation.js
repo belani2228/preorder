@@ -3,10 +3,10 @@
 
 frappe.ui.form.on('Request for Supplier Quotation', {
 	refresh: function(frm) {
+		frm.refresh_fields();
 	},
 	refresh: function(frm, cdt, cdn) {
 		if (frm.doc.docstatus == 1 && frm.doc.status == "Submitted") {
-			//frm.add_custom_button(__('Set as Lost'), cur_frm.cscript['Declare Order Lost']);
 			frm.add_custom_button(__("Send Email to Supplier"), function() {
 				frappe.call({
 					method: 'erpnext.buying.doctype.request_for_quotation.request_for_quotation.send_supplier_emails',
@@ -19,9 +19,10 @@ frappe.ui.form.on('Request for Supplier Quotation', {
 					}
 				});
 			});
-			//cur_frm.add_custom_button(__('Supplier Quotation'), cur_frm.cscript['Supplier Quotation'], __("Make"));
-			//cur_frm.page.set_inner_btn_group_as_primary(__("Make"));
 		}
+	},
+	on_update: function(frm) {
+		frm.refresh_fields();
 	},
 	get_items: function(frm) {
 		return frappe.call({
@@ -32,6 +33,20 @@ frappe.ui.form.on('Request for Supplier Quotation', {
 			}
 		});
 	},
+	supplier: function(frm, cdt, cdn){
+		frappe.call({
+				method: "frappe.client.get",
+				args: {
+						doctype: "Supplier",
+						filters:{
+							name: cur_frm.doc.supplier
+						}
+				},
+				callback: function (data) {
+						frappe.model.set_value(cdt, cdn, "title", data.message.supplier_name);
+				}
+		})
+	}
 });
 cur_frm.cscript['Declare Order Lost'] = function(){
 	var dialog = new frappe.ui.Dialog({
@@ -100,20 +115,6 @@ cur_frm.set_query("inquiry", "inquiry_tbl",  function (doc, cdt, cdn) {
         }
     }
 });
-frappe.ui.form.on("Request for Supplier Quotation", "supplier", function(frm, cdt, cdn) {
-	    frappe.call({
-	        method: "frappe.client.get",
-	        args: {
-	            doctype: "Supplier",
-							filters:{
-								name: cur_frm.doc.supplier
-							}
-	        },
-	        callback: function (data) {
-							frappe.model.set_value(cdt, cdn, "title", data.message.supplier_name);
-					}
-	    })
-});
 frappe.ui.form.on("Request for Supplier Quotation Inquiry", "inquiry", function(frm, cdt, cdn) {
     row = locals[cdt][cdn];
     frappe.call({
@@ -131,17 +132,3 @@ frappe.ui.form.on("Request for Supplier Quotation Inquiry", "inquiry", function(
 				}
     })
 });
-/*
-cur_frm.cscript.refresh_tbl = function( doc, cdt, cdn) {
-	cur_frm.refresh_field("inquiry_tbl");
-}
-*/
-frappe.ui.form.on("Request for Supplier Quotation", "refresh_tbl", function(frm) {
-	frm.refresh_field("inquiry_tbl");
-/*
-	erpnext.utils.map_current_doc({
-		method: "preorder.preorder.lemparan.get_items_selling_quotation",
-		source_name: cur_frm.doc.name,
-	});
-	*/
-})

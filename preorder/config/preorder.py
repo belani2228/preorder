@@ -29,6 +29,16 @@ def get_data():
 			]
 		},
 		{
+			"label": _("Engineering"),
+			"items": [
+				{
+					"type": "doctype",
+					"name": "Product Assembly",
+					"description": _("Product Assembly")
+				},
+			]
+		},
+		{
 			"label": _("Report"),
 			"items": [
 				{
