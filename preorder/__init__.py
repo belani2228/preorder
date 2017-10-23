@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.5.1'
+__version__ = '0.5.2'
 
+#0.5.2:
+#   - Update Sales Order
 #0.5.1:
 #   - Add doctype: Quotation Assembly Item
 #   - Make Product Bundle from Product Assembly

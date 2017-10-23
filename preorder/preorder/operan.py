@@ -92,6 +92,13 @@ def submit_sales_order(doc, method):
     if doc.inquiry:
         total_so = frappe.db.sql("""select sum(net_total) from `tabSales Order` where docstatus = '1' and inquiry = %s""", doc.inquiry)[0][0]
         frappe.db.sql("""update `tabInquiry` set nominal_sales_order = %s where `name` = %s""", (total_so, doc.inquiry))
+    if doc.assembly_item:
+        error = 0
+        for row in doc.assembly_item:
+            if not row.product_bundle:
+                error = 1
+        if error == 1:
+            frappe.throw(_("You must create <b>Product Bundle</b> before Submit this document"))
 
 def cancel_sales_order(doc, method):
     if doc.inquiry:
@@ -186,3 +193,8 @@ def cancel_journal_entry(doc, method):
             frappe.db.sql("""update `tabDelivery Note` set reversing_entry = null where `name` = %s""", doc.delivery_note)
         else:
             frappe.db.sql("""update `tabDelivery Note` set journal_entry = null where `name` = %s""", doc.delivery_note)
+
+def update_product_bundle(doc, method):
+    if doc.product_assembly:
+        frappe.db.sql("""update `tabProduct Assembly` set product_bundle = %s where `name` = %s""", (doc.name, doc.product_assembly))
+        frappe.db.sql("""update `tabQuotation Assembly Item` set product_bundle = %s where docstatus != '2' and product_assembly = %s""", (doc.name, doc.product_assembly))
