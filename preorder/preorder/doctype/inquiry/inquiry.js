@@ -38,6 +38,18 @@ frappe.ui.form.on('Inquiry', {
 			frm.refresh_field("items");
 		}
 	},
+	engineer: function(frm){
+		frappe.call({
+			method: "frappe.client.get",
+			args: {
+					doctype: "Employee",
+					name: frm.doc.engineer,
+			},
+			callback: function (data) {
+					frm.set_value("engineer_name", data.message.employee_name);
+			}
+		})
+	}
 });
 cur_frm.cscript['Request for Supplier Quotation'] = function() {
 	frappe.model.open_mapped_doc({
