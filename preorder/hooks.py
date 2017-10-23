@@ -121,6 +121,9 @@ doc_events = {
 	"Journal Entry": {
 		"on_submit": "preorder.preorder.operan.submit_journal_entry",
 		"before_cancel": "preorder.preorder.operan.cancel_journal_entry"
+	},
+	"Product Bundle": {
+		"on_update": "preorder.preorder.operan.update_product_bundle"
 	}
 }
 # doc_events = {

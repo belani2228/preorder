@@ -25,6 +25,10 @@ def get_items_selling_quotation(source_name, target_doc=None):
             target.item_name = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'inquiry_item_name'""")[0][0]
             target.description = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'inquiry_item_descrition'""")[0][0]
 
+        def update_assembly_item(source, target, source_parent):
+            parent = frappe.db.sql("""select parent_item from `tabProduct Assembly` where `name` = %s""", source.product_assembly)[0][0]
+            target.parent_item = parent
+
         doc = get_mapped_doc("Inquiry", source_name, {
     		"Inquiry": {
     			"doctype": "Quotation",
@@ -39,6 +43,11 @@ def get_items_selling_quotation(source_name, target_doc=None):
     				"name": "inquiry_item",
     			},
                 "postprocess": update_item
+    		},
+    		"Inquiry All Item": {
+    			"doctype": "Quotation Assembly Item",
+                "condition":lambda doc: doc.is_product_assembly == 1,
+                "postprocess": update_assembly_item
     		},
     	}, target_doc)
         return doc

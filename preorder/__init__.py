@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.5.0'
+__version__ = '0.5.1'
 
+#0.5.1:
+#   - Add doctype: Quotation Assembly Item
+#   - Make Product Bundle from Product Assembly
 #0.5.0:
 #   - Add doctype: Product Assembly
 #   - Add doctype: Product Assembly Item
 #   - Add doctype: Inqury All Item
 #   - Update doctype: Inqury Item
-#   - Cleanup request_for_supplier_quotation.py
+#   - Cleaning up request_for_supplier_quotation.py
 #0.4.11:
 #   - Add projected_qty in Purchase Order
 #0.4.10:

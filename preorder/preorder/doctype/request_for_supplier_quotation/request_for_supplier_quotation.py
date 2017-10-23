@@ -10,7 +10,7 @@ from frappe.model.mapper import get_mapped_doc
 
 class RequestforSupplierQuotation(Document):
 	def validate(self):
-		self.update_rfsq_inquiry()
+		pass
 
 	def on_update(self):
 		frappe.db.set(self, 'status', 'Draft')

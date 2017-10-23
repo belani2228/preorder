@@ -13,6 +13,16 @@ class Inquiry(Document):
 		if not self.get('items'):
 			frappe.throw(_("Please enter item details"))
 
+	def validate(self):
+		yes = 0
+		for row in self.items:
+			if not row.is_product_assembly:
+				yes = 1
+		if yes == 1:
+			frappe.db.set(self, 'complete_assembly', 'Yes')
+		else:
+			frappe.db.set(self, 'complete_assembly', 'No')
+
 	def on_submit(self):
 		self.check_item_table()
 		self.check_assembly_item()
@@ -38,7 +48,8 @@ class Inquiry(Document):
 					"doctype": "Product Assembly",
 					"parent_item": row.item_description,
 					"inquiry": self.name,
-					"inquiry_item": row.name
+					"inquiry_item": row.name,
+					"quantity": row.qty
 				})
 				product_assembly.insert()
 
