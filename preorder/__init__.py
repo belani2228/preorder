@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.5.5'
+__version__ = '0.5.6'
 
+#0.5.6:
+#   - Custom script item
 #0.5.5:
 #   - Minor update ntah dimana
 #0.5.4:

@@ -70,5 +70,14 @@
   "name": "Journal Entry-Client", 
   "script": "frappe.ui.form.on(\"Journal Entry\", {\n\trefresh: function(frm){\n\t\tif(frm.doc.docstatus == 1) {\n\t\t\tcur_frm.add_custom_button(__('Reversing Entry'), cur_frm.cscript['Reversing Entry'], __(\"Make\"));\n\t\t\tcur_frm.page.set_inner_btn_group_as_primary(__(\"Make\"));\n\t\t}\n\t},\n\tget_amount: function(frm){\n\t\tfrm.clear_table(\"accounts\");\n\t\tif(!frm.doc.delivery_note) return;\n\t\treturn frappe.call({\n\t\t\tmethod: 'preorder.preorder.lemparan.get_amount',\n\t\t\targs: {\n\t\t\t\tdn: frm.doc.delivery_note\n\t\t\t},\n\t\t\tcallback: function(r, rt) {\n\t\t\t\tif(r.message) {\n\t\t\t\t\t$.each(r.message, function(i, d) {\n\t\t\t\t\t\tvar c = frm.add_child(\"accounts\");\n\t\t\t\t\t\tc.debit_in_account_currency = d.debit;\n\t\t\t\t\t\tc.credit_in_account_currency = d.credit;\n\t\t\t\t\t})\n\t\t\t\t\tfrm.refresh_fields();\n\t\t\t\t}\n\t\t\t}\n\t\t})\n\t}\n})\ncur_frm.cscript['Reversing Entry'] = function() {\n\tfrappe.model.open_mapped_doc({\n\t\tmethod: \"preorder.preorder.lemparan.make_reverse_journal\",\n\t\tfrm: cur_frm\n\t})\n}", 
   "script_type": "Client"
+ }, 
+ {
+  "docstatus": 0, 
+  "doctype": "Custom Script", 
+  "dt": "Item", 
+  "modified": "2017-10-24 15:32:34.412374", 
+  "name": "Item-Client", 
+  "script": "frappe.ui.form.on('Item', {\n\tvalidate: function(frm){\n\t\tif(frm.doc.item_group == \"Products\" && frm.doc.is_stock_item == \"0\"){\n\t\t\tmsgprint(\"Item Group Products must maintain stock\");\n\t\t\tvalidated = false;\n\t\t}else if(frm.doc.item_group != \"Products\" && frm.doc.is_stock_item == \"1\"){\n\t\t\tmsgprint(\"Please uncheck maintain stock for this Item Group\");\n\t\t\tvalidated = false;\n\t\t}\n\t}\n});\n", 
+  "script_type": "Client"
  }
 ]
