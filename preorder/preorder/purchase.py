@@ -15,9 +15,11 @@ def make_purchase_order(source_name, target_doc=None):
 
 	def update_item(source, target, source_parent):
 		target.stock_qty = flt(source.qty) * flt(source.conversion_factor)
-        #target.projected_qty = flt(frappe.db.sql("""select projected_qty from `tabBin` where item_code = %s""", obj.item_code)[0][0])
 		target.price_list_rate = 0
 		target.rate = 0
+
+	def update_item_assembly(source, target, source_parent):
+		target.item_code = frappe.db.sql("""select item_code from `tabProduct Bundle Item` where product_assembly_detail = %s""", source.product_assembly_item)[0][0]
 
 	doclist = get_mapped_doc("Sales Order", source_name, {
 		"Sales Order": {
@@ -33,7 +35,12 @@ def make_purchase_order(source_name, target_doc=None):
 				["parent", "sales_order"],
 			],
 			"field_no_map":["price_list_rate", "rate", "amount", "net_rate", "net_amount"],
+			"condition":lambda doc: doc.is_product_assembly == 0,
 			"postprocess": update_item
+		},
+		"Quotation Assembly Item": {
+			"doctype": "Purchase Order Item",
+			"postprocess": update_item_assembly
 		},
 	}, target_doc, set_missing_values)
 
