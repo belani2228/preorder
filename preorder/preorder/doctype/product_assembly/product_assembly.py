@@ -25,7 +25,11 @@ class ProductAssembly(Document):
 			frappe.throw(_("Item must be filled"))
 
 	def insert_item_to_inquiry(self):
-		count = frappe.db.sql("""select idx from `tabInquiry All Item` where parent = %s order by idx desc limit 1""", self.inquiry)[0][0]
+		aa = frappe.db.get_value("Inquiry All Item", {"parent": self.inquiry}, "idx")
+		if aa:
+			count = frappe.db.sql("""select idx from `tabInquiry All Item` where parent = %s order by idx desc limit 1""", self.inquiry)[0][0]
+		else:
+			count = 0
 		for row in self.items:
 			count = count+1
 			total_qty = flt(row.qty) * flt(self.quantity)
