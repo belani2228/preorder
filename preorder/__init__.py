@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.5.6'
+__version__ = '0.5.7'
 
+#0.5.7:
+#   - Add status Engineered in Inquiry
+#   - Fix several issued
 #0.5.6:
 #   - Custom script item
 #0.5.5:

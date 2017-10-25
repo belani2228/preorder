@@ -27,7 +27,6 @@ class Inquiry(Document):
 		self.check_item_table()
 		self.check_assembly_item()
 		self.insert_to_all_item()
-		frappe.db.set(self, 'status', 'Submitted')
 
 	def before_cancel(self):
 		self.delete_all_item()
@@ -55,6 +54,9 @@ class Inquiry(Document):
 
 		if exist == 1:
 			self.update_inquiry_item()
+			frappe.db.set(self, 'status', 'Engineered')
+		else:
+			frappe.db.set(self, 'status', 'Submitted')
 
 	def update_inquiry_item(self):
 		for row in self.items:

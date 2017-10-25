@@ -14,7 +14,11 @@ class ProductAssembly(Document):
 		self.check_item()
 		self.insert_item_to_inquiry()
 		self.check_finish_assembly()
-		frappe.db.set(self, 'status', 'Submitted')
+		if self.product_bundle:
+			frappe.db.set(self, 'status', 'Completed')
+			self.update_quotation_assembly()
+		else:
+			frappe.db.set(self, 'status', 'Submitted')
 
 	def on_cancel(self):
 		self.cancel_item_in_inquiry()
@@ -54,7 +58,10 @@ class ProductAssembly(Document):
 	def check_finish_assembly(self):
 		count = frappe.db.sql("""select count(idx) from `tabProduct Assembly` where inquiry = %s and docstatus = '0'""", self.inquiry)[0][0]
 		if count == 0:
-			frappe.db.sql("""update `tabInquiry` set complete_assembly = 'Yes' where `name` = %s""", self.inquiry)
+			frappe.db.sql("""update `tabInquiry` set complete_assembly = 'Yes', status = 'Submitted' where `name` = %s""", self.inquiry)
+
+	def update_quotation_assembly(self):
+		frappe.db.sql("""update `tabQuotation Assembly Item` set product_bundle = %s where product_assembly = %s""", (self.product_bundle, self.name))
 
 @frappe.whitelist()
 def make_product_bundle(source_name, target_doc=None):
@@ -80,3 +87,24 @@ def make_product_bundle(source_name, target_doc=None):
 		}
 	}, target_doc, set_missing_values)
 	return pa
+
+@frappe.whitelist()
+def get_items_product_bundle(source_name, target_doc=None):
+    if target_doc:
+        if isinstance(target_doc, basestring):
+            import json
+            target_doc = frappe.get_doc(json.loads(target_doc))
+        target_doc.set("items", [])
+
+	def set_missing_values(source, target):
+		target.run_method("set_missing_values")
+
+	pb = get_mapped_doc("Product Bundle", source_name, {
+		"Product Bundle": {
+			"doctype": "Product Assembly",
+		},
+		"Product Bundle Item":{
+			"doctype": "Product Assembly Item",
+		}
+	}, target_doc, set_missing_values)
+	return pb
