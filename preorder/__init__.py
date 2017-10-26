@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.5.8'
+__version__ = '0.5.9'
 
+#0.5.9:
+#   - Delivery Note tidak bisa Save jika ada item group Bundle yang blm d buat Product Bundle
 #0.5.8:
 #   - Fix naming series in Inquiry
 #   - Fix reset rate in Sales Order

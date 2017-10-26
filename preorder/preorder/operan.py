@@ -116,6 +116,16 @@ def validate_delivery_note(doc, method):
                 error = 1
     if error == 1:
         frappe.throw(_("For customer <b>reseler</b>, the invoice must be paid off"))
+    tampung = []
+    for row in doc.items:
+        item_group = frappe.db.get_value("Item", row.item_code, "item_group")
+        if item_group == "Bundle":
+            pb = frappe.db.get_value("Product Bundle", {"new_item_code": row.item_code}, "name")
+            if not pb:
+                tampung.append(row.item_code)
+    if tampung:
+        descr = ', '.join(tampung)
+        frappe.throw(_("Please create Product Bundle for item "+descr))
 
 def submit_sales_invoice(doc, method):
     if doc.type_of_invoice == 'Standard':
