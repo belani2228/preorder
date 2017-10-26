@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.5.9'
+__version__ = '0.5.10'
 
+#0.5.10:
+#   - Add default item group in Item Settings
 #0.5.9:
 #   - Delivery Note tidak bisa Save jika ada item group Bundle yang blm d buat Product Bundle
 #0.5.8:

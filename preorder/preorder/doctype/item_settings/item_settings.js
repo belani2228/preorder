@@ -36,3 +36,10 @@ cur_frm.fields_dict.buying_write_off_account.get_query = function(doc) {
 		}
 	}
 }
+cur_frm.fields_dict.default_item_group.get_query = function(doc) {
+	return{
+		filters:{
+			'is_group': 0
+		}
+	}
+}

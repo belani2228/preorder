@@ -119,7 +119,8 @@ def validate_delivery_note(doc, method):
     tampung = []
     for row in doc.items:
         item_group = frappe.db.get_value("Item", row.item_code, "item_group")
-        if item_group == "Bundle":
+        default_item_group = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_group'""")[0][0]
+        if item_group == default_item_group:
             pb = frappe.db.get_value("Product Bundle", {"new_item_code": row.item_code}, "name")
             if not pb:
                 tampung.append(row.item_code)
