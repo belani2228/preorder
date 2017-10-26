@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.5.7'
+__version__ = '0.5.8'
 
+#0.5.8:
+#   - Fix naming series in Inquiry
+#   - Fix reset rate in Sales Order
+#   - Fix PO from SO
 #0.5.7:
 #   - Add status Engineered in Inquiry
 #   - Fix several issued

@@ -16,6 +16,10 @@ frappe.ui.form.on('Inquiry', {
 		frm.refresh_fields();
 	},
 	validate: function(frm){
+		frm.events.validate_series(frm);
+		frm.events.copy_to_child(frm);
+	},
+	validate_series: function(frm){
 		if(frm.doc.inquiry_type == 'Request'){
 			frm.doc.naming_series = 'R.YY.-.####'
 		}else if (frm.doc.inquiry_type == 'Request Project') {
@@ -28,7 +32,7 @@ frappe.ui.form.on('Inquiry', {
 			frm.doc.naming_series = 'RPBST.YY.-.####'
 		}
 	},
-	validate: function(frm, cdt, cdn){
+	copy_to_child: function(frm){
 		var tbl = frm.doc.items || [];
 		var i = tbl.length;
 		while (i--) {
