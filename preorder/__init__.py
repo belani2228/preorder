@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.5.10'
+__version__ = '0.5.11'
 
+#0.5.11:
+#   - Replace throw with msgprint
 #0.5.10:
 #   - Add default item group in Item Settings
 #0.5.9:

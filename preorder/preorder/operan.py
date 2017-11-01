@@ -9,13 +9,13 @@ def update_quotation(doc, method):
     if doc.inquiry != None:
         cek = frappe.db.get_value("Inquiry", doc.inquiry, "quotation")
         if cek != None:
-            frappe.throw(_("Inquiry "+doc.inquiry+" has been used in other Quotation"))
+            frappe.msgprint(_("Inquiry "+doc.inquiry+" has been used in other Quotation"))
 
 def submit_quotation(doc, method):
     if doc.inquiry != None:
         cek = frappe.db.get_value("Inquiry", doc.inquiry, "quotation")
         if cek != None:
-            frappe.throw(_("Inquiry "+doc.inquiry+" has been used in other Quotation"))
+            frappe.msgprint(_("Inquiry "+doc.inquiry+" has been used in other Quotation"))
         else:
             frappe.db.sql("""update `tabInquiry` set quotation = %s where `name` = %s""", (doc.name, doc.inquiry))
 
@@ -86,7 +86,7 @@ def validate_sales_order(doc, method):
     item_code = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_inquiry'""")[0][0]
     for i in doc.items:
         if i.item_code == item_code:
-            frappe.throw(_("Please change the item to the actual item"))
+            frappe.msgprint(_("Please change the item to the actual item"))
 
 def submit_sales_order(doc, method):
     if doc.inquiry:
@@ -98,7 +98,7 @@ def submit_sales_order(doc, method):
 #            if not row.product_bundle:
 #                error = 1
 #        if error == 1:
-#            frappe.throw(_("You must create <b>Product Bundle</b> before Submit this document"))
+#            frappe.msgprint(_("You must create <b>Product Bundle</b> before Submit this document"))
 
 def cancel_sales_order(doc, method):
     if doc.inquiry:
@@ -115,7 +115,7 @@ def validate_delivery_note(doc, method):
             if doc.customer_group == 'Reseller' and status_so != 'To Deliver':
                 error = 1
     if error == 1:
-        frappe.throw(_("For customer <b>reseler</b>, the invoice must be paid off"))
+        frappe.msgprint(_("For customer <b>reseler</b>, the invoice must be paid off"))
     tampung = []
     for row in doc.items:
         item_group = frappe.db.get_value("Item", row.item_code, "item_group")
@@ -126,7 +126,7 @@ def validate_delivery_note(doc, method):
                 tampung.append(row.item_code)
     if tampung:
         descr = ', '.join(tampung)
-        frappe.throw(_("Please create Product Bundle for item "+descr))
+        frappe.msgprint(_("Please create Product Bundle for item "+descr))
 
 def submit_sales_invoice(doc, method):
     if doc.type_of_invoice == 'Standard':
