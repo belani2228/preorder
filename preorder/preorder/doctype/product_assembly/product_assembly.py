@@ -26,7 +26,7 @@ class ProductAssembly(Document):
 
 	def check_item(self):
 		if not self.items:
-			frappe.throw(_("Item must be filled"))
+			frappe.msgprint(_("Item must be filled"))
 
 	def insert_item_to_inquiry(self):
 		aa = frappe.db.get_value("Inquiry All Item", {"parent": self.inquiry}, "idx")

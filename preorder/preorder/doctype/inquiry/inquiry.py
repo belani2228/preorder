@@ -11,7 +11,7 @@ from frappe.model.mapper import get_mapped_doc
 class Inquiry(Document):
 	def check_item_table(self):
 		if not self.get('items'):
-			frappe.throw(_("Please enter item details"))
+			frappe.msgprint(_("Please enter item details"))
 
 	def validate(self):
 		yes = 0

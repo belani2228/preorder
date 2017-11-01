@@ -39,7 +39,7 @@ class RequestforSupplierQuotation(Document):
 				nl.inquiry_detail = d.inq_det
 #			tampung.append(row.inquiry)
 #		temp = ', '.join(tampung)
-#		frappe.throw(temp)
+#		frappe.msgprint(temp)
 
 	def declare_order_lost(self, arg):
 		frappe.db.set(self, 'status', 'Lost')
