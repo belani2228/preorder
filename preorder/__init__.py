@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.5.11'
+__version__ = '0.5.12'
 
+#0.5.12:
+#   - Make Quotation from Inquiry
 #0.5.11:
 #   - Replace throw with msgprint
 #0.5.10:
