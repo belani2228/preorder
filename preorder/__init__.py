@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.5.12'
+__version__ = '0.5.13'
 
+#0.5.13:
+#   - Hide series in Inquiry
 #0.5.12:
 #   - Make Quotation from Inquiry
 #0.5.11:

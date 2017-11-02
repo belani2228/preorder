@@ -47,6 +47,12 @@ def get_data():
 					"doctype": "Delivery Note",
 					"is_query_report": True
 				},
+				{
+					"type": "report",
+					"name": "Inquiry Collection",
+					"doctype": "Inquiry",
+					"is_query_report": True
+				},
 			]
 		},
 	]
