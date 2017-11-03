@@ -30,9 +30,9 @@
   "docstatus": 0, 
   "doctype": "Custom Script", 
   "dt": "Purchase Order", 
-  "modified": "2017-11-03 14:35:44.290933", 
+  "modified": "2017-11-03 17:16:09.411388", 
   "name": "Purchase Order-Client", 
-  "script": "frappe.ui.form.on(\"Purchase Order\",{\n\trefresh: function() {\n\t\tif(cur_frm.doc.docstatus == 0 || cur_frm.doc.__islocal){\n\t\t\tcur_frm.add_custom_button(__(\"Sales Order\"), function() {\n\t\t\t\terpnext.utils.map_current_doc({\n\t\t\t\t\tmethod: \"preorder.preorder.purchase.make_purchase_order\",\n\t\t\t\t\tsource_doctype: \"Sales Order\",\n\t\t\t\t\ttarget: cur_frm,\n\t\t\t\t\tsetters:  {\n\t\t\t\t\t\tcompany: cur_frm.doc.company || undefined,\n\t\t\t\t\t},\n\t\t\t\t\tget_query_filters: {\n\t\t\t\t\t\tdocstatus: 1,\n\t\t\t\t\t\tstatus: [\"!=\", \"Completed\"],\n\t\t\t\t\t}\n\t\t\t\t})\n\t\t\t}, __(\"Get items from\"));\n\t\t}\n\t\t//cur_frm.clear_custom_button();\n\t},\n\tvalidate: function(frm) {\n\t\t$.each(frm.doc.items, function(i, d) {\n\t\t\tif(d.amount == '0'){\n\t\t\t\tmsgprint(\"Item No.\"+d.idx+\", amount still empty\");\n\t\t\t\tvalidated = false;\n\t\t\t}\n\t\t})\n\t}\n})\n", 
+  "script": "frappe.ui.form.on(\"Purchase Order\",{\n\trefresh: function() {\n\t\tif(cur_frm.doc.docstatus == 0 || cur_frm.doc.__islocal){\n\t\t\tcur_frm.add_custom_button(__(\"Sales Order\"), function() {\n\t\t\t\terpnext.utils.map_current_doc({\n\t\t\t\t\tmethod: \"preorder.preorder.purchase.make_purchase_order\",\n\t\t\t\t\tsource_doctype: \"Sales Order\",\n\t\t\t\t\ttarget: cur_frm,\n\t\t\t\t\tsetters:  {\n\t\t\t\t\t\t//company: cur_frm.doc.company || undefined,\n\t\t\t\t\t\tcustomer: undefined,\n\t\t\t\t\t},\n\t\t\t\t\tget_query_filters: {\n\t\t\t\t\t\tdocstatus: 1,\n\t\t\t\t\t\tstatus: [\"!=\", \"Completed\"],\n\t\t\t\t\t}\n\t\t\t\t})\n\t\t\t}, __(\"Get items from\"));\n\t\t}\n\t\t//cur_frm.clear_custom_button();\n\t},\n\tvalidate: function(frm) {\n\t\t$.each(frm.doc.items, function(i, d) {\n\t\t\tif(d.amount == '0'){\n\t\t\t\tmsgprint(\"Item No.\"+d.idx+\", amount still empty\");\n\t\t\t\tvalidated = false;\n\t\t\t}\n\t\t})\n\t}\n})\n", 
   "script_type": "Client"
  }, 
  {
