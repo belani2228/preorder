@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.5.17'
+__version__ = '0.5.18'
 
+#0.5.18:
+#   - Update Fixtures
 #0.5.17:
 #   - Fix Purchase Order exchange rate
 #0.5.16:

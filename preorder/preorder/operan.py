@@ -11,6 +11,13 @@ def update_quotation(doc, method):
         if cek != None:
             frappe.throw(_("Inquiry {0} has been used in other Quotation").format(doc.inquiry))
 
+def submit_quotation_2(doc, method):
+    hitung = 0
+    for row in doc.items:
+        if row.alternative_item == 0:
+            hitung = hitung+1
+            frappe.db.sql("""update `tabQuotation Item` set count = %s where `name` = %s""", (hitung, row.name))
+
 def submit_quotation(doc, method):
     if doc.inquiry != None:
         cek = frappe.db.get_value("Inquiry", doc.inquiry, "quotation")
