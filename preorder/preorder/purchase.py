@@ -26,7 +26,8 @@ def make_purchase_order(source_name, target_doc=None):
 			"doctype": "Purchase Order",
 			"validation": {
 				"docstatus": ["=", 1],
-			}
+			},
+			"field_no_map":["currency", "conversion_rate"]
 		},
 		"Sales Order Item": {
 			"doctype": "Purchase Order Item",

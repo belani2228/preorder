@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.5.16'
+__version__ = '0.5.17'
 
+#0.5.17:
+#   - Fix Purchase Order exchange rate
 #0.5.16:
 #   - Add count in Quotation Item
 #0.5.15:
