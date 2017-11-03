@@ -9,13 +9,13 @@ def update_quotation(doc, method):
     if doc.inquiry != None:
         cek = frappe.db.get_value("Inquiry", doc.inquiry, "quotation")
         if cek != None:
-            frappe.msgprint(_("Inquiry "+doc.inquiry+" has been used in other Quotation"))
+            frappe.throw(_("Inquiry {0} has been used in other Quotation").format(doc.inquiry))
 
 def submit_quotation(doc, method):
     if doc.inquiry != None:
         cek = frappe.db.get_value("Inquiry", doc.inquiry, "quotation")
         if cek != None:
-            frappe.msgprint(_("Inquiry "+doc.inquiry+" has been used in other Quotation"))
+            frappe.throw(_("Inquiry {0} has been used in other Quotation").format(doc.inquiry))
         else:
             frappe.db.sql("""update `tabInquiry` set quotation = %s where `name` = %s""", (doc.name, doc.inquiry))
 
@@ -86,7 +86,7 @@ def validate_sales_order(doc, method):
     item_code = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_inquiry'""")[0][0]
     for i in doc.items:
         if i.item_code == item_code:
-            frappe.msgprint(_("Please change the item to the actual item"))
+            frappe.throw(_("Please change the item to the actual item"))
 
 def submit_sales_order(doc, method):
     if doc.inquiry:
@@ -98,7 +98,7 @@ def submit_sales_order(doc, method):
 #            if not row.product_bundle:
 #                error = 1
 #        if error == 1:
-#            frappe.msgprint(_("You must create <b>Product Bundle</b> before Submit this document"))
+#            frappe.throw(_("You must create <b>Product Bundle</b> before Submit this document"))
 
 def cancel_sales_order(doc, method):
     if doc.inquiry:
