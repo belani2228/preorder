@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.5.15'
+__version__ = '0.5.16'
 
+#0.5.16:
+#   - Add count in Quotation Item
 #0.5.15:
 #   - Change frappe.msgprint to frappe.throw
 #0.5.14:
