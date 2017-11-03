@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.5.18'
+__version__ = '0.5.19'
 
+#0.5.19:
+#   - Update Inquiry Collection
 #0.5.18:
 #   - Update Fixtures
 #0.5.17:
