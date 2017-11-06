@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.5.20'
+__version__ = '0.5.21'
 
+#0.5.21:
+#   - Update type_of_invoice dual currency
 #0.5.20:
 #   - Update Fixtures
 #0.5.19:

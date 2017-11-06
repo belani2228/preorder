@@ -120,12 +120,13 @@ def get_po_items(source_name, target_doc=None):
 def get_purchase_receipt(supplier, po):
     if supplier and po:
         pr_list = []
-        invoice_list = frappe.db.sql("""select `name`, posting_date, net_total from `tabPurchase Receipt` where docstatus = '1' and status = 'To Bill' and supplier = %s and invoice_payment is null and purchase_order = %s""", (supplier, po), as_dict=True)
+        invoice_list = frappe.db.sql("""select `name`, posting_date, base_net_total, net_total from `tabPurchase Receipt` where docstatus = '1' and status = 'To Bill' and supplier = %s and invoice_payment is null and purchase_order = %s""", (supplier, po), as_dict=True)
         for d in invoice_list:
             pr_list.append(frappe._dict({
                 'purchase_receipt': d.name,
                 'posting_date': d.posting_date,
-                'net_total': d.net_total
+                'net_total': d.net_total,
+                'base_net_total': d.base_net_total
             }))
 
         return pr_list
@@ -149,19 +150,22 @@ def get_items_payment(supplier):
         return pr_list
 
 @frappe.whitelist()
-def get_purchase_invoice(supplier, po, invoice_type, net_total):
+def get_purchase_invoice(supplier, po, invoice_type, net_total, base_net_total):
     pi_list = []
     if invoice_type == 'Non Project Payment':
-        invoice_list = frappe.db.sql("""select `name`, posting_date, net_total from `tabPurchase Invoice` where docstatus = '1' and type_of_invoice = 'Down Payment' and purchase_order = %s""", po, as_dict=True)
+        invoice_list = frappe.db.sql("""select `name`, posting_date, base_net_total, net_total from `tabPurchase Invoice` where docstatus = '1' and type_of_invoice = 'Down Payment' and purchase_order = %s""", po, as_dict=True)
     else:
-        invoice_list = frappe.db.sql("""select `name`, posting_date, net_total from `tabPurchase Invoice` where docstatus = '1' and purchase_order = %s""", po, as_dict=True)
+        invoice_list = frappe.db.sql("""select `name`, posting_date, base_net_total, net_total from `tabPurchase Invoice` where docstatus = '1' and purchase_order = %s""", po, as_dict=True)
     for d in invoice_list:
         total_po = frappe.db.sql("""select net_total from `tabPurchase Order` where docstatus = '1' and `name` = %s""", po)[0][0]
+        base_total_po = frappe.db.sql("""select base_net_total from `tabPurchase Order` where docstatus = '1' and `name` = %s""", po)[0][0]
         alokasi = (flt(net_total) / flt(total_po)) * flt(d.net_total)
-        if alokasi >= 1:
+        base_alokasi = (flt(base_net_total) / flt(base_total_po)) * flt(d.base_net_total)
+        if alokasi != 0:
             pi_list.append(frappe._dict({
                 'purchase_invoice': d.name,
                 'posting_date': d.posting_date,
+                'base_net_total': base_alokasi,
                 'net_total': alokasi
             }))
     return pi_list

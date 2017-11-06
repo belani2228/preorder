@@ -19,8 +19,8 @@ frappe.listview_settings['Request for Supplier Quotation'] = {
 		if(doc.action_status==="Completed") {
 			return [__("Completed"), "green", "action_status,=,Completed"];
 		}
-		if(doc.action_status==="Submit and Waiting") {
-			return [__("Submit and Waiting"), "purple", "action_status,=,Submit and Waiting"];
+		if(doc.action_status==="Submitted and Waiting") {
+			return [__("Submitted and Waiting"), "purple", "action_status,=,Submitted and Waiting"];
 		}
 		if(doc.action_status==="No Quote") {
 			return [__("No Quote"), "darkgrey", "action_status,=,No Quote"];
