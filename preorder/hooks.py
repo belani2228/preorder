@@ -97,8 +97,8 @@ doc_events = {
 #	},
 	"Sales Order": {
 		"validate": "preorder.preorder.operan.validate_sales_order",
-		"on_submit": "preorder.preorder.operan.submit_sales_order",
-		"before_cancel": "preorder.preorder.operan.cancel_sales_order"
+		"on_submit": ["preorder.preorder.operan.submit_sales_order", "preorder.preorder.operan.submit_sales_order_2"],
+		"before_cancel": ["preorder.preorder.operan.cancel_sales_order", "preorder.preorder.operan.cancel_sales_order_2"]
 	},
 	"Delivery Note": {
 		"validate": "preorder.preorder.operan.validate_delivery_note"

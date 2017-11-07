@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.5.21'
+__version__ = '0.6.0'
 
+#0.6.0:
+#   - 1 Quotation banyak SO
+#   - Inquiry & SO di Stock Entry
 #0.5.21:
 #   - Update type_of_invoice dual currency
 #0.5.20:

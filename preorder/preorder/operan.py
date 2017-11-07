@@ -107,10 +107,24 @@ def submit_sales_order(doc, method):
 #        if error == 1:
 #            frappe.throw(_("You must create <b>Product Bundle</b> before Submit this document"))
 
+def submit_sales_order_2(doc, method):
+    for row in doc.items:
+        if row.quotation_item:
+            cek_qty = frappe.db.sql("""select so_qty from `tabQuotation Item` where `name` = %s""", row.quotation_item)[0][0]
+            add_qty = flt(cek_qty) + flt(row.qty)
+            frappe.db.sql("""update `tabQuotation Item` set so_item = %s, so_qty = %s where `name` = %s""", (row.name, add_qty, row.quotation_item))
+
 def cancel_sales_order(doc, method):
     if doc.inquiry:
         total_so = frappe.db.sql("""select sum(net_total) from `tabSales Order` where docstatus = '1' and inquiry = %s and `name` != %s""", (doc.inquiry, doc.name))[0][0]
         frappe.db.sql("""update `tabInquiry` set nominal_sales_order = %s where `name` = %s""", (total_so, doc.inquiry))
+
+def cancel_sales_order_2(doc, method):
+    for row in doc.items:
+        if row.quotation_item:
+            cek_qty = frappe.db.sql("""select so_qty from `tabQuotation Item` where `name` = %s""", row.quotation_item)[0][0]
+            add_qty = flt(cek_qty) - flt(row.qty)
+            frappe.db.sql("""update `tabQuotation Item` set so_item = %s, so_qty = %s where `name` = %s""", (row.name, add_qty, row.quotation_item))
 
 def validate_delivery_note(doc, method):
     so_list = []

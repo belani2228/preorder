@@ -27,7 +27,6 @@ def get_items_selling_quotation(source_name, target_doc=None):
 
         def update_assembly_item(source, target, source_parent):
             pa = frappe.db.get_value("Product Assembly", source.product_assembly, ["parent_item", "product_bundle"], as_dict=1)
-#            pa = frappe.db.sql("""select parent_item, product_bundle from `tabProduct Assembly` where `name` = %s""", source.product_assembly, as_dict=1)
             target.parent_item = pa.parent_item
             target.product_bundle = pa.product_bundle
 
@@ -284,3 +283,26 @@ def get_amount(dn):
             'credit': d.credit
         }))
     return dn_list
+
+@frappe.whitelist()
+def get_inquiry_items(source_name, target_doc=None):
+    cek = frappe.db.get_value("Inquiry", source_name, "status")
+    if cek != "Lost":
+        if target_doc:
+            if isinstance(target_doc, basestring):
+                import json
+                target_doc = frappe.get_doc(json.loads(target_doc))
+            target_doc.set("items", [])
+
+        doc = get_mapped_doc("Sales Order", source_name, {
+    		"Sales Order": {
+    			"doctype": "Stock Entry",
+    			"validation": {
+    				"docstatus": ["=", 1],
+    			},
+    		},
+    		"Packed Item": {
+    			"doctype": "Stock Entry Detail",
+    		},
+    	}, target_doc)
+        return doc
