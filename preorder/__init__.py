@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.6.0'
+__version__ = '0.6.1'
 
+#0.6.1:
+#   - Add Fast Moving Product in Item
+#   - Minor fix Inquiry
 #0.6.0:
 #   - 1 Quotation banyak SO
 #   - Inquiry & SO di Stock Entry
