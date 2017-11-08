@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.6.1'
+__version__ = '0.6.2'
 
+#0.6.2:
+#   - Add brand & type in Assembly Item Quotation
 #0.6.1:
 #   - Add Fast Moving Product in Item
 #   - Minor fix Inquiry

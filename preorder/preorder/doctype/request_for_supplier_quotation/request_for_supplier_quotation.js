@@ -9,7 +9,7 @@ frappe.ui.form.on('Request for Supplier Quotation', {
 		if (frm.doc.docstatus == 1 && frm.doc.status == "Submitted") {
 			frm.add_custom_button(__("Send Email to Supplier"), function() {
 				frappe.call({
-					method: 'erpnext.buying.doctype.request_for_quotation.request_for_quotation.send_supplier_emails',
+					method: 'preorder.preorder.doctype.request_for_supplier_quotation.request_for_supplier_quotation.send_supplier_emails',
 					freeze: true,
 					args: {
 						rfq_name: frm.doc.name

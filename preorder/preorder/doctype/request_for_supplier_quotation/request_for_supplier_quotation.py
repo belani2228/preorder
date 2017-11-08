@@ -44,3 +44,52 @@ class RequestforSupplierQuotation(Document):
 	def declare_order_lost(self, arg):
 		frappe.db.set(self, 'status', 'Lost')
 		frappe.db.set(self, 'order_lost_reason', arg)
+
+	def send_to_supplier(self):
+		if self.email_id:
+			# make new user if required
+			update_password_link = None
+
+			self.supplier_rfq_mail(rfq_supplier, update_password_link, self.get_link())
+
+	def get_link(self):
+		# RFQ link for supplier portal
+		return get_url("/rfsq/" + self.name)
+
+	def supplier_rfq_mail(self, data, update_password_link, rfq_link):
+		full_name = get_user_fullname(frappe.session['user'])
+		if full_name == "Guest":
+			full_name = "Administrator"
+
+		args = {
+			'update_password_link': update_password_link,
+			'message': frappe.render_template(self.message_for_supplier, data.as_dict()),
+			'rfq_link': rfq_link,
+			'user_fullname': full_name
+		}
+
+		subject = _("Request for Quotation: {0}".format(self.name))
+		template = "templates/emails/request_for_quotation.html"
+		sender = frappe.session.user not in STANDARD_USERS and frappe.session.user or None
+		message = frappe.get_template(template).render(args)
+		attachments = self.get_attachments()
+
+		self.send_email(data, sender, subject, message, attachments)
+
+	def send_email(self, data, sender, subject, message, attachments):
+		make(subject = subject, content=message,recipients=data.email_id,
+			sender=sender,attachments = attachments, send_email=True,
+		     	doctype=self.doctype, name=self.name)["name"]
+
+		frappe.msgprint(_("Email sent to supplier {0}").format(data.supplier))
+
+	def get_attachments(self):
+		attachments = [d.name for d in get_attachments(self.doctype, self.name)]
+		attachments.append(frappe.attach_print(self.doctype, self.name, doc=self))
+		return attachments
+
+@frappe.whitelist()
+def send_supplier_emails(rfq_name):
+	rfq = frappe.get_doc("Request for Supplier Quotation", rfq_name)
+	if rfq.docstatus==1:
+		rfq.send_to_supplier()
