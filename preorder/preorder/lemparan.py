@@ -306,3 +306,27 @@ def get_inquiry_items(source_name, target_doc=None):
     		},
     	}, target_doc)
         return doc
+
+@frappe.whitelist()
+def make_journal_entry(source_name, target_doc=None):
+    cek = frappe.db.get_value("Inquiry", source_name, "status")
+    if cek != "Lost":
+        if target_doc:
+            if isinstance(target_doc, basestring):
+                import json
+                target_doc = frappe.get_doc(json.loads(target_doc))
+            target_doc.set("items", [])
+
+        doc = get_mapped_doc("Inquiry", source_name, {
+    		"Inquiry": {
+    			"doctype": "Journal Entry",
+    			"validation": {
+    				"docstatus": ["=", 1],
+    			},
+    		},
+    		"Inquiry Item": {
+    			"doctype": "Journal Entry Account",
+                "condition":lambda doc: doc.idx == 1,
+    		},
+    	}, target_doc)
+        return doc

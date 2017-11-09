@@ -50,7 +50,7 @@ class RequestforSupplierQuotation(Document):
 			# make new user if required
 			update_password_link = None
 
-			self.supplier_rfq_mail(rfq_supplier, update_password_link, self.get_link())
+			self.supplier_rfq_mail(None, update_password_link, self.get_link())
 
 	def get_link(self):
 		# RFQ link for supplier portal

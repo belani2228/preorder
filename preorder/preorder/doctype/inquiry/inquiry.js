@@ -7,6 +7,7 @@ frappe.ui.form.on('Inquiry', {
 		if(frm.doc.docstatus == 1 && frm.doc.status == "Submitted" && frm.doc.complete_assembly == "Yes") {
 			cur_frm.add_custom_button(__('Request for Supplier Quotation'), cur_frm.cscript['Request for Supplier Quotation'], __("Make"));
 			cur_frm.add_custom_button(__('Quotation'), cur_frm.cscript['Quotation'], __("Make"));
+			cur_frm.add_custom_button(__('Journal Entry'), cur_frm.cscript['Journal Entry'], __("Make"));
 			cur_frm.page.set_inner_btn_group_as_primary(__("Make"));
 		}
 		if(frm.doc.status == "Submitted") {
@@ -65,6 +66,12 @@ cur_frm.cscript['Request for Supplier Quotation'] = function() {
 cur_frm.cscript['Quotation'] = function() {
 	frappe.model.open_mapped_doc({
 		method: "preorder.preorder.lemparan.get_items_selling_quotation",
+		frm: cur_frm
+	})
+}
+cur_frm.cscript['Journal Entry'] = function() {
+	frappe.model.open_mapped_doc({
+		method: "preorder.preorder.lemparan.make_journal_entry",
 		frm: cur_frm
 	})
 }

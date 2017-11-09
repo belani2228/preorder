@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.6.2'
+__version__ = '0.6.3'
 
+#0.6.3:
+#   - Inquiry make JV
 #0.6.2:
 #   - Add brand & type in Assembly Item Quotation
 #0.6.1:
