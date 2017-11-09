@@ -168,6 +168,11 @@ def submit_sales_invoice(doc, method):
         if flt(total_so) == flt(total_si):
             frappe.db.sql("""update `tabInquiry` set status = 'Completed' where `name` = %s""", doc.inquiry)
 
+def submit_sales_invoice_2(doc, method):
+    if doc.type_of_invoice == "Down Payment" or doc.type_of_invoice == "Progress Payment":
+        if doc.get_items_count == 0:
+            frappe.throw(_("You must press the <b>Get Items</b> button"))
+
 def cancel_sales_invoice(doc, method):
     if doc.type_of_invoice == 'Down Payment':
         frappe.db.sql("""update `tabSales Order` set down_payment = null where `name` = %s""", doc.sales_order)

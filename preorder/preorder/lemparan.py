@@ -110,6 +110,7 @@ def get_items_tampungan(source_name, target_doc=None):
             import json
             target_doc = frappe.get_doc(json.loads(target_doc))
         target_doc.set("items", [])
+        target_doc.set("packed_items", [])
 
     def update_item(source, target, source_parent):
         item_dp = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_dp'""")[0][0]
