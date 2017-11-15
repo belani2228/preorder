@@ -24,6 +24,7 @@ def get_items_selling_quotation(source_name, target_doc=None):
             target.item_code = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_inquiry'""")[0][0]
             target.item_name = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'inquiry_item_name'""")[0][0]
             target.description = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'inquiry_item_descrition'""")[0][0]
+            target.qty = flt(source.qty) - flt(source.qty_used)
 
         def update_assembly_item(source, target, source_parent):
             pa = frappe.db.get_value("Product Assembly", source.product_assembly, ["parent_item", "product_bundle"], as_dict=1)
@@ -43,6 +44,7 @@ def get_items_selling_quotation(source_name, target_doc=None):
     				"parent": "inquiry",
     				"name": "inquiry_item",
     			},
+                "condition":lambda doc: doc.qty > doc.qty_used,
                 "postprocess": update_item
     		},
     		"Inquiry All Item": {

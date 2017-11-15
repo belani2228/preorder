@@ -88,14 +88,15 @@ website_context = {
 doc_events = {
 	"Quotation": {
 		"on_update": "preorder.preorder.operan.update_quotation",
-		"on_submit": ["preorder.preorder.operan.submit_quotation", "preorder.preorder.operan.submit_quotation_2"],
-		"before_cancel": "preorder.preorder.operan.cancel_quotation"
+		"on_submit": ["preorder.preorder.operan.submit_quotation", "preorder.preorder.operan.submit_quotation_2", "preorder.preorder.operan.submit_quotation_3"],
+		"before_cancel": ["preorder.preorder.operan.cancel_quotation", "preorder.preorder.operan.cancel_quotation_2"]
 	},
 #	"Supplier Quotation": {
 #		"on_submit": "preorder.preorder.operan.submit_supplier_quotation",
 #		"before_cancel": "preorder.preorder.operan.cancel_supplier_quotation"
 #	},
 	"Sales Order": {
+		"autoname": "preorder.preorder.operan.autoname_sales_order",
 		"validate": "preorder.preorder.operan.validate_sales_order",
 		"on_submit": ["preorder.preorder.operan.submit_sales_order", "preorder.preorder.operan.submit_sales_order_2"],
 		"before_cancel": ["preorder.preorder.operan.cancel_sales_order", "preorder.preorder.operan.cancel_sales_order_2"]
@@ -108,7 +109,7 @@ doc_events = {
 		"before_cancel": "preorder.preorder.operan.cancel_sales_invoice"
 	},
 	"Purchase Order": {
-		"on_submit": "preorder.preorder.operan.submit_purchase_order",
+		"on_submit": ["preorder.preorder.operan.submit_purchase_order", "preorder.preorder.operan.submit_purchase_order_2"],
 		"before_cancel": "preorder.preorder.operan.cancel_purchase_order"
 	},
 	"Purchase Receipt": {

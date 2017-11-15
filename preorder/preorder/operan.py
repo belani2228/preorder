@@ -4,12 +4,56 @@ from frappe.utils import nowdate, cstr, flt, now, getdate, add_months
 from frappe import msgprint, _
 from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
+from frappe.model.naming import make_autoname
+from dateutil import parser
+
+def autoname_sales_order(doc, method):
+    if doc.naming_series == "VPI":
+        m = parser.parse(doc.transaction_date).strftime('%m')
+        if m == "01":
+            add = "A"
+        elif m == "02":
+            add = "B"
+        elif m == "03":
+            add = "C"
+        elif m == "04":
+            add = "D"
+        elif m == "05":
+            add = "E"
+        elif m == "06":
+            add = "F"
+        elif m == "07":
+            add = "G"
+        elif m == "08":
+            add = "H"
+        elif m == "09":
+            add = "I"
+        elif m == "10":
+            add = "J"
+        elif m == "11":
+            add = "K"
+        else:
+            add = "L"
+        doc.name = make_autoname(doc.naming_series + add + '.YY.-.####')
 
 def update_quotation(doc, method):
     if doc.inquiry != None:
         cek = frappe.db.get_value("Inquiry", doc.inquiry, "quotation")
         if cek != None:
             frappe.throw(_("Inquiry {0} has been used in other Quotation").format(doc.inquiry))
+
+def submit_quotation(doc, method):
+    for row in doc.items:
+        if row.inquiry_item != None:
+            i1 = frappe.db.get_value("Inquiry Item", row.inquiry_item, "qty_used")
+            i2 = flt(i1) + flt(row.qty)
+            frappe.db.sql("""update `tabInquiry Item` set qty_used = %s where `name` = %s""", (i2, row.inquiry_item))
+#    if doc.inquiry != None:
+#        cek = frappe.db.get_value("Inquiry", doc.inquiry, "quotation")
+#        if cek != None:
+#            frappe.throw(_("Inquiry {0} has been used in other Quotation").format(doc.inquiry))
+#        else:
+#            frappe.db.sql("""update `tabInquiry` set quotation = %s where `name` = %s""", (doc.name, doc.inquiry))
 
 def submit_quotation_2(doc, method):
     hitung = 0
@@ -18,17 +62,20 @@ def submit_quotation_2(doc, method):
             hitung = hitung+1
             frappe.db.sql("""update `tabQuotation Item` set count = %s where `name` = %s""", (hitung, row.name))
 
-def submit_quotation(doc, method):
-    if doc.inquiry != None:
-        cek = frappe.db.get_value("Inquiry", doc.inquiry, "quotation")
-        if cek != None:
-            frappe.throw(_("Inquiry {0} has been used in other Quotation").format(doc.inquiry))
+def submit_quotation_3(doc, method):
+    if doc.inquiry:
+        count = frappe.db.sql("""select count(*) from `tabInquiry Item` where parent = %s and qty_used < qty""", doc.name, as_dict=1)
+        if cstr(count):
+            pass
         else:
-            frappe.db.sql("""update `tabInquiry` set quotation = %s where `name` = %s""", (doc.name, doc.inquiry))
+            frappe.db.sql("""update `tabInquiry` set quotation = "Full" where `name` = %s""", doc.inquiry)
 
 def cancel_quotation(doc, method):
     if doc.inquiry != None:
         frappe.db.sql("""update `tabInquiry` set quotation = null where `name` = %s""", doc.inquiry)
+
+def cancel_quotation_2(doc, method):
+    pass
 
 def update_supplier_quotation(sq):
     ada = []
@@ -210,6 +257,11 @@ def submit_purchase_invoice(doc, method):
         pr = frappe.db.sql("""select purchase_receipt from `tabPurchase Invoice PR` where parent = %s""", doc.name, as_dict=1)
         for row in pr:
             frappe.db.sql("""update `tabPurchase Receipt` set invoice_payment = %s where `name` = %s""", (doc.name, row.purchase_receipt))
+
+def submit_purchase_invoice_2(doc, method):
+    if doc.type_of_invoice == "Down Payment" or doc.type_of_invoice == "Progress Payment":
+        if doc.count_get_items == 0:
+            frappe.throw(_("You must press the <b>Get Items</b> button"))
 
 def cancel_purchase_invoice(doc, method):
     if doc.type_of_invoice == "Payment":
