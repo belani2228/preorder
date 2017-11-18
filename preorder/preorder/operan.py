@@ -36,24 +36,16 @@ def autoname_sales_order(doc, method):
             add = "L"
         doc.name = make_autoname(doc.naming_series + add + '.YY.-.####')
 
-def update_quotation(doc, method):
-    if doc.inquiry != None:
-        cek = frappe.db.get_value("Inquiry", doc.inquiry, "quotation")
-        if cek != None:
-            frappe.throw(_("Inquiry {0} has been used in other Quotation").format(doc.inquiry))
-
 def submit_quotation(doc, method):
     for row in doc.items:
         if row.inquiry_item != None:
-            i1 = frappe.db.get_value("Inquiry Item", row.inquiry_item, "qty_used")
-            i2 = flt(i1) + flt(row.qty)
-            frappe.db.sql("""update `tabInquiry Item` set qty_used = %s where `name` = %s""", (i2, row.inquiry_item))
-#    if doc.inquiry != None:
-#        cek = frappe.db.get_value("Inquiry", doc.inquiry, "quotation")
-#        if cek != None:
-#            frappe.throw(_("Inquiry {0} has been used in other Quotation").format(doc.inquiry))
-#        else:
-#            frappe.db.sql("""update `tabInquiry` set quotation = %s where `name` = %s""", (doc.name, doc.inquiry))
+            if row.mark_as_complete:
+                i1 = frappe.db.get_value("Inquiry Item", row.inquiry_item, "qty")
+                frappe.db.sql("""update `tabInquiry Item` set qty_used = %s where `name` = %s""", (i1, row.inquiry_item))
+            else:
+                i1 = frappe.db.get_value("Inquiry Item", row.inquiry_item, "qty_used")
+                i2 = flt(i1) + flt(row.qty)
+                frappe.db.sql("""update `tabInquiry Item` set qty_used = %s where `name` = %s""", (i2, row.inquiry_item))
 
 def submit_quotation_2(doc, method):
     hitung = 0
@@ -63,19 +55,37 @@ def submit_quotation_2(doc, method):
             frappe.db.sql("""update `tabQuotation Item` set count = %s where `name` = %s""", (hitung, row.name))
 
 def submit_quotation_3(doc, method):
-    if doc.inquiry:
-        count = frappe.db.sql("""select count(*) from `tabInquiry Item` where parent = %s and qty_used < qty""", doc.name, as_dict=1)
-        if cstr(count):
-            pass
-        else:
-            frappe.db.sql("""update `tabInquiry` set quotation = "Full" where `name` = %s""", doc.inquiry)
+    temp = []
+    for row in doc.items:
+        if row.inquiry_item:
+            if row.inquiry not in temp:
+                temp.append(row.inquiry)
+    if temp:
+        for i in temp:
+            a = frappe.db.sql("""select count(*) from `tabInquiry Item` where docstatus = '1' and parent = %s and qty > qty_used""", i)[0][0]
+            if a == 0:
+                frappe.db.sql("""update `tabInquiry` set status = 'Completed' where `name` = %s""", i)
 
 def cancel_quotation(doc, method):
-    if doc.inquiry != None:
-        frappe.db.sql("""update `tabInquiry` set quotation = null where `name` = %s""", doc.inquiry)
+    for row in doc.items:
+        if row.inquiry_item != None:
+            if row.mark_as_complete:
+                i1 = frappe.db.get_value("Inquiry Item", row.inquiry_item, "qty")
+                frappe.db.sql("""update `tabInquiry Item` set qty_used = '0' where `name` = %s""", row.inquiry_item)
+            else:
+                i1 = frappe.db.get_value("Inquiry Item", row.inquiry_item, "qty_used")
+                i2 = flt(i1) - flt(row.qty)
+                frappe.db.sql("""update `tabInquiry Item` set qty_used = %s where `name` = %s""", (i2, row.inquiry_item))
 
 def cancel_quotation_2(doc, method):
-    pass
+    temp = []
+    for row in doc.items:
+        if row.inquiry_item:
+            if row.inquiry not in temp:
+                temp.append(row.inquiry)
+    if temp:
+        for i in temp:
+            frappe.db.sql("""update `tabInquiry` set status = 'Submitted' where `name` = %s""", i)
 
 def update_supplier_quotation(sq):
     ada = []
@@ -143,16 +153,15 @@ def validate_sales_order(doc, method):
             frappe.throw(_("Please change the item to the actual item"))
 
 def submit_sales_order(doc, method):
-    if doc.inquiry:
-        total_so = frappe.db.sql("""select sum(net_total) from `tabSales Order` where docstatus = '1' and inquiry = %s""", doc.inquiry)[0][0]
-        frappe.db.sql("""update `tabInquiry` set nominal_sales_order = %s where `name` = %s""", (total_so, doc.inquiry))
-#    if doc.assembly_item:
-#        error = 0
-#        for row in doc.assembly_item:
-#            if not row.product_bundle:
-#                error = 1
-#        if error == 1:
-#            frappe.throw(_("You must create <b>Product Bundle</b> before Submit this document"))
+    temp = []
+    for row in doc.items:
+        if row.inquiry_item:
+            if row.inquiry not in temp:
+                temp.append(row.inquiry)
+    if temp:
+        for i in temp:
+            a = frappe.db.sql("""select sum(net_amount) from `tabSales Order Item` where docstatus = '1' and inquiry = %s""", i)[0][0]
+            frappe.db.sql("""update `tabInquiry` set nominal_sales_order = %s where `name` = %s""", (a, i))
 
 def submit_sales_order_2(doc, method):
     for row in doc.items:
@@ -162,9 +171,15 @@ def submit_sales_order_2(doc, method):
             frappe.db.sql("""update `tabQuotation Item` set so_item = %s, so_qty = %s where `name` = %s""", (row.name, add_qty, row.quotation_item))
 
 def cancel_sales_order(doc, method):
-    if doc.inquiry:
-        total_so = frappe.db.sql("""select sum(net_total) from `tabSales Order` where docstatus = '1' and inquiry = %s and `name` != %s""", (doc.inquiry, doc.name))[0][0]
-        frappe.db.sql("""update `tabInquiry` set nominal_sales_order = %s where `name` = %s""", (total_so, doc.inquiry))
+    temp = []
+    for row in doc.items:
+        if row.inquiry_item:
+            if row.inquiry not in temp:
+                temp.append(row.inquiry)
+    if temp:
+        for i in temp:
+            a = frappe.db.sql("""select sum(net_amount) from `tabSales Order Item` where docstatus = '1' and inquiry = %s""", i)[0][0]
+            frappe.db.sql("""update `tabInquiry` set nominal_sales_order = %s where `name` = %s""", (a, i))
 
 def cancel_sales_order_2(doc, method):
     for row in doc.items:
@@ -196,24 +211,60 @@ def validate_delivery_note(doc, method):
         descr = ', '.join(tampung)
         frappe.msgprint(_("Please create Product Bundle for item "+descr))
 
+def validate_sales_invoice(doc, method):
+    pass
+
 def submit_sales_invoice(doc, method):
     if doc.type_of_invoice == 'Standard':
         frappe.db.sql("""update `tabSales Invoice` set sales_order = null, delivery_note = null where `name` = %s""", doc.name)
     elif doc.type_of_invoice == 'Down Payment':
         frappe.db.sql("""update `tabSales Order` set down_payment = %s where `name` = %s""", (doc.name, doc.sales_order))
         frappe.db.sql("""update `tabSales Invoice` set delivery_note = null where `name` = %s""", doc.name)
+        so_invoice = frappe.get_doc({
+            "doctype": "Sales Order Invoice",
+            "docstatus": 1,
+            "parent": doc.sales_order,
+            "parentfield": "invoices",
+            "parenttype": "Sales Order",
+            "sales_invoice": doc.name,
+            "posting_date": doc.posting_date,
+            "type_of_invoice": doc.type_of_invoice,
+            "net_total": doc.net_total
+        })
+        so_invoice.insert()
     elif doc.type_of_invoice == 'Progress Payment':
         frappe.db.sql("""update `tabSales Invoice` set sales_order = null where `name` = %s""", doc.name)
+        inquiry_list = frappe.db.sql("""select distinct(against_sales_order) from `tabDelivery Note Item` where docstatus = '1' and parent = %s and against_sales_order is not null""", doc.delivery_note, as_dict=True)
+        if inquiry_list:
+            for ii in inquiry_list:
+                so_invoice = frappe.get_doc({
+                    "doctype": "Sales Order Invoice",
+                    "docstatus": 1,
+                    "parent": ii.against_sales_order,
+                    "parentfield": "invoices",
+                    "parenttype": "Sales Order",
+                    "sales_invoice": doc.name,
+                    "posting_date": doc.posting_date,
+                    "type_of_invoice": doc.type_of_invoice,
+                    "net_total": doc.net_total
+                })
+                so_invoice.insert()
     elif doc.type_of_invoice == 'Payment':
         dn = frappe.db.sql("""select * from `tabSales Invoice DN` where parent = %s""", doc.name, as_dict=1)
         for d in dn:
             frappe.db.sql("""update `tabDelivery Note` set sales_invoice = %s where `name` = %s""", (doc.name, d.delivery_note))
-    if doc.inquiry:
-        total_si = frappe.db.sql("""select sum(net_total)-sum(total_related_invoices) as nominal from `tabSales Invoice` where docstatus = '1' and inquiry = %s""", doc.inquiry)[0][0]
-        frappe.db.sql("""update `tabInquiry` set nominal_sales_invoice = %s where `name` = %s""", (total_si, doc.inquiry))
-        total_so = frappe.db.sql("""select nominal_sales_order from `tabInquiry` where docstatus = '1' and `name` = %s""", doc.inquiry)[0][0]
-        if flt(total_so) == flt(total_si):
-            frappe.db.sql("""update `tabInquiry` set status = 'Completed' where `name` = %s""", doc.inquiry)
+        so_invoice = frappe.get_doc({
+            "doctype": "Sales Order Invoice",
+            "docstatus": 1,
+            "parent": doc.sales_order,
+            "parentfield": "invoices",
+            "parenttype": "Sales Order",
+            "sales_invoice": doc.name,
+            "posting_date": doc.posting_date,
+            "type_of_invoice": doc.type_of_invoice,
+            "net_total": doc.net_total
+        })
+        so_invoice.insert()
 
 def submit_sales_invoice_2(doc, method):
     if doc.type_of_invoice == "Down Payment" or doc.type_of_invoice == "Progress Payment":

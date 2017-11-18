@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '0.6.5'
+__version__ = '1.0.0'
 
+#1.0.0:
+#   - Delete Inqury in SO, DN & SI doctype
+#   - Many Inquiry 1 quotation
+#   - Add some dotype
 #0.6.5:
 #   - Add Inquiry & SO in Stock Entry
 #   - Fix custom script Stock Entry

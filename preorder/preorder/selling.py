@@ -38,7 +38,7 @@ def _make_sales_order(source_name, target_doc=None, ignore_permissions=False):
                     "name": "quotation_item"
 				},
 				"postprocess": update_item,
-				"condition":lambda doc: doc.so_qty != doc.qty
+				"condition":lambda doc: doc.so_qty != doc.qty and doc.rate != 0
 			},
 			"Sales Taxes and Charges": {
 				"doctype": "Sales Taxes and Charges",
