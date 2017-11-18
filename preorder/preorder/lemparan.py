@@ -107,59 +107,7 @@ def make_purchase_order(source_name, target_doc=None):
 	return pi
 
 @frappe.whitelist()
-def get_items_tampungan(source_name, target_doc=None):
-    tipe,related_doc,persen = source_name.split("|")
-    if target_doc:
-        if isinstance(target_doc, basestring):
-            import json
-            target_doc = frappe.get_doc(json.loads(target_doc))
-        target_doc.set("items", [])
-        target_doc.set("packed_items", [])
-
-    def update_item(source, target, source_parent):
-        item_dp = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_dp'""")[0][0]
-        target.item_code = item_dp
-        item = frappe.db.get_value("Item", item_dp, ["item_name", "description", "stock_uom", "income_account", "expense_account"], as_dict=1)
-        target.item_name = item.item_name
-        target.description = item.description
-        target.uom = item.stock_uom
-        target.income_account = item.income_account
-        target.expense_account = item.expense_account
-        target.qty = "1"
-        if tipe == "SO":
-            so = frappe.db.get_value("Sales Order", related_doc, ["net_total"], as_dict=1)
-        elif tipe == "DN":
-            so = frappe.db.get_value("Delivery Note", related_doc, ["net_total"], as_dict=1)
-        rate = (flt(persen)/100) * flt(so.net_total)
-        target.rate = rate
-        target.amount = rate
-        target.net_rate = rate
-        target.net_amount = rate
-
-    if tipe == "SO":
-        dt = "Sales Order"
-        dtc = "Sales Order Item"
-    else:
-        dt = "Delivery Note"
-        dtc = "Delivery Note Item"
-
-    doc = get_mapped_doc(dt, related_doc, {
-    	dt: {
-    		"doctype": "Sales Invoice",
-    		"validation": {
-    			"docstatus": ["=", 1],
-    		},
-    	},
-    	dtc: {
-    		"doctype": "Sales Invoice Item",
-            "condition":lambda doc: doc.idx == 1,
-            "postprocess": update_item
-    	},
-    }, target_doc)
-    return doc
-
-@frappe.whitelist()
-def get_items_tampungan2(related_doc, tipe, percen):
+def get_items_tampungan(related_doc, tipe, percen):
     si_list = []
     item_dp = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_dp'""")[0][0]
     item = frappe.db.get_value("Item", item_dp, ["item_name", "description", "stock_uom", "income_account", "expense_account"], as_dict=1)
@@ -196,52 +144,28 @@ def get_delivery_note(sales_order):
         return dn_list
 
 @frappe.whitelist()
-def get_items_from_pelunasan(source_name, target_doc=None):
-    so,nominal,persen = source_name.split("|")
-    if target_doc:
-        if isinstance(target_doc, basestring):
-            import json
-            target_doc = frappe.get_doc(json.loads(target_doc))
-        target_doc.set("items", [])
-
-    def update_item(source, target, source_parent):
-        item_dp = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_dp'""")[0][0]
-        target.item_code = item_dp
-        item = frappe.db.get_value("Item", item_dp, ["item_name", "description", "stock_uom", "income_account", "expense_account"], as_dict=1)
-        target.item_name = item.item_name
-        target.description = item.description
-        target.uom = item.stock_uom
-        target.income_account = item.income_account
-        target.expense_account = item.expense_account
-        target.qty = "1"
-        rate = (flt(persen)/100) * flt(nominal)
-        target.rate = rate
-        target.amount = rate
-        target.net_rate = rate
-        target.net_amount = rate
-
-    doc = get_mapped_doc("Sales Order", so, {
-    	"Sales Order": {
-    		"doctype": "Sales Invoice",
-    		"validation": {
-    			"docstatus": ["=", 1],
-    		},
-    	},
-    	"Sales Order Item": {
-    		"doctype": "Sales Invoice Item",
-            "condition":lambda doc: doc.idx == 1,
-            "postprocess": update_item
-    	},
-    }, target_doc)
-    return doc
+def get_items_from_pelunasan(sales_order, total_delivery, percen):
+    si_list = []
+    item_dp = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_dp'""")[0][0]
+    item = frappe.db.get_value("Item", item_dp, ["item_name", "description", "stock_uom", "income_account", "expense_account"], as_dict=1)
+    rate = (flt(percen)/100) * flt(total_delivery)
+    si_list.append(frappe._dict({
+        'item_code': item_dp,
+        'item_name': item.item_name,
+        'description': item.description,
+        'qty':1,
+        'uom': item.stock_uom,
+        'rate': rate,
+        'amount': rate,
+        'income_account': item.income_account,
+        'expense_account': item.expense_account
+    }))
+    return si_list
 
 @frappe.whitelist()
 def get_sales_invoice(sales_order, tipe):
     si_list = []
-    if tipe == 'Non Project Payment':
-        invoice_list = frappe.db.sql("""select `name`, posting_date, net_total from `tabSales Invoice` where docstatus = '1' and type_of_invoice = 'Down Payment' and inquiry = %s""", inquiry, as_dict=True)
-    else:
-        invoice_list = frappe.db.sql("""select sales_invoice, posting_date, net_total from `tabSales Order Invoice` where docstatus = '1' and parent = %s order by sales_invoice asc""", sales_order, as_dict=True)
+    invoice_list = frappe.db.sql("""select sales_invoice, posting_date, net_total from `tabSales Order Invoice` where docstatus = '1' and parent = %s order by sales_invoice asc""", sales_order, as_dict=True)
     for d in invoice_list:
         si_list.append(frappe._dict({
             'sales_invoice': d.sales_invoice,

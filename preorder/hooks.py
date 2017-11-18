@@ -125,6 +125,9 @@ doc_events = {
 	},
 	"Product Bundle": {
 		"on_update": "preorder.preorder.operan.update_product_bundle"
+	},
+	"Item Price":{
+		"after_insert": "preorder.preorder.operan.update_item_price"
 	}
 }
 # doc_events = {

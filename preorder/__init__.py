@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
+#1.0.1:
+#   - Otomatis price_list_rate menjadi 0 ketika buat price list
 #1.0.0:
 #   - Delete Inqury in SO, DN & SI doctype
 #   - Many Inquiry 1 quotation

@@ -341,3 +341,6 @@ def update_product_bundle(doc, method):
         for row in doc.items:
             if row.product_assembly_detail:
                 frappe.db.sql("""update `tabProduct Assembly Item` set item_code = %s where `name` = %s""", (row.item_code, row.product_assembly_detail))
+
+def update_item_price(doc, method):
+    frappe.db.sql("""update `tabItem Price` set price_list_rate = '0' where `name` = %s""", doc.name)
