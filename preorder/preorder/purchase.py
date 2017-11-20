@@ -48,73 +48,26 @@ def make_purchase_order(source_name, target_doc=None):
 	return doclist
 
 @frappe.whitelist()
-def get_po_items(source_name, target_doc=None):
-    invoice_type,related_doc,percent = source_name.split("|")
-    if target_doc:
-        if isinstance(target_doc, basestring):
-            import json
-            target_doc = frappe.get_doc(json.loads(target_doc))
-        target_doc.set("items", [])
-        target_doc.set("taxes", [])
-
-    def update_item(source, target, source_parent):
-        item_dp = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_dp'""")[0][0]
-        target.item_code = item_dp
-        item = frappe.db.get_value("Item", item_dp, ["item_name", "description", "stock_uom", "income_account", "expense_account"], as_dict=1)
-        target.item_name = item.item_name
-        target.description = item.description
-        target.uom = item.stock_uom
-        target.income_account = item.income_account
-        target.expense_account = item.expense_account
-        target.qty = "1"
-        if invoice_type == "Down Payment":
-            po = frappe.db.get_value("Purchase Order", related_doc, ["net_total"], as_dict=1)
-        elif invoice_type == "Progress Payment":
-            po = frappe.db.get_value("Purchase Receipt", related_doc, ["net_total"], as_dict=1)
-        rate = (flt(percent)/100) * flt(po.net_total)
-        target.rate = rate
-        target.amount = rate
-        target.net_rate = rate
-        target.net_amount = rate
-
-    if invoice_type == "Down Payment":
-        doc = get_mapped_doc("Purchase Order", related_doc, {
-        	"Purchase Order": {
-        		"doctype": "Purchase Invoice",
-        		"validation": {
-        			"docstatus": ["=", 1],
-        		},
-        	},
-        	"Purchase Order Item": {
-        		"doctype": "Purchase Invoice Item",
-        		"field_map":{
-        			"parent": "purchase_order",
-        			"name": "puerchase_order_item",
-        		},
-                "condition":lambda doc: doc.idx == 1,
-                "postprocess": update_item
-        	},
-        }, target_doc)
-        return doc
-    elif invoice_type == "Progress Payment":
-        doc = get_mapped_doc("Purchase Receipt", related_doc, {
-        	"Purchase Receipt": {
-        		"doctype": "Purchase Invoice",
-        		"validation": {
-        			"docstatus": ["=", 1],
-        		},
-        	},
-        	"Purchase Receipt Item": {
-        		"doctype": "Purchase Invoice Item",
-        		"field_map":{
-        			"parent": "purchase_receipt",
-        			"name": "puerchase_receipt_item",
-        		},
-                "condition":lambda doc: doc.idx == 1,
-                "postprocess": update_item
-        	},
-        }, target_doc)
-        return doc
+def get_po_items(tipe, related_doc, percen):
+    pi_list = []
+    item_dp = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_dp'""")[0][0]
+    item = frappe.db.get_value("Item", item_dp, ["item_name", "description", "stock_uom", "income_account", "expense_account"], as_dict=1)
+    if tipe == "Down Payment":
+        so = frappe.db.get_value("Purchase Order", related_doc, ["net_total"], as_dict=1)
+    else:
+        so = frappe.db.get_value("Purchase Receipt", related_doc, ["net_total"], as_dict=1)
+    rate = (flt(percen)/100) * flt(so.net_total)
+    pi_list.append(frappe._dict({
+        'item_code': item_dp,
+        'item_name': item.item_name,
+        'description': item.description,
+        'qty':1,
+        'uom': item.stock_uom,
+        'rate': rate,
+        'amount': rate,
+        'expense_account': item.expense_account
+    }))
+    return pi_list
 
 @frappe.whitelist()
 def get_purchase_receipt(supplier, po):

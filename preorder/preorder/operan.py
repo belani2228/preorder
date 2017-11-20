@@ -212,7 +212,7 @@ def validate_delivery_note(doc, method):
         frappe.msgprint(_("Please create Product Bundle for item "+descr))
 
 def validate_sales_invoice(doc, method):
-    pass
+        pass
 
 def submit_sales_invoice(doc, method):
     if doc.type_of_invoice == 'Standard':
@@ -278,7 +278,7 @@ def cancel_sales_invoice(doc, method):
         dn = frappe.db.sql("""select * from `tabSales Invoice DN` where parent = %s""", doc.name, as_dict=1)
         for d in dn:
             frappe.db.sql("""update `tabDelivery Note` set sales_invoice = null where `name` = %s""", d.delivery_note)
-    frappe.db.sql("""delete from `tabSales Order Invoice` where `name` = %s""", doc.name)
+    frappe.db.sql("""delete from `tabSales Order Invoice` where sales_invoice = %s""", doc.name)
 
 def submit_purchase_order(doc, method):
     pass

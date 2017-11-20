@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 
+#1.0.4:
+#   - add mandatory in get_items2 Sales Invoice
+#   - Few fix in purchase invoice
 #1.0.3:
 #   - fix submit purchase order
 #1.0.2:
