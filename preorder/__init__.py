@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.7'
+__version__ = '1.0.8'
 
+#1.0.8:
+#   - Custom make sales order in quotation
 #1.0.7:
 #   - Update hooks sales order
 #1.0.6:
