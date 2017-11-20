@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.5'
+__version__ = '1.0.6'
 
+#1.0.6:
+#   - Fix Get Items in purchase invoice
 #1.0.5:
 #   - Fix duplicate Inquiry
 #   - Fix Assembly Item in Quotation
