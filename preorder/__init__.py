@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.4'
+__version__ = '1.0.5'
 
+#1.0.5:
+#   - Fix duplicate Inquiry
+#   - Fix Assembly Item in Quotation
 #1.0.4:
 #   - add mandatory in get_items2 Sales Invoice
 #   - Few fix in purchase invoice

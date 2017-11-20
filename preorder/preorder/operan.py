@@ -36,6 +36,18 @@ def autoname_sales_order(doc, method):
             add = "L"
         doc.name = make_autoname(doc.naming_series + add + '.YY.-.####')
 
+def update_quotation(doc, method):
+    if doc.assembly_item:
+        for row in doc.assembly_item:
+            a = frappe.db.sql("""select count(*) from `tabQuotation Item` where item_description = %s""", row.parent_item)[0][0]
+            if a == 0:
+                frappe.db.sql("""delete from `tabQuotation Assembly Item` where parent_item = %s and parent = %s""", (row.parent_item, doc.name))
+    hitung = 0
+    for row in doc.items:
+        if row.alternative_item == 0:
+            hitung = hitung+1
+            frappe.db.sql("""update `tabQuotation Item` set count = %s where `name` = %s""", (hitung, row.name))
+
 def submit_quotation(doc, method):
     for row in doc.items:
         if row.inquiry_item != None:
