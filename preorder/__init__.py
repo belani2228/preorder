@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 
+#1.0.2:
+#   - fix delete in sales invoices
+#   - Update dashboard inquiry
 #1.0.1:
 #   - Otomatis price_list_rate menjadi 0 ketika buat price list
 #1.0.0:

@@ -278,11 +278,7 @@ def cancel_sales_invoice(doc, method):
         dn = frappe.db.sql("""select * from `tabSales Invoice DN` where parent = %s""", doc.name, as_dict=1)
         for d in dn:
             frappe.db.sql("""update `tabDelivery Note` set sales_invoice = null where `name` = %s""", d.delivery_note)
-    if doc.inquiry:
-        total_so = frappe.db.sql("""select sum(net_total)-sum(total_related_invoices) as nominal from `tabSales Invoice` where docstatus = '1' and inquiry = %s and `name` != %s""", (doc.inquiry, doc.name))[0][0]
-        frappe.db.sql("""update `tabInquiry` set nominal_sales_invoice = %s where `name` = %s""", (total_so, doc.inquiry))
-        total_so = frappe.db.sql("""select nominal_sales_order from `tabInquiry` where docstatus = '1' and `name` = %s""", doc.inquiry)[0][0]
-        frappe.db.sql("""update `tabInquiry` set status = 'Submitted' where `name` = %s""", doc.inquiry)
+    frappe.db.sql("""delete from `tabSales Order Invoice` where `name` = %s""", doc.name)
 
 def submit_purchase_order(doc, method):
     pass
