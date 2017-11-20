@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 
+#1.0.3:
+#   - fix submit purchase order
 #1.0.2:
 #   - fix delete in sales invoices
 #   - Update dashboard inquiry

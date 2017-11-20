@@ -287,6 +287,9 @@ def submit_purchase_order(doc, method):
 #        if row.sales_order_item:
 #            frappe.db.sql("""update `tabSales Order Item` set po_no = %s where `name` = %s""", (doc.name, row.sales_order_item))
 
+def submit_purchase_order_2(doc, method):
+    pass
+
 def cancel_purchase_order(doc, method):
     pass
 #    items = frappe.db.sql("""select * from `tabPurchase Order Item` where parent = %s""", doc.name, as_dict=1)
