@@ -98,7 +98,6 @@ doc_events = {
 	"Sales Order": {
 		"autoname": "preorder.preorder.operan.autoname_sales_order",
 		"validate": "preorder.preorder.operan.validate_sales_order",
-		"after_insert": "preorder.preorder.operan.validate_sales_order_2",
 		"on_submit": ["preorder.preorder.operan.submit_sales_order", "preorder.preorder.operan.submit_sales_order_2"],
 		"before_cancel": ["preorder.preorder.operan.cancel_sales_order", "preorder.preorder.operan.cancel_sales_order_2"]
 	},

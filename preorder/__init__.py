@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.6'
+__version__ = '1.0.7'
 
+#1.0.7:
+#   - Update hooks sales order
 #1.0.6:
 #   - Fix Get Items in purchase invoice
 #1.0.5:
