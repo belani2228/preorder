@@ -93,9 +93,9 @@
   "docstatus": 0, 
   "doctype": "Custom Script", 
   "dt": "Stock Entry", 
-  "modified": "2017-11-14 13:58:34.361993", 
+  "modified": "2017-11-21 10:41:18.417627", 
   "name": "Stock Entry-Client", 
-  "script": "frappe.ui.form.on(\"Stock Entry\", {\n\tget_inquiry_items: function(frm){\n\t\terpnext.utils.map_current_doc({\n\t\t\tmethod: \"preorder.preorder.lemparan.get_inquiry_items\",\n\t\t\tsource_name: frm.doc.sales_order,\n\t\t});\n\t},\n})\ncur_frm.set_query(\"inquiry\", function(frm) {\n\treturn {\n        \tfilters: {\n\t\t\t'docstatus': '1',\n\t\t\t'status': 'Submitted',\n\t\t\t'inquiry_type': [\"in\", \"Request Project, Request Service, Request Project BST\"]\n        \t}\n\t}\n});\ncur_frm.set_query(\"sales_order\", function(frm) {\n\treturn {\n        \tfilters: {\n\t\t\t'docstatus': '1',\n\t\t\t'inquiry': cur_frm.doc.inquiry\n        \t}\n\t}\n});", 
+  "script": "frappe.ui.form.on(\"Stock Entry\", {\n\tget_inquiry_items: function(frm){\n\t\terpnext.utils.map_current_doc({\n\t\t\tmethod: \"preorder.preorder.lemparan.get_inquiry_items\",\n\t\t\tsource_name: frm.doc.sales_order,\n\t\t});\n\t},\n})\ncur_frm.set_query(\"inquiry\", function(frm) {\n\treturn {\n        \tfilters: {\n\t\t\t'docstatus': '1',\n\t\t\t'status': 'Submitted',\n\t\t\t'inquiry_type': [\"in\", \"Request Project, Request Service, Request Project BST\"]\n        \t}\n\t}\n});\ncur_frm.set_query(\"sales_order\", function(frm) {\n\treturn {\n\t\tquery: \"preorder.preorder.selling.get_sales_order\",\n        \tfilters: {\n\t\t\t'docstatus': '1',\n\t\t\t'inquiry': cur_frm.doc.inquiry\n        \t}\n\t}\n});", 
   "script_type": "Client"
  }
 ]
