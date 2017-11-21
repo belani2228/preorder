@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.10'
+__version__ = '1.0.11'
 
+#1.0.11:
+#   - Fix inquiry all item
+#   - Update Laporan Pembalik HPP
+#   - Add Laporan Net Profit
 #1.0.10:
 #   - Fix material transfer if using inquiry
 #1.0.9:

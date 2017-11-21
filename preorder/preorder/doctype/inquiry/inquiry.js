@@ -10,6 +10,10 @@ frappe.ui.form.on('Inquiry', {
 			cur_frm.add_custom_button(__('Journal Entry'), cur_frm.cscript['Journal Entry'], __("Make"));
 			cur_frm.page.set_inner_btn_group_as_primary(__("Make"));
 		}
+		if(frm.doc.docstatus == 1 && frm.doc.status == "Completed"){
+			cur_frm.add_custom_button(__('Journal Entry'), cur_frm.cscript['Journal Entry'], __("Make"));
+			cur_frm.page.set_inner_btn_group_as_primary(__("Make"));
+		}
 		if(frm.doc.status == "Submitted") {
 			cur_frm.add_custom_button(__('Set as Lost'), cur_frm.cscript['Declare Order Lost']);
 		}

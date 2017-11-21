@@ -53,6 +53,12 @@ def get_data():
 					"doctype": "Inquiry",
 					"is_query_report": True
 				},
+				{
+					"type": "report",
+					"name": "Net Profit",
+					"doctype": "Inquiry",
+					"is_query_report": True
+				},
 			]
 		},
 	]
