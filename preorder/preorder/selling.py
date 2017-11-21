@@ -53,3 +53,23 @@ def _make_sales_order(source_name, target_doc=None, ignore_permissions=False):
 	# postprocess: fetch shipping address, set missing values
 
 	return doclist
+
+@frappe.whitelist()
+def get_sales_order(doctype, txt, searchfield, start, page_len, filters):
+	from erpnext.controllers.queries import get_match_cond
+
+	if not filters: filters = {}
+
+	condition = ""
+	if filters.get("inquiry"):
+		condition += "and soi.inquiry = %(inquiry)s"
+
+	return frappe.db.sql("""select distinct(soi.parent) from `tabSales Order Item` soi
+		where soi.docstatus='1'
+			and soi.parent LIKE %(txt)s
+			{condition} {match_condition}"""
+		.format(condition=condition,
+			match_condition=get_match_cond(doctype)), {
+			'inquiry': filters.get("inquiry", ""),
+			'txt': "%%%s%%" % frappe.db.escape(txt)
+		})

@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.9'
+__version__ = '1.0.10'
 
+#1.0.10:
+#   - Fix material transfer if using inquiry
 #1.0.9:
 #   - Fix reset rate in sales order
 #1.0.8:
