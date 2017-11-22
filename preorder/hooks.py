@@ -98,16 +98,18 @@ doc_events = {
 	"Sales Order": {
 		"autoname": "preorder.preorder.operan.autoname_sales_order",
 		"validate": "preorder.preorder.operan.validate_sales_order",
-		"on_submit": ["preorder.preorder.operan.submit_sales_order", "preorder.preorder.operan.submit_sales_order_2"],
-		"before_cancel": ["preorder.preorder.operan.cancel_sales_order", "preorder.preorder.operan.cancel_sales_order_2"]
+		"on_submit": ["preorder.preorder.operan.submit_sales_order", "preorder.preorder.operan.submit_sales_order_2", "preorder.preorder.operan.submit_sales_order_3", "preorder.preorder.operan.submit_sales_order_4"],
+		"before_cancel": ["preorder.preorder.operan.cancel_sales_order", "preorder.preorder.operan.cancel_sales_order_2", "preorder.preorder.operan.cancel_sales_order_3", "preorder.preorder.operan.cancel_sales_order_4"]
 	},
 	"Delivery Note": {
-		"validate": "preorder.preorder.operan.validate_delivery_note"
+		"validate": "preorder.preorder.operan.validate_delivery_note",
+		"on_submit": "preorder.preorder.operan.submit_delivery_note",
+		"before_cancel": "preorder.preorder.operan.cancel_delivery_note"
 	},
 	"Sales Invoice": {
 		"validate": "preorder.preorder.operan.validate_sales_invoice",
-		"on_submit": ["preorder.preorder.operan.submit_sales_invoice", "preorder.preorder.operan.submit_sales_invoice_2"],
-		"before_cancel": "preorder.preorder.operan.cancel_sales_invoice"
+		"on_submit": ["preorder.preorder.operan.submit_sales_invoice", "preorder.preorder.operan.submit_sales_invoice_2", "preorder.preorder.operan.submit_sales_invoice_3"],
+		"before_cancel": ["preorder.preorder.operan.cancel_sales_invoice", "preorder.preorder.operan.cancel_sales_invoice_2"]
 	},
 	"Purchase Order": {
 		"on_submit": ["preorder.preorder.operan.submit_purchase_order", "preorder.preorder.operan.submit_purchase_order_2"],

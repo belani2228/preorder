@@ -49,6 +49,7 @@ def update_quotation(doc, method):
             frappe.db.sql("""update `tabQuotation Item` set count = %s where `name` = %s""", (hitung, row.name))
 
 def submit_quotation(doc, method):
+    frappe.db.sql("""update `tabQuotation` set so_status = 'New' where `name` = %s""", doc.name)
     for row in doc.items:
         if row.inquiry_item != None:
             if row.mark_as_complete:
@@ -178,9 +179,35 @@ def submit_sales_order(doc, method):
 def submit_sales_order_2(doc, method):
     for row in doc.items:
         if row.quotation_item:
-            cek_qty = frappe.db.sql("""select so_qty from `tabQuotation Item` where `name` = %s""", row.quotation_item)[0][0]
-            add_qty = flt(cek_qty) + flt(row.qty)
-            frappe.db.sql("""update `tabQuotation Item` set so_item = %s, so_qty = %s where `name` = %s""", (row.name, add_qty, row.quotation_item))
+            if row.mark_as_complete:
+                cek_qty = frappe.db.sql("""select qty from `tabQuotation Item` where `name` = %s""", row.quotation_item)[0][0]
+                frappe.db.sql("""update `tabQuotation Item` set so_item = %s, so_qty = %s where `name` = %s""", (row.name, cek_qty, row.quotation_item))
+            else:
+                cek_qty = frappe.db.sql("""select so_qty from `tabQuotation Item` where `name` = %s""", row.quotation_item)[0][0]
+                add_qty = flt(cek_qty) + flt(row.qty)
+                frappe.db.sql("""update `tabQuotation Item` set so_item = %s, so_qty = %s where `name` = %s""", (row.name, add_qty, row.quotation_item))
+
+def submit_sales_order_3(doc, method):
+    so = frappe.db.sql("""select distinct(prevdoc_docname) from `tabSales Order Item` where parent = %s""", doc.name, as_dict=True)
+    if so:
+        for s in so:
+            check_so_detail = frappe.db.sql("""select count(*) from `tabQuotation Item` where parent = %s and qty < so_qty""", s.prevdoc_docname)[0][0]
+            if check_so_detail >= 1:
+                frappe.db.sql("""update `tabQuotation` set so_status = 'Partial SO' where `name` = %s""", s.prevdoc_docname)
+            else:
+                frappe.db.sql("""update `tabQuotation` set so_status = 'Completed' where `name` = %s""", s.prevdoc_docname)
+
+def submit_sales_order_4(doc, method):
+    for row in doc.items:
+        so_invoice = frappe.get_doc({
+            "doctype": "Sales Order to Invoice",
+            "docstatus": 1,
+            "parent": doc.name,
+            "parentfield": "so2invoice",
+            "parenttype": "Sales Order",
+            "item_code": row.item_code,
+        })
+        so_invoice.insert()
 
 def cancel_sales_order(doc, method):
     temp = []
@@ -196,9 +223,25 @@ def cancel_sales_order(doc, method):
 def cancel_sales_order_2(doc, method):
     for row in doc.items:
         if row.quotation_item:
-            cek_qty = frappe.db.sql("""select so_qty from `tabQuotation Item` where `name` = %s""", row.quotation_item)[0][0]
-            add_qty = flt(cek_qty) - flt(row.qty)
-            frappe.db.sql("""update `tabQuotation Item` set so_item = %s, so_qty = %s where `name` = %s""", (row.name, add_qty, row.quotation_item))
+            if row.mark_as_complete:
+                frappe.db.sql("""update `tabQuotation Item` set so_item = null, so_qty = '0' where `name` = %s""", row.quotation_item)
+            else:
+                cek_qty = frappe.db.sql("""select so_qty from `tabQuotation Item` where `name` = %s""", row.quotation_item)[0][0]
+                add_qty = flt(cek_qty) - flt(row.qty)
+                frappe.db.sql("""update `tabQuotation Item` set so_item = null, so_qty = %s where `name` = %s""", (add_qty, row.quotation_item))
+
+def cancel_sales_order_3(doc, method):
+    so = frappe.db.sql("""select distinct(prevdoc_docname) from `tabSales Order Item` where parent = %s""", doc.name, as_dict=True)
+    if so:
+        for s in so:
+            check_so_detail = frappe.db.sql("""select count(*) from `tabQuotation Item` where parent = %s and so_qty >= '1'""", s.prevdoc_docname)[0][0]
+            if check_so_detail >= 1:
+                frappe.db.sql("""update `tabQuotation` set so_status = 'Partial SO' where `name` = %s""", s.prevdoc_docname)
+            else:
+                frappe.db.sql("""update `tabQuotation` set so_status = 'New' where `name` = %s""", s.prevdoc_docname)
+
+def cancel_sales_order_4(doc, method):
+    frappe.db.sql("""delete from `tabSales Order to Invoice` where parent = %s""", doc.name)
 
 def validate_delivery_note(doc, method):
     so_list = []
@@ -222,6 +265,16 @@ def validate_delivery_note(doc, method):
     if tampung:
         descr = ', '.join(tampung)
         frappe.msgprint(_("Please create Product Bundle for item "+descr))
+
+def submit_delivery_note(doc, method):
+    for row in doc.items:
+        if row.against_sales_order:
+            frappe.db.sql("""update `tabSales Order to Invoice` set delivery_note = %s where parent = %s and item_code = %s""", (doc.name, row.against_sales_order, row.item_code))
+
+def cancel_delivery_note(doc, method):
+    for row in doc.items:
+        if row.against_sales_order:
+            frappe.db.sql("""update `tabSales Order to Invoice` set delivery_note = null where parent = %s and item_code = %s""", (row.against_sales_order, row.item_code))
 
 def validate_sales_invoice(doc, method):
         pass
@@ -283,6 +336,11 @@ def submit_sales_invoice_2(doc, method):
         if doc.get_items_count == 0:
             frappe.throw(_("You must press the <b>Get Items</b> button"))
 
+def submit_sales_invoice_3(doc, method):
+    for row in doc.items:
+        if row.sales_order:
+            frappe.db.sql("""update `tabSales Order to Invoice` set sales_invoice = %s where parent = %s and item_code = %s""", (doc.name, row.sales_order, row.item_code))
+
 def cancel_sales_invoice(doc, method):
     if doc.type_of_invoice == 'Down Payment':
         frappe.db.sql("""update `tabSales Order` set down_payment = null where `name` = %s""", doc.sales_order)
@@ -291,6 +349,11 @@ def cancel_sales_invoice(doc, method):
         for d in dn:
             frappe.db.sql("""update `tabDelivery Note` set sales_invoice = null where `name` = %s""", d.delivery_note)
     frappe.db.sql("""delete from `tabSales Order Invoice` where sales_invoice = %s""", doc.name)
+
+def cancel_sales_invoice_2(doc, method):
+    for row in doc.items:
+        if row.sales_order:
+            frappe.db.sql("""update `tabSales Order to Invoice` set sales_invoice = null where parent = %s and item_code = %s""", (row.sales_order, row.item_code))
 
 def submit_purchase_order(doc, method):
     pass

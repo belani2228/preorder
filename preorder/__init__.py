@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.12'
+__version__ = '1.0.13'
 
+#1.0.13:
+#   - Fix quotation make sales order
+#   - Add doctype Sales Order to Invoice
+#   - Fix laporan pembalik hpp
 #1.0.12:
 #   - Add brand & type in product assembly item
 #1.0.11:
