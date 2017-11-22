@@ -43,6 +43,12 @@ def get_data():
 			"items": [
 				{
 					"type": "report",
+					"name": "Account Receivable",
+					"doctype": "Sales Invoice",
+					"is_query_report": True
+				},
+				{
+					"type": "report",
 					"name": "Laporan Pembalik HPP",
 					"doctype": "Delivery Note",
 					"is_query_report": True

@@ -48,7 +48,9 @@ class ProductAssembly(Document):
 				"uom": row.uom,
 				"is_product_assembly": 1,
 				"product_assembly": self.name,
-				"product_assembly_item": row.name
+				"product_assembly_item": row.name,
+				"brand": row.brand,
+				"type": row.type
 			})
 			items.insert()
 
