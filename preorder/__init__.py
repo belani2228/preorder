@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.14'
+__version__ = '1.0.15'
 
+#1.0.15:
+#   - Fix get inquiry in stock entry
+#   - Update Ascount Receivable Report
 #1.0.14:
 #   - Fix submit on product assembly
 #1.0.13:

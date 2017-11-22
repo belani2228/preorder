@@ -28,7 +28,7 @@ class ReceivablePayableReport(object):
 			columns += [args.get("party_type") + " Name::110"]
 
 		columns += [_("Voucher Type") + "::110", _("Voucher No") + ":Dynamic Link/"+_("Voucher Type")+":120",
-			_("Due Date") + ":Date:80"]
+			_("Date of Receipt") + ":Date:100", _("Due Date") + ":Date:80"]
 
 		if args.get("party_type") == "Supplier":
 			columns += [_("Bill No") + "::80", _("Bill Date") + ":Date:80"]
@@ -81,7 +81,6 @@ class ReceivablePayableReport(object):
 			columns += [_("Supplier Type") + ":Link/Supplier Type:80"]
 
 		columns.append(_("Remarks") + "::200")
-		columns.append(_("Date of Receipt") + "::120")
 
 		return columns
 
@@ -115,8 +114,10 @@ class ReceivablePayableReport(object):
 
 					# get due date
 					due_date = voucher_details.get(gle.voucher_no, {}).get("due_date", "")
+					# get date of receipt
+					receipt_date = voucher_details.get(gle.voucher_no, {}).get("date_of_receipt", "")
 
-					row += [gle.voucher_type, gle.voucher_no, due_date]
+					row += [gle.voucher_type, gle.voucher_no, receipt_date, due_date]
 
 					# get supplier bill details
 					if args.get("party_type") == "Supplier":
@@ -153,9 +154,6 @@ class ReceivablePayableReport(object):
 
 					row.append(gle.remarks)
 
-					# get date of receipt
-					receipt_date = voucher_details.get(gle.voucher_no, {}).get("date_of_receipt", "")
-					row.append(receipt_date)
 					data.append(row)
 
 		return data
