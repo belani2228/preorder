@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.16'
+__version__ = '1.0.17'
 
+#1.0.17:
+#   - Fix net profit
 #1.0.16:
 #   - Add print_detail in Delivery Note Item
 #1.0.15:

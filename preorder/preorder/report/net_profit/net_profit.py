@@ -46,7 +46,7 @@ def get_entries(filters):
 	conditions = get_conditions(filters)
 	return frappe.db.sql("""select distinct(iq.`name`) as inquiry, iq.transaction_date as inquiry_date, sii.parent as sales_invoice, pe.`name` as payment, pe.posting_date as payment_date,
 	(select sum(qty * rate) from `tabSales Invoice Item` where inquiry = iq.`name`) as selling,
-	(select sum(dni.qty * sle.valuation_rate) from `tabDelivery Note Item` dni inner join `tabStock Ledger Entry` sle on dni.`name` = sle.voucher_detail_no where inquiry = iq.`name`) as cogs,
+	(select sum((sle.actual_qty * -1) * sle.valuation_rate) from `tabDelivery Note Item` dni inner join `tabStock Ledger Entry` sle on dni.`name` = sle.voucher_detail_no where inquiry = iq.`name`) as cogs,
 	(select total_debit from `tabJournal Entry` where inquiry = iq.`name`) as expenses,
 	((select sum(qty * rate) from `tabSales Invoice Item` where inquiry = iq.`name`) - ((select sum(dni.qty * sle.valuation_rate) from `tabDelivery Note Item` dni inner join `tabStock Ledger Entry` sle on dni.`name` = sle.voucher_detail_no where inquiry = iq.`name`) + (select total_debit from `tabJournal Entry` where inquiry = iq.`name`))) as net_profit
 	from `tabInquiry` iq
