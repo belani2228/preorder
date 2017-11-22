@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.11'
+__version__ = '1.0.12'
 
+#1.0.12:
+#   - Add brand & type in product assembly item
 #1.0.11:
 #   - Fix inquiry all item
 #   - Update Laporan Pembalik HPP
