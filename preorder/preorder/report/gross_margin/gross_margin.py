@@ -61,5 +61,4 @@ def get_entries(filters):
 	from `tabSales Invoice Item` sii
 	inner join `tabSales Invoice` si on sii.parent = si.`name`
 	inner join `tabDelivery Note Item` dni on sii.so_detail = dni.so_detail
-	inner join `tabStock Ledger Entry` sle on dni.`name` = sle.voucher_detail_no
-	where si.docstatus = '1' and dni.docstatus = '1' and si.type_of_invoice in ('Retention', 'Non Project Payment', 'Standard') and dni.docstatus = '1' %s""" % conditions, as_dict=1)
+	where si.docstatus = '1' and dni.docstatus = '1' and si.type_of_invoice in ('Retention', 'Non Project Payment', 'Standard') %s""" % conditions, as_dict=1)
