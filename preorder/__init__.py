@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.17'
+__version__ = '1.0.18'
 
+#1.0.18:
+#   - Disable send main in RfSQ
 #1.0.17:
 #   - Fix net profit
 #1.0.16:

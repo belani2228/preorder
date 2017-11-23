@@ -7,6 +7,7 @@ frappe.ui.form.on('Request for Supplier Quotation', {
 	},
 	refresh: function(frm, cdt, cdn) {
 		if (frm.doc.docstatus == 1 && frm.doc.status == "Submitted") {
+			/*
 			frm.add_custom_button(__("Send Email to Supplier"), function() {
 				frappe.call({
 					method: 'preorder.preorder.doctype.request_for_supplier_quotation.request_for_supplier_quotation.send_supplier_emails',
@@ -19,6 +20,7 @@ frappe.ui.form.on('Request for Supplier Quotation', {
 					}
 				});
 			});
+			*/
 		}
 	},
 	on_update: function(frm) {
