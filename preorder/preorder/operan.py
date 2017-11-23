@@ -341,6 +341,19 @@ def submit_sales_invoice_3(doc, method):
         if row.sales_order:
             frappe.db.sql("""update `tabSales Order to Invoice` set sales_invoice = %s where parent = %s and item_code = %s""", (doc.name, row.sales_order, row.item_code))
 
+def submit_sales_invoice_4(doc, method):
+    count = frappe.db.sql("""select count(*) from `tabSales Invoice Item` where parent = %s and inquiry is not null""", doc.name)[0][0]
+    if flt(count) != 0:
+        items = frappe.db.sql("""select distinct(inquiry) from `tabSales Invoice Item` where parent = %s""", doc.name, as_dict=1)
+        for row in items:
+            inq_list = frappe.db.sql("""select distinct(parent) from `tabSales Invoice Item` where docstatus = '1' and inquiry = %s""", row.inquiry, as_dict=1)
+            array = []
+            for ii in inq_list:
+                insert = "<a href='/desk#Form/Sales%20Invoice/"+ii.parent+"'>"+ii.parent+"</a>"
+                array.append(insert)
+            descr = ', '.join(array)
+            frappe.db.sql("""update `tabInquiry` set sales_invoice_link = %s where `name` = %s""", (descr, row.inquiry))
+
 def cancel_sales_invoice(doc, method):
     if doc.type_of_invoice == 'Down Payment':
         frappe.db.sql("""update `tabSales Order` set down_payment = null where `name` = %s""", doc.sales_order)
@@ -354,6 +367,19 @@ def cancel_sales_invoice_2(doc, method):
     for row in doc.items:
         if row.sales_order:
             frappe.db.sql("""update `tabSales Order to Invoice` set sales_invoice = null where parent = %s and item_code = %s""", (row.sales_order, row.item_code))
+
+def cancel_sales_invoice_3(doc, method):
+    count = frappe.db.sql("""select count(*) from `tabSales Invoice Item` where parent = %s and inquiry is not null""", doc.name)[0][0]
+    if flt(count) != 0:
+        items = frappe.db.sql("""select distinct(inquiry) from `tabSales Invoice Item` where parent = %s""", doc.name, as_dict=1)
+        for row in items:
+            inq_list = frappe.db.sql("""select distinct(parent) from `tabSales Invoice Item` where docstatus = '1' and inquiry = %s""", row.inquiry, as_dict=1)
+            array = []
+            for ii in inq_list:
+                insert = "<a href='/desk#Form/Sales%20Invoice/"+ii.parent+"'>"+ii.parent+"</a>"
+                array.append(insert)
+            descr = ', '.join(array)
+            frappe.db.sql("""update `tabInquiry` set sales_invoice_link = %s where `name` = %s""", (descr, row.inquiry))
 
 def submit_purchase_order(doc, method):
     pass
@@ -418,4 +444,4 @@ def update_product_bundle(doc, method):
                 frappe.db.sql("""update `tabProduct Assembly Item` set item_code = %s where `name` = %s""", (row.item_code, row.product_assembly_detail))
 
 def update_item_price(doc, method):
-    frappe.db.sql("""update `tabItem Price` set price_list_rate = '0' where `name` = %s""", doc.name)
+    frappe.db.sql("""update `tabItem Price` set price_list_rate = '0' where price_list_rate != '0'""")

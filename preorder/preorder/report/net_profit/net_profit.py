@@ -12,7 +12,7 @@ def execute(filters=None):
 	data = []
 
 	for cl in sl_entries:
-		data.append([cl.inquiry, cl.inquiry_date, cl.selling_amount, cl.payment, cl.payment_date, cl.cogs, cl.expenses, cl.net_profit])
+		data.append([cl.inquiry, cl.inquiry_date, cl.sales_invoice_link, cl.selling_amount, cl.payment, cl.payment_date, cl.cogs, cl.expenses, cl.net_profit])
 
 	return columns, data
 
@@ -22,6 +22,7 @@ def get_columns():
 	columns = [
 		_("Inquiry")+":Link/Inquiry:120",
 		_("Posting Date")+":Date:100",
+		_("Sales Invoice")+"::120",
 		_("Selling Amount")+":Currency:120",
 		_("Payment")+":Link/Payment Entry:120",
 		_("Payment Date")+":Date:100",
@@ -43,7 +44,7 @@ def get_conditions(filters):
 
 def get_entries(filters):
 	conditions = get_conditions(filters)
-	return frappe.db.sql("""select distinct(iq.`name`)as inquiry, iq.transaction_date as inquiry_date,
+	return frappe.db.sql("""select distinct(iq.`name`)as inquiry, iq.transaction_date as inquiry_date, iq.sales_invoice_link,
 	(select sum(aa.net_amount) from `tabSales Invoice Item` aa where aa.inquiry = iq.`name`) as selling_amount,
 	pe.`name` as payment, pe.posting_date as payment_date,
 	(select sum((sle.actual_qty * -1) * sle.valuation_rate) from `tabDelivery Note Item` dni
