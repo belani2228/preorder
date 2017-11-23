@@ -12,7 +12,7 @@ def execute(filters=None):
 	data = []
 
 	for cl in sl_entries:
-		data.append([cl.inquiry, cl.inquiry_date, cl.sales_invoice, cl.selling, cl.payment, cl.payment_date, cl.cogs, cl.expenses, cl.net_profit])
+		data.append([cl.inquiry, cl.inquiry_date, cl.selling_amount, cl.payment, cl.payment_date, cl.cogs, cl.expenses, cl.net_profit])
 
 	return columns, data
 
@@ -22,13 +22,12 @@ def get_columns():
 	columns = [
 		_("Inquiry")+":Link/Inquiry:120",
 		_("Posting Date")+":Date:100",
-		_("Sales Invoice")+":Link/Sales Invoice:120",
-		_("Selling")+":Currency:110",
+		_("Selling Amount")+":Currency:120",
 		_("Payment")+":Link/Payment Entry:120",
 		_("Payment Date")+":Date:100",
-		_("HPP")+":Currency:110",
-		_("Expenses")+":Currency:110",
-		_("Net Profit")+":Currency:110",
+		_("HPP")+":Currency:120",
+		_("Expenses")+":Currency:120",
+		_("Net Profit")+":Currency:120",
 	]
 
 	return columns
@@ -44,15 +43,19 @@ def get_conditions(filters):
 
 def get_entries(filters):
 	conditions = get_conditions(filters)
-	return frappe.db.sql("""select distinct(iq.`name`) as inquiry, iq.transaction_date as inquiry_date, sii.parent as sales_invoice, pe.`name` as payment, pe.posting_date as payment_date,
-	(select sum(qty * rate) from `tabSales Invoice Item` where inquiry = iq.`name`) as selling,
-	(select sum((sle.actual_qty * -1) * sle.valuation_rate) from `tabDelivery Note Item` dni inner join `tabStock Ledger Entry` sle on dni.`name` = sle.voucher_detail_no where inquiry = iq.`name`) as cogs,
+	return frappe.db.sql("""select distinct(iq.`name`)as inquiry, iq.transaction_date as inquiry_date,
+	(select sum(aa.net_amount) from `tabSales Invoice Item` aa where aa.inquiry = iq.`name`) as selling_amount,
+	pe.`name` as payment, pe.posting_date as payment_date,
+	(select sum((sle.actual_qty * -1) * sle.valuation_rate) from `tabDelivery Note Item` dni
+	inner join `tabStock Ledger Entry` sle on dni.`name` = sle.voucher_detail_no where inquiry = iq.`name`) as cogs,
 	(select total_debit from `tabJournal Entry` where inquiry = iq.`name`) as expenses,
-	((select sum(qty * rate) from `tabSales Invoice Item` where inquiry = iq.`name`) - ((select sum(dni.qty * sle.valuation_rate) from `tabDelivery Note Item` dni inner join `tabStock Ledger Entry` sle on dni.`name` = sle.voucher_detail_no where inquiry = iq.`name`) + (select total_debit from `tabJournal Entry` where inquiry = iq.`name`))) as net_profit
+	((select sum(aa.net_amount) from `tabSales Invoice Item` aa where aa.inquiry = iq.`name`) -
+	(select sum((sle.actual_qty * -1) * sle.valuation_rate) from `tabDelivery Note Item` dni
+	inner join `tabStock Ledger Entry` sle on dni.`name` = sle.voucher_detail_no where inquiry = iq.`name`) -
+	(select total_debit from `tabJournal Entry` where inquiry = iq.`name`)) as net_profit
 	from `tabInquiry` iq
-	inner join `tabInquiry Item` ii on iq.`name` = ii.parent
-	inner join `tabSales Invoice Item` sii on iq.`name` = sii.inquiry
+	inner join `tabSales Invoice Item` sii on sii.inquiry = iq.`name`
+	inner join `tabSales Invoice` si on si.`name` = sii.parent and si.type_of_invoice in ('Retention', 'Non Project Payment', 'Standard') and si.`status` = 'Paid'
 	inner join `tabPayment Entry Reference` per on sii.parent = per.reference_name
 	inner join `tabPayment Entry` pe on per.parent = pe.`name`
-	left join `tabSales Invoice` si on sii.parent = si.`name` and si.`status` = 'Paid'
-	where iq.docstatus = '1' and pe.docstatus = '1' %s""" % conditions, as_dict=1)
+	where iq.docstatus = '1' %s order by iq.`name` asc""" % conditions, as_dict=1)

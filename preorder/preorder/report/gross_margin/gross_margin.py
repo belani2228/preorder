@@ -54,12 +54,12 @@ def get_entries(filters):
 	return frappe.db.sql("""select si.`name` as invoice, si.customer_name, si.customer_group, si.posting_date,
 	sii.item_code, sii.item_name, sii.item_group, sii.warehouse, dni.qty,
 	(dni.qty * dni.rate) as selling_amount,
-	(dni.qty * sle.valuation_rate) as cogs,
-	((dni.qty * dni.rate) - (dni.qty * sle.valuation_rate)) as gross_profit,
-	((((dni.qty * dni.rate) - (dni.qty * sle.valuation_rate)) / (dni.qty * dni.rate)) * 100) as persen,
+	(select sum((actual_qty * -1) * valuation_rate) from `tabStock Ledger Entry` where voucher_detail_no = dni.`name`) as cogs,
+	((dni.qty * dni.rate) - (select sum((actual_qty * -1) * valuation_rate) from `tabStock Ledger Entry` where voucher_detail_no = dni.`name`)) as gross_profit,
+	((((dni.qty * dni.rate) - (select sum((actual_qty * -1) * valuation_rate) from `tabStock Ledger Entry` where voucher_detail_no = dni.`name`)) / (dni.qty * dni.rate)) * 100) as persen,
 	si.currency
 	from `tabSales Invoice Item` sii
 	inner join `tabSales Invoice` si on sii.parent = si.`name`
 	inner join `tabDelivery Note Item` dni on sii.so_detail = dni.so_detail
 	inner join `tabStock Ledger Entry` sle on dni.`name` = sle.voucher_detail_no
-	where si.docstatus = '1' and si.type_of_invoice in ('Retention', 'Non Project Payment', 'Standard') and dni.docstatus = '1' %s""" % conditions, as_dict=1)
+	where si.docstatus = '1' and dni.docstatus = '1' and si.type_of_invoice in ('Retention', 'Non Project Payment', 'Standard') and dni.docstatus = '1' %s""" % conditions, as_dict=1)

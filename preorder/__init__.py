@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.20'
+__version__ = '1.0.21'
 
+#1.0.21:
+#   - Update report Gross Margin
+#   - Update report Net Profit
 #1.0.20:
 #   - Add report Gross Margin
 #1.0.19:
