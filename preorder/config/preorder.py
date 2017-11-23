@@ -61,6 +61,12 @@ def get_data():
 				},
 				{
 					"type": "report",
+					"name": "Gross Margin",
+					"doctype": "Inquiry",
+					"is_query_report": True
+				},
+				{
+					"type": "report",
 					"name": "Net Profit",
 					"doctype": "Inquiry",
 					"is_query_report": True

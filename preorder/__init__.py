@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.19'
+__version__ = '1.0.20'
 
+#1.0.20:
+#   - Add report Gross Margin
 #1.0.19:
 #   - Fix submit purchase receipt if create RP without PO
 #1.0.18:
