@@ -373,8 +373,9 @@ def cancel_purchase_order(doc, method):
 #            frappe.db.sql("""update `tabSales Order Item` set po_no = null where `name` = %s""", row.sales_order_item)
 
 def submit_purchase_receipt(doc, method):
-    po = frappe.db.sql("""select purchase_order from `tabPurchase Receipt Item` where parent = %s and purchase_order is not null order by idx asc limit 1""", doc.name)[0][0]
-    if po:
+    count = frappe.db.sql("""select count(*) from `tabPurchase Receipt Item` where parent = %s and purchase_order is not null""", doc.name)[0][0]
+    if flt(count) != 0:
+        po = frappe.db.sql("""select purchase_order from `tabPurchase Receipt Item` where parent = %s and purchase_order is not null order by idx asc limit 1""", doc.name)[0][0]
         frappe.db.sql("""update `tabPurchase Receipt` set purchase_order = %s where `name` = %s""", (po, doc.name))
 
 def submit_purchase_invoice(doc, method):
