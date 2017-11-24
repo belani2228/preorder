@@ -271,10 +271,28 @@ def submit_delivery_note(doc, method):
         if row.against_sales_order:
             frappe.db.sql("""update `tabSales Order to Invoice` set delivery_note = %s where parent = %s and item_code = %s""", (doc.name, row.against_sales_order, row.item_code))
 
+def submit_delivery_note_2(doc, method):
+    for row in doc.items:
+        if row.against_sales_order:
+            detail = frappe.get_doc({
+                "doctype": "Sales Order Delivery Item",
+                "docstatus": 1,
+                "parent": row.against_sales_order,
+                "parentfield": "delivery_item",
+                "parenttype": "Sales Order",
+                "delivery_note": doc.name,
+                "dn_detail": row.name,
+                "so_detail": row.so_detail,
+            })
+            detail.insert()
+
 def cancel_delivery_note(doc, method):
     for row in doc.items:
         if row.against_sales_order:
             frappe.db.sql("""update `tabSales Order to Invoice` set delivery_note = null where parent = %s and item_code = %s""", (row.against_sales_order, row.item_code))
+
+def cancel_delivery_note_2(doc, method):
+    frappe.db.sql("""delete from `tabSales Order Delivery Item` where delivery_note = %s""", doc.name)
 
 def validate_sales_invoice(doc, method):
         pass
@@ -354,6 +372,27 @@ def submit_sales_invoice_4(doc, method):
             descr = ', '.join(array)
             if array:
                 frappe.db.sql("""update `tabInquiry` set sales_invoice_link = %s where `name` = %s""", (descr, row.inquiry))
+
+def submit_sales_invoice_5(doc, method):
+    if doc.type_of_invoice == "Standard" or doc.type_of_invoice == "Non Project Payment" or doc.type_of_invoice == "Retention":
+        for row in doc.items:
+            if row.so_detail:
+                check_packed_item = frappe.db.sql("""select count(*) from `tabPacked Item` where parent_detail_docname = %s""", row.so_detail)[0][0]
+                if flt(check_packed_item) != 0:
+                    so_qty = frappe.db.sql("""select qty from `tabSales Order Item` where `name` = %s""", row.so_detail)[0][0]
+                    packed_item = frappe.db.sql("""select * from `tabPacked Item` where parent_detail_docname = %s""", row.so_detail, as_dict=1)
+                    temp_cogs = []
+                    for pl in packed_item:
+                        valuation_rate = frappe.db.sql("""select valuation_rate from `tabStock Ledger Entry` where item_code = %s order by `name` desc limit 1""", pl.item_code)[0][0]
+                        si_qty = (flt(row.qty) / flt(so_qty)) * flt(pl.qty)
+                        price = flt(si_qty) * flt(valuation_rate)
+                        temp_cogs.append(price)
+                    cogs = sum(temp_cogs)
+                    frappe.db.sql("""update `tabSales Invoice Item` set cogs = %s where `name` = %s""", (cogs, row.name))
+                else:
+                    valuation_rate = frappe.db.sql("""select valuation_rate from `tabStock Ledger Entry` where item_code = %s order by `name` desc limit 1""", row.item_code)[0][0]
+                    price = flt(row.qty) * flt(valuation_rate)
+                    frappe.db.sql("""update `tabSales Invoice Item` set cogs = %s where `name` = %s""", (price, row.name))
 
 def cancel_sales_invoice(doc, method):
     if doc.type_of_invoice == 'Down Payment':

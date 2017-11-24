@@ -12,7 +12,7 @@ def execute(filters=None):
 	data = []
 
 	for cl in sl_entries:
-		data.append([cl.invoice, cl.customer_name, cl.customer_group, cl.posting_date, cl.item_code, cl.item_name, cl.item_group, cl.warehouse, cl.qty, cl.selling_amount, cl.cogs, cl.gross_profit, cl.persen, cl.currency])
+		data.append([cl.invoice, cl.customer_name, cl.customer_group, cl.posting_date, cl.item_code, cl.item_name, cl.item_group, cl.warehouse, cl.qty, cl.selling_amount, cl.cogs, cl.gross_profit, cl.percent, cl.currency])
 
 	return columns, data
 
@@ -51,14 +51,22 @@ def get_conditions(filters):
 
 def get_entries(filters):
 	conditions = get_conditions(filters)
-	return frappe.db.sql("""select si.`name` as invoice, si.customer_name, si.customer_group, si.posting_date,
-	sii.item_code, sii.item_name, sii.item_group, sii.warehouse, dni.qty,
-	(dni.qty * dni.rate) as selling_amount,
-	(select sum((actual_qty * -1) * valuation_rate) from `tabStock Ledger Entry` where voucher_detail_no = dni.`name`) as cogs,
-	((dni.qty * dni.rate) - (select sum((actual_qty * -1) * valuation_rate) from `tabStock Ledger Entry` where voucher_detail_no = dni.`name`)) as gross_profit,
-	((((dni.qty * dni.rate) - (select sum((actual_qty * -1) * valuation_rate) from `tabStock Ledger Entry` where voucher_detail_no = dni.`name`)) / (dni.qty * dni.rate)) * 100) as persen,
-	si.currency
-	from `tabSales Invoice Item` sii
-	inner join `tabSales Invoice` si on sii.parent = si.`name`
-	inner join `tabDelivery Note Item` dni on sii.so_detail = dni.so_detail
-	where si.docstatus = '1' and dni.docstatus = '1' and si.type_of_invoice in ('Retention', 'Non Project Payment', 'Standard') %s""" % conditions, as_dict=1)
+	return frappe.db.sql("""
+		select
+			si.`name` as invoice,
+			si.customer_name,
+			si.customer_group,
+			si.posting_date,
+			sii.item_code,
+			sii.item_name,
+			sii.item_group,
+			sii.warehouse, sii.qty,
+			sii.net_amount as selling_amount, sii.cogs,
+			(sii.net_amount - sii.cogs) as gross_profit,
+			(((sii.net_amount - sii.cogs)/sii.net_amount) * 100) as percent,
+			si.currency
+		from `tabSales Invoice Item` sii
+		inner join `tabSales Invoice` si on si.`name` = sii.parent
+		where si.docstatus = '1' and si.type_of_invoice in ('Retention', 'Non Project Payment', 'Standard') %s
+		order by si.posting_date asc, si.`name` asc
+		""" % conditions, as_dict=1)

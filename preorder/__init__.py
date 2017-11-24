@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.26'
+__version__ = '1.0.27'
 
+#1.0.27:
+#   - Update Sales Invoice Item
+#   - Fix Report Gross Margin
 #1.0.26:
 #   - Add Report Progress Report
 #1.0.25:

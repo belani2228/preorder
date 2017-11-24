@@ -121,8 +121,14 @@ doc_events = {
 	},
 	"Delivery Note": {
 		"validate": "preorder.preorder.operan.validate_delivery_note",
-		"on_submit": "preorder.preorder.operan.submit_delivery_note",
-		"before_cancel": "preorder.preorder.operan.cancel_delivery_note"
+		"on_submit": [
+			"preorder.preorder.operan.submit_delivery_note",
+			"preorder.preorder.operan.submit_delivery_note_2"
+		],
+		"before_cancel": [
+			"preorder.preorder.operan.cancel_delivery_note",
+			"preorder.preorder.operan.cancel_delivery_note_2"
+		]
 	},
 	"Sales Invoice": {
 		"validate": "preorder.preorder.operan.validate_sales_invoice",
@@ -130,7 +136,8 @@ doc_events = {
 			"preorder.preorder.operan.submit_sales_invoice",
 			"preorder.preorder.operan.submit_sales_invoice_2",
 			"preorder.preorder.operan.submit_sales_invoice_3",
-			"preorder.preorder.operan.submit_sales_invoice_4"
+			"preorder.preorder.operan.submit_sales_invoice_4",
+			"preorder.preorder.operan.submit_sales_invoice_5"
 		],
 		"before_cancel": [
 			"preorder.preorder.operan.cancel_sales_invoice",

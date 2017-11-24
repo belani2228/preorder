@@ -44,7 +44,7 @@ def get_conditions(filters):
 
 def get_entries(filters):
 	conditions = get_conditions(filters)
-	return frappe.db.sql("""select distinct(iq.`name`)as inquiry, iq.transaction_date as inquiry_date, iq.sales_invoice_link,
+	return frappe.db.sql("""select distinct(iq.`name`) as inquiry, iq.transaction_date as inquiry_date, iq.sales_invoice_link,
 	(select sum(aa.net_amount) from `tabSales Invoice Item` aa where aa.inquiry = iq.`name`) as selling_amount,
 	pe.`name` as payment, pe.posting_date as payment_date,
 	(select sum((sle.actual_qty * -1) * sle.valuation_rate) from `tabDelivery Note Item` dni
@@ -58,5 +58,5 @@ def get_entries(filters):
 	inner join `tabSales Invoice Item` sii on sii.inquiry = iq.`name`
 	inner join `tabSales Invoice` si on si.`name` = sii.parent and si.type_of_invoice in ('Retention', 'Non Project Payment', 'Standard') and si.`status` = 'Paid'
 	inner join `tabPayment Entry Reference` per on sii.parent = per.reference_name
-	inner join `tabPayment Entry` pe on per.parent = pe.`name`
+	inner join `tabPayment Entry` pe on per.parent = pe.`name` and pe.docstatus = '1'
 	where iq.docstatus = '1' %s order by iq.`name` asc""" % conditions, as_dict=1)
