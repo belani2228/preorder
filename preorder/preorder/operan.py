@@ -191,7 +191,7 @@ def submit_sales_order_3(doc, method):
     so = frappe.db.sql("""select distinct(prevdoc_docname) from `tabSales Order Item` where parent = %s""", doc.name, as_dict=True)
     if so:
         for s in so:
-            check_so_detail = frappe.db.sql("""select count(*) from `tabQuotation Item` where parent = %s and qty < so_qty""", s.prevdoc_docname)[0][0]
+            check_so_detail = frappe.db.sql("""select count(*) from `tabQuotation Item` where parent = %s and qty > so_qty""", s.prevdoc_docname)[0][0]
             if check_so_detail >= 1:
                 frappe.db.sql("""update `tabQuotation` set so_status = 'Partial SO' where `name` = %s""", s.prevdoc_docname)
             else:

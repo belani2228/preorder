@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.23'
+__version__ = '1.0.24'
 
+#1.0.24:
+#   - Minor fix in submit_sales_order_3
 #1.0.23:
 #   - Update submit & cancel Sales Invoice
 #1.0.22:
