@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.24'
+__version__ = '1.0.25'
 
+#1.0.25:
+#   - If quotation so_status complete can't create sales order
 #1.0.24:
 #   - Minor fix in submit_sales_order_3
 #1.0.23:
