@@ -49,8 +49,8 @@ def get_data():
 				},
 				{
 					"type": "report",
-					"name": "Laporan Pembalik HPP",
-					"doctype": "Delivery Note",
+					"name": "Gross Margin",
+					"doctype": "Inquiry",
 					"is_query_report": True
 				},
 				{
@@ -61,13 +61,19 @@ def get_data():
 				},
 				{
 					"type": "report",
-					"name": "Gross Margin",
-					"doctype": "Inquiry",
+					"name": "Laporan Pembalik HPP",
+					"doctype": "Delivery Note",
 					"is_query_report": True
 				},
 				{
 					"type": "report",
 					"name": "Net Profit",
+					"doctype": "Inquiry",
+					"is_query_report": True
+				},
+				{
+					"type": "report",
+					"name": "Progress Report",
 					"doctype": "Inquiry",
 					"is_query_report": True
 				},
