@@ -271,28 +271,10 @@ def submit_delivery_note(doc, method):
         if row.against_sales_order:
             frappe.db.sql("""update `tabSales Order to Invoice` set delivery_note = %s where parent = %s and item_code = %s""", (doc.name, row.against_sales_order, row.item_code))
 
-def submit_delivery_note_2(doc, method):
-    for row in doc.items:
-        if row.against_sales_order:
-            detail = frappe.get_doc({
-                "doctype": "Sales Order Delivery Item",
-                "docstatus": 1,
-                "parent": row.against_sales_order,
-                "parentfield": "delivery_item",
-                "parenttype": "Sales Order",
-                "delivery_note": doc.name,
-                "dn_detail": row.name,
-                "so_detail": row.so_detail,
-            })
-            detail.insert()
-
 def cancel_delivery_note(doc, method):
     for row in doc.items:
         if row.against_sales_order:
             frappe.db.sql("""update `tabSales Order to Invoice` set delivery_note = null where parent = %s and item_code = %s""", (row.against_sales_order, row.item_code))
-
-def cancel_delivery_note_2(doc, method):
-    frappe.db.sql("""delete from `tabSales Order Delivery Item` where delivery_note = %s""", doc.name)
 
 def validate_sales_invoice(doc, method):
         pass
