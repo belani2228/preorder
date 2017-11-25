@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.28'
+__version__ = '1.0.29'
 
+#1.0.29:
+#   - Update Make JE in Inquiry
 #1.0.28:
 #   - Update submit & cancel Delivery Note
 #1.0.27:

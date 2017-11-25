@@ -59,4 +59,4 @@ def get_entries(filters):
 	inner join `tabSales Invoice` si on si.`name` = sii.parent and si.type_of_invoice in ('Retention', 'Non Project Payment', 'Standard') and si.`status` = 'Paid'
 	inner join `tabPayment Entry Reference` per on sii.parent = per.reference_name
 	inner join `tabPayment Entry` pe on per.parent = pe.`name` and pe.docstatus = '1'
-	where iq.docstatus = '1' %s order by iq.`name` asc""" % conditions, as_dict=1)
+	where iq.docstatus = '1' and si.docstatus = '1' %s order by iq.`name` asc""" % conditions, as_dict=1)

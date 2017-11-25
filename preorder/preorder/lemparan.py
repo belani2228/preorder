@@ -266,3 +266,15 @@ def make_journal_entry(source_name, target_doc=None):
     	},
     }, target_doc)
     return doc
+
+@frappe.whitelist()
+def make_journal_entry2(source_name, target_doc=None):
+    doc = get_mapped_doc("Inquiry", source_name, {
+    	"Inquiry": {
+    		"doctype": "Journal Entry",
+    		"validation": {
+    			"docstatus": ["=", 1],
+    		},
+    	},
+    }, target_doc)
+    return doc

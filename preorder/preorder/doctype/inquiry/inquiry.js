@@ -75,7 +75,7 @@ cur_frm.cscript['Quotation'] = function() {
 }
 cur_frm.cscript['Journal Entry'] = function() {
 	frappe.model.open_mapped_doc({
-		method: "preorder.preorder.lemparan.make_journal_entry",
+		method: "preorder.preorder.lemparan.make_journal_entry2",
 		frm: cur_frm
 	})
 }
