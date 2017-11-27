@@ -14,11 +14,12 @@ def reset_rate(doc):
 def get_items_selling_quotation(source_name, target_doc=None):
     cek = frappe.db.get_value("Inquiry", source_name, "status")
     if cek != "Lost":
-#        if target_doc:
-#            if isinstance(target_doc, basestring):
-#                import json
-#                target_doc = frappe.get_doc(json.loads(target_doc))
-#            target_doc.set("items", [])
+        if target_doc:
+            if isinstance(target_doc, basestring):
+                import json
+                target_doc = frappe.get_doc(json.loads(target_doc))
+            target_doc.set("items", [])
+            target_doc.set("assembly_item", [])
 
         def update_item(source, target, source_parent):
             target.item_code = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_inquiry'""")[0][0]
