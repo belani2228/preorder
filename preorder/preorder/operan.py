@@ -42,6 +42,9 @@ def update_quotation(doc, method):
             a = frappe.db.sql("""select count(*) from `tabQuotation Item` where item_description = %s""", row.parent_item)[0][0]
             if flt(a) == 0:
                 frappe.db.sql("""delete from `tabQuotation Assembly Item` where parent_item = %s and parent = %s""", (row.parent_item, doc.name))
+            b = frappe.db.sql("""select count(*) from `tabQuotation Assembly Item` where product_assembly_item = %s""", row.product_assembly_item)[0][0]
+            if flt(b) >= 2:
+                frappe.db.sql("""delete from `tabQuotation Assembly Item` where product_assembly_item = %s limit 1""", row.product_assembly_item)
     hitung = 0
     for row in doc.items:
         if row.alternative_item == 0:

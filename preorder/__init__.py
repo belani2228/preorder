@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.30'
+__version__ = '1.0.31'
 
-#1.0.30:
-#   - Update Quotation
+#1.0.31:
+#   - Balik ke versi 1.0.29 dgn sedikit perbaikan
 #1.0.29:
 #   - Update Make JE in Inquiry
 #1.0.28:
