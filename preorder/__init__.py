@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.31'
+__version__ = '1.0.32'
 
+#1.0.32:
+#   - Update fixture
 #1.0.31:
 #   - Balik ke versi 1.0.29 dgn sedikit perbaikan
 #1.0.29:
