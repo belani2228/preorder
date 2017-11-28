@@ -53,7 +53,7 @@ def get_entries(filters):
 	((select sum(aa.net_amount) from `tabSales Invoice Item` aa inner join `tabSales Invoice` bb on aa.parent = bb.`name` where aa.inquiry = iq.`name` and bb.docstatus = '1' and bb.status = 'Paid') -
 	(select sum((sle.actual_qty * -1) * sle.valuation_rate) from `tabDelivery Note Item` dni
 	inner join `tabStock Ledger Entry` sle on dni.`name` = sle.voucher_detail_no where inquiry = iq.`name`) -
-	(select total_debit from `tabJournal Entry` where inquiry = iq.`name`)) as net_profit
+	(select coalesce(sum(total_debit),0) from `tabJournal Entry` where inquiry = iq.`name`)) as net_profit
 	from `tabInquiry` iq
 	inner join `tabSales Invoice Item` sii on sii.inquiry = iq.`name`
 	inner join `tabSales Invoice` si on si.`name` = sii.parent and si.type_of_invoice in ('Retention', 'Non Project Payment', 'Standard') and si.`status` = 'Paid'
