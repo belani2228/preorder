@@ -379,6 +379,18 @@ def submit_sales_invoice_5(doc, method):
                     price = flt(row.qty) * flt(valuation_rate)
                     frappe.db.sql("""update `tabSales Invoice Item` set cogs = %s where `name` = %s""", (price, row.name))
 
+def submit_sales_invoice_6(doc, method):
+    count = frappe.db.sql("""select count(*) from `tabSales Invoice Item` where inquiry is not null""")[0][0]
+    if flt(count) != 0:
+        inquiry = frappe.db.sql("""select distinct(inquiry) from `tabSales Invoice Item` where inquiry is not null and parent = %s""", doc.name, as_dict=1)
+        for inq in inquiry:
+            expense = frappe.db.sql("""select sum(total_debit) from `tabJournal Entry` where inquiry = %s and docstatus = '1'""", inq.inquiry)[0][0]
+            invoice = frappe.db.sql("""select sum(amount) from `tabSales Invoice Item` where inquiry = %s and docstatus = '1'""", inq.inquiry)[0][0]
+            aa = frappe.db.sql("""select * from `tabSales Invoice Item` where inquiry = %s and docstatus = '1'""", inq.inquiry, as_dict=1)
+            for ab in aa:
+                amount2 = (flt(expense) / flt(invoice)) * flt(ab.amount)
+                frappe.db.sql("""update `tabSales Invoice Item` set expense_amount = %s where `name` = %s""", (amount2, ab.name))
+
 def cancel_sales_invoice(doc, method):
     if doc.type_of_invoice == 'Down Payment':
         frappe.db.sql("""update `tabSales Order` set down_payment = null where `name` = %s""", doc.sales_order)
@@ -408,6 +420,15 @@ def cancel_sales_invoice_3(doc, method):
                 frappe.db.sql("""update `tabInquiry` set sales_invoice_link = %s where `name` = %s""", (descr, row.inquiry))
             else:
                 frappe.db.sql("""update `tabInquiry` set sales_invoice_link = null where `name` = %s""", row.inquiry)
+
+def cancel_sales_invoice_4(doc, method):
+    count = frappe.db.sql("""select count(*) from `tabSales Invoice Item` where inquiry is not null""")[0][0]
+    if flt(count) != 0:
+        inquiry = frappe.db.sql("""select distinct(inquiry) from `tabSales Invoice Item` where inquiry is not null and parent = %s""", doc.name, as_dict=1)
+        for inq in inquiry:
+            aa = frappe.db.sql("""select * from `tabSales Invoice Item` where inquiry = %s and docstatus = '1'""", inq.inquiry, as_dict=1)
+            for ab in aa:
+                frappe.db.sql("""update `tabSales Invoice Item` set expense_amount = null where `name` = %s""", ab.name)
 
 def submit_purchase_order(doc, method):
     pass

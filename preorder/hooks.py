@@ -135,12 +135,14 @@ doc_events = {
 			"preorder.preorder.operan.submit_sales_invoice_2",
 			"preorder.preorder.operan.submit_sales_invoice_3",
 			"preorder.preorder.operan.submit_sales_invoice_4",
-			"preorder.preorder.operan.submit_sales_invoice_5"
+			"preorder.preorder.operan.submit_sales_invoice_5",
+			"preorder.preorder.operan.submit_sales_invoice_6"
 		],
 		"before_cancel": [
 			"preorder.preorder.operan.cancel_sales_invoice",
 			"preorder.preorder.operan.cancel_sales_invoice_2",
-			"preorder.preorder.operan.cancel_sales_invoice_3"
+			"preorder.preorder.operan.cancel_sales_invoice_3",
+			"preorder.preorder.operan.cancel_sales_invoice_4"
 		]
 	},
 	"Purchase Order": {
@@ -158,8 +160,12 @@ doc_events = {
 		"before_cancel": "preorder.preorder.operan.cancel_purchase_invoice"
 	},
 	"Journal Entry": {
-		"on_submit": "preorder.preorder.operan.submit_journal_entry",
-		"before_cancel": "preorder.preorder.operan.cancel_journal_entry"
+		"on_submit": [
+			"preorder.preorder.operan.submit_journal_entry"
+		],
+		"before_cancel": [
+			"preorder.preorder.operan.cancel_journal_entry"
+		]
 	},
 	"Product Bundle": {
 		"on_update": "preorder.preorder.operan.update_product_bundle"

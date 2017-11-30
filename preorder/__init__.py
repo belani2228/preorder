@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.35'
+__version__ = '1.0.36'
 
+#1.0.36:
+#   - Update Custom Form
 #1.0.35:
 #   - Update Non Project Payment in Sales Invoice
 #1.0.34:
