@@ -165,7 +165,6 @@ def get_items_from_pelunasan(sales_order, total_delivery, percen):
 
 @frappe.whitelist()
 def get_sales_invoice(sales_order, tipe):
-    si_list = []
     invoice_list = frappe.db.sql("""select sales_invoice, posting_date, net_total from `tabSales Order Invoice` where docstatus = '1' and parent = %s order by sales_invoice asc""", sales_order, as_dict=True)
     for d in invoice_list:
         si_list.append(frappe._dict({
@@ -173,8 +172,34 @@ def get_sales_invoice(sales_order, tipe):
             'posting_date': d.posting_date,
             'net_total': d.net_total
         }))
-
     return si_list
+
+@frappe.whitelist()
+def get_sales_invoice2(sales_order, delivery, tipe, total):
+    if sales_order != 'none':
+        si_list = []
+        invoice_list = frappe.db.sql("""select sales_invoice, posting_date, net_total from `tabSales Order Invoice` where docstatus = '1' and parent = %s order by sales_invoice asc""", sales_order, as_dict=True)
+        for d in invoice_list:
+            si_list.append(frappe._dict({
+                'sales_invoice': d.sales_invoice,
+                'posting_date': d.posting_date,
+                'net_total': d.net_total
+            }))
+        return si_list
+    if delivery != 'none':
+        so = frappe.db.sql("""select distinct(against_sales_order) as so from `tabDelivery Note Item` where docstatus = '1' and parent = %s """, delivery, as_dict=True)
+        for ss in so:
+            si_list = []
+            invoice_list = frappe.db.sql("""select sales_invoice, posting_date, net_total from `tabSales Order Invoice` where docstatus = '1' and parent = %s order by sales_invoice asc""", ss.so, as_dict=True)
+            for d in invoice_list:
+                total_so = frappe.db.sql("""select net_total as so from `tabSales Order` where docstatus = '1' and `name` = %s """, ss.so)[0][0]
+                net_total = (flt(total_so) / flt(total)) * flt(d.net_total)
+                si_list.append(frappe._dict({
+                    'sales_invoice': d.sales_invoice,
+                    'posting_date': d.posting_date,
+                    'net_total': net_total
+                }))
+            return si_list
 
 @frappe.whitelist()
 def make_journal_entry(source_name, target_doc=None):

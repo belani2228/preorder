@@ -166,6 +166,10 @@ doc_events = {
 	},
 	"Item Price":{
 		"on_change": "preorder.preorder.operan.update_item_price"
+	},
+	"Payment Entry":{
+		"on_change": "preorder.preorder.operan.submit_payment_entry",
+		"before_cancel": "preorder.preorder.operan.cancel_payment_entry"
 	}
 }
 # doc_events = {

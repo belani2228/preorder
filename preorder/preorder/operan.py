@@ -473,3 +473,17 @@ def update_product_bundle(doc, method):
 
 def update_item_price(doc, method):
     frappe.db.sql("""update `tabItem Price` set price_list_rate = '0' where price_list_rate != '0'""")
+
+def submit_payment_entry(doc, method):
+    if doc.references:
+        for row in doc.references:
+            if row.reference_doctype == 'Sales Invoice':
+                check_invoice = frappe.db.sql("""select `status` from `tabSales Invoice` where `name` = %s""", row.reference_name)[0][0]
+                if check_invoice == 'Paid':
+                    frappe.db.sql("""update `tabSales Invoice` set paid_date = %s where `name` = %s""", (doc.posting_date, row.reference_name))
+
+def cancel_payment_entry(doc, method):
+    if doc.references:
+        for row in doc.references:
+            if row.reference_doctype == 'Sales Invoice':
+                frappe.db.sql("""update `tabSales Invoice` set paid_date = null where `name` = %s""", row.reference_name)

@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.34'
+__version__ = '1.0.35'
 
+#1.0.35:
+#   - Update Non Project Payment in Sales Invoice
 #1.0.34:
 #   - Update Net Profit Report
 #1.0.33:
