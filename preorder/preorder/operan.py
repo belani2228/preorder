@@ -163,10 +163,11 @@ def cancel_supplier_quotation(doc, method):
                 frappe.db.sql("""update `tabInquiry` set sq = 'No' where `name` = %s""", i)
 
 def validate_sales_order(doc, method):
-    item_code = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_inquiry'""")[0][0]
-    for i in doc.items:
-        if i.item_code == item_code:
-            frappe.throw(_("Please change the item to the actual item"))
+    if doc.docstatus == 0:
+        item_code = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_inquiry'""")[0][0]
+        for i in doc.items:
+            if i.item_code == item_code:
+                frappe.throw(_("Please change the item to the actual item"))
 
 def submit_sales_order(doc, method):
     temp = []

@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.39'
+__version__ = '1.0.40'
 
+#1.0.40:
+#   - Cannot save Sales Invoice when Customer's PO not filled
 #1.0.39:
 #   - Add Selling Prgress Report
 #   - Add Buying Prgress Report
