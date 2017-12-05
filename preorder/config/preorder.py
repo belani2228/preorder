@@ -49,6 +49,12 @@ def get_data():
 				},
 				{
 					"type": "report",
+					"name": "Buying Progress Report",
+					"doctype": "Inquiry",
+					"is_query_report": True
+				},
+				{
+					"type": "report",
 					"name": "Gross Margin",
 					"doctype": "Inquiry",
 					"is_query_report": True
@@ -73,7 +79,7 @@ def get_data():
 				},
 				{
 					"type": "report",
-					"name": "Progress Report",
+					"name": "Selling Progress Report",
 					"doctype": "Inquiry",
 					"is_query_report": True
 				},
