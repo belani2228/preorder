@@ -79,6 +79,12 @@ def get_data():
 				},
 				{
 					"type": "report",
+					"name": "Purchase Order Report",
+					"doctype": "Purchase Order",
+					"is_query_report": True
+				},
+				{
+					"type": "report",
 					"name": "Selling Progress Report",
 					"doctype": "Inquiry",
 					"is_query_report": True

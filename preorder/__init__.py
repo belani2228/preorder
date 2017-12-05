@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.41'
+__version__ = '1.0.42'
 
+#1.0.42:
+#   - Add report Purchase Order Report
 #1.0.41:
 #   - Add report Stock Available
 #1.0.40:
