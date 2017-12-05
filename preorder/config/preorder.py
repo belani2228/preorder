@@ -83,6 +83,12 @@ def get_data():
 					"doctype": "Inquiry",
 					"is_query_report": True
 				},
+				{
+					"type": "report",
+					"name": "Stock Available",
+					"doctype": "Item",
+					"is_query_report": True
+				},
 			]
 		},
 	]
