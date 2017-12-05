@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.37'
+__version__ = '1.0.38'
 
+#1.0.38:
+#   - Fix Progress Report
 #1.0.37:
 #   - Update Net Profit Report
 #1.0.36:

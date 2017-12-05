@@ -87,7 +87,9 @@ website_context = {
 
 doc_events = {
 	"Quotation": {
-		"on_change": "preorder.preorder.operan.update_quotation",
+		"on_change": [
+			"preorder.preorder.operan.update_quotation"
+		],
 		"on_submit": [
 			"preorder.preorder.operan.submit_quotation",
 			"preorder.preorder.operan.submit_quotation_2",

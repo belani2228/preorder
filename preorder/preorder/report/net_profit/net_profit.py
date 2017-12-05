@@ -46,7 +46,16 @@ def get_conditions(filters):
 def get_entries(filters):
 	conditions = get_conditions(filters)
 	return frappe.db.sql("""
-		select si.`name`, si.posting_date, si.net_total, (select group_concat(parent separator ', ') from `tabPayment Entry Reference` where reference_name = si.`name` and docstatus = '1') as payment, (select group_concat(pe.posting_date separator ', ') from `tabPayment Entry Reference` per inner join `tabPayment Entry` pe on pe.`name` = per.parent where pe.docstatus = '1' and per.reference_name = si.`name`) as payment_date, (select sum(cogs) from `tabSales Invoice Item` where docstatus = '1' and parent = si.`name`) as hpp, (select sum(expense_amount) from `tabSales Invoice Item` where docstatus = '1' and parent = si.`name`) as expenses, (si.net_total - ((select sum(cogs) from `tabSales Invoice Item` where docstatus = '1' and parent = si.`name`) + (select sum(expense_amount) from `tabSales Invoice Item` where docstatus = '1' and parent = si.`name`))) as net_profit FROM `tabSales Invoice` si where si.docstatus = '1' and si.type_of_invoice in ('Retention', 'Non Project Payment', 'Standard') and si.`status` = 'Paid' %s
+		select
+			si.`name`,
+			si.posting_date,
+			si.net_total,
+			(select group_concat(parent separator ', ') from `tabPayment Entry Reference` where reference_name = si.`name` and docstatus = '1') as payment,
+			(select group_concat(pe.posting_date separator ', ') from `tabPayment Entry Reference` per inner join `tabPayment Entry` pe on pe.`name` = per.parent where pe.docstatus = '1' and per.reference_name = si.`name`) as payment_date,
+			(select sum(cogs) from `tabSales Invoice Item` where docstatus = '1' and parent = si.`name`) as hpp, (select sum(expense_amount) from `tabSales Invoice Item` where docstatus = '1' and parent = si.`name`) as expenses,
+			(si.net_total - ((select sum(cogs) from `tabSales Invoice Item` where docstatus = '1' and parent = si.`name`) + (select sum(expense_amount) from `tabSales Invoice Item` where docstatus = '1' and parent = si.`name`))) as net_profit
+		from `tabSales Invoice` si
+		where si.docstatus = '1' and si.type_of_invoice in ('Retention', 'Non Project Payment', 'Standard') and si.`status` = 'Paid' %s
 	""" % conditions, as_dict=1)
 #	return frappe.db.sql("""select distinct(iq.`name`) as inquiry, iq.transaction_date as inquiry_date, iq.sales_invoice_link,
 #	(select sum(aa.net_amount) from `tabSales Invoice Item` aa inner join `tabSales Invoice` bb on aa.parent = bb.`name` where aa.inquiry = iq.`name` and bb.docstatus = '1' and bb.status = 'Paid') as selling_amount,
