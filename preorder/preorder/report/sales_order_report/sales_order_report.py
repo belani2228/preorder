@@ -36,6 +36,12 @@ def execute(filters=None):
 				actual_qty = frappe.db.sql("""select qty_after_transaction from `tabStock Ledger Entry` where item_code = %s and warehouse = %s order by `name` desc limit 1""", (det.item_code, filters.get("warehouse")))[0][0]
 			else:
 				actual_qty = 0
+			# invoices
+#			check_invoice = frappe.db.sql("""select count(*) from `tabSales Invoice` where sales_order = %s and docstatus != '2' and type_of_invoice = 'Down Payment' limit %s,%s""", (cl.name, q, i))[0][0]
+#			if check_invoice != 0:
+#				invoice = frappe.db.sql("""select `name` from `tabSales Invoice` where sales_order = %s and docstatus != '2' and type_of_invoice = 'Down Payment' limit %s,%s""", (cl.name, q, i))[0][0]
+#			else:
+#				invoice = ""
 			if flt(q) == 0:
 				data.append([cl.transaction_date, cl.name, det.item_code, det.description, det.qty, po, po_date, po_status, actual_qty])
 			else:
@@ -47,7 +53,7 @@ def get_columns():
 	"""return columns"""
 
 	columns = [
-		_("SO Date")+":Date:150",
+		_("SO Date")+":Date:100",
 		_("Sales Order")+":Link/Sales Order:110",
 		_("Item Code")+":Link/Item:150",
 		_("Description")+":Data:150",
