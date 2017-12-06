@@ -39,9 +39,8 @@ def make_purchase_order(source_name, target_doc=None):
 			"condition":lambda doc: doc.is_product_assembly == 0,
 			"postprocess": update_item
 		},
-		"Quotation Assembly Item": {
-			"doctype": "Purchase Order Item",
-			"postprocess": update_item_assembly
+		"Packed Item": {
+			"doctype": "Purchase Order Item"
 		},
 	}, target_doc, set_missing_values)
 

@@ -13,10 +13,10 @@ def execute(filters=None):
 	conditions = get_conditions(filters)
 	sl_entries = frappe.db.sql("""select `name`, supplier_name, transaction_date, payment, delivery_term, delivery_time, freight from `tabPurchase Order` po where po.docstatus != '2' %s""" % conditions, as_dict=1)
 	for cl in sl_entries:
-		count = frappe.db.sql("""select count(*) from `tabPurchase Order Item` where parent != %s""", cl.name)[0][0]
+		count = frappe.db.sql("""select count(*) from `tabPurchase Order Item` where parent = %s""", cl.name)[0][0]
 		for q in range(0,count):
 			i = flt(q)+1
-			items = frappe.db.sql("""select `name` from `tabPurchase Order Item` where parent != %s order by idx asc limit %s,%s """, (cl.name, q, i))[0][0]
+			items = frappe.db.sql("""select `name` from `tabPurchase Order Item` where parent = %s order by idx asc limit %s,%s """, (cl.name, q, i))[0][0]
 			det = frappe.db.get_value("Purchase Order Item", items, ["item_code", "description", "qty", "rate", "received_qty"], as_dict=1)
 			if det.received_qty == 0:
 				status_oto = "Not yet Received"
