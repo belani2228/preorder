@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.43'
+__version__ = '1.0.44'
 
+#1.0.44:
+#   - Fix get item from SO in PO
+#   - Update report SO Report
 #1.0.43:
 #   - Fix get item from SO in PO
 #   - Add report SO Report
