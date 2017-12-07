@@ -213,6 +213,17 @@ def submit_sales_order_4(doc, method):
         })
         so_invoice.insert()
 
+def submit_sales_order_5(doc, method):
+    for row in doc.items:
+        if row.is_product_assembly:
+            qty_so = row.qty
+            qty_quote = frappe.db.sql("""select qty from `tabQuotation Item` where `name` = %s""", row.quotation_item)[0][0]
+            for ass in doc.assembly_item:
+                if ass.parent_item == row.item_description:
+                    base_qty = frappe.db.sql("""select qty from `tabProduct Assembly Item` where `name` = %s""", ass.product_assembly_item)[0][0]
+                    adjust_qty = flt(base_qty) * flt(qty_so)
+                    frappe.db.sql("""update `tabQuotation Assembly Item` set qty = %s where `name` = %s""", (adjust_qty, ass.name))
+
 def cancel_sales_order(doc, method):
     temp = []
     for row in doc.items:

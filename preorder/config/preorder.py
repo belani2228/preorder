@@ -59,12 +59,12 @@ def get_data():
 					"doctype": "Inquiry",
 					"is_query_report": True
 				},
-				{
-					"type": "report",
-					"name": "Inquiry Collection",
-					"doctype": "Inquiry",
-					"is_query_report": True
-				},
+#				{
+#					"type": "report",
+#					"name": "Inquiry Collection",
+#					"doctype": "Inquiry",
+#					"is_query_report": True
+#				},
 				{
 					"type": "report",
 					"name": "Laporan Pembalik HPP",

@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.46'
+__version__ = '1.0.48'
 
+#1.0.48:
+#   - Update qty in assembly item Sales Order
+#1.0.47:
+#   - Fix report SO Report
 #1.0.46:
 #   - Fix get item from SO in PO
 #   - Fix Sales Invoice submit when item is item service
