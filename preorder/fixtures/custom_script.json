@@ -84,9 +84,9 @@
   "docstatus": 0, 
   "doctype": "Custom Script", 
   "dt": "Product Bundle", 
-  "modified": "2017-11-03 16:21:03.812783", 
+  "modified": "2017-12-07 09:07:59.461185", 
   "name": "Product Bundle-Client", 
-  "script": "cur_frm.set_query(\"item_code\", \"items\",  function (doc, cdt, cdn) {\n\tvar c_doc= locals[cdt][cdn];\n\treturn {\n\t\tfilters: {\n\t\t\t'is_stock_item': 1,\n\t\t\t'item_group': [\"=\", \"Products\"]\n\t\t}\n\t}\n});", 
+  "script": "cur_frm.set_query(\"new_item_code\",  function (frm) {\n\treturn {\n\t\tfilters: {\n\t\t\t'item_group': \"Bundle\"\n\t\t},\n\t}\n});\ncur_frm.set_query(\"item_code\", \"items\",  function (doc, cdt, cdn) {\n\tvar c_doc= locals[cdt][cdn];\n\treturn {\n\t\tfilters: {\n\t\t\t'item_group': [\"!=\", \"Bundle\"]\n\t\t}\n\t}\n});", 
   "script_type": "Client"
  }, 
  {
