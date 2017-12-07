@@ -85,8 +85,10 @@ def submit_quotation_3(doc, method):
 def submit_quotation_4(doc, method):
     check = frappe.db.sql("""select count(*) from `tabQuotation Item` where parent = %s and is_product_assembly = '1'""", doc.name)[0][0]
     if check != 0:
-        ab = frappe.db.sql("""select group_concat(item_description separator ', ') from `tabQuotation Item` where parent = %s and is_product_assembly = '1'""", doc.name)[0][0]
-        frappe.db.sql("""delete from `tabQuotation Assembly Item` where parent = %s and parent_item not in (%s)""", (doc.name, ab))
+        ab = frappe.db.sql("""select group_concat(concat('-=-', item_description, '-=-') separator ', ') from `tabQuotation Item` where parent = %s and is_product_assembly = '1'""", doc.name)[0][0]
+        ac = ab.replace("-=-", "'")
+#        frappe.throw("delete from `tabQuotation Assembly Item` where parent = '"+doc.name+"' and parent_item not in ("+ac+")")
+        frappe.db.sql("delete from `tabQuotation Assembly Item` where parent = '"+doc.name+"' and parent_item not in ("+ac+")")
 
 def cancel_quotation(doc, method):
     for row in doc.items:
