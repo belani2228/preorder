@@ -24,7 +24,7 @@ def execute(filters=None):
 				items = frappe.db.sql("""select `name` from `tabSales Order Item` where parent = %s and is_product_assembly = '0' order by idx asc limit %s,%s """, (cl.name, q, i))[0][0]
 				det = frappe.db.get_value("Sales Order Item", items, ["item_code", "description", "qty"], as_dict=1)
 				item_code = det.item_code
-				item_desc = det.item_description
+				item_desc = det.description
 				item_qty = det.qty
 			else:
 				y = flt(y)+1

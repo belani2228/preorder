@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.48'
+__version__ = '1.0.49'
 
+#1.0.49:
+#   - Update Quotation
 #1.0.48:
 #   - Update qty in assembly item Sales Order
 #1.0.47:
