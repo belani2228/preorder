@@ -20,6 +20,7 @@ def make_purchase_order(source_name, target_doc=None):
 
 	def update_item_assembly(source, target, source_parent):
 		target.description = frappe.db.sql("""select item_description from `tabProduct Assembly Item` where `name` = %s""", source.product_assembly_item)[0][0]
+		target.item_code = frappe.db.sql("""select item_code from `tabProduct Bundle Item` where product_assembly_detail = %s""", source.product_assembly_item)[0][0]
 
 	doclist = get_mapped_doc("Sales Order", source_name, {
 		"Sales Order": {

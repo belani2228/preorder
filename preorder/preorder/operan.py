@@ -376,8 +376,12 @@ def submit_sales_invoice_5(doc, method):
                     cogs = sum(temp_cogs)
                     frappe.db.sql("""update `tabSales Invoice Item` set cogs = %s where `name` = %s""", (cogs, row.name))
                 else:
-                    valuation_rate = frappe.db.sql("""select valuation_rate from `tabStock Ledger Entry` where item_code = %s order by `name` desc limit 1""", row.item_code)[0][0]
-                    price = flt(row.qty) * flt(valuation_rate)
+                    check_valuation = frappe.db.sql("""select count(*) from `tabStock Ledger Entry` where item_code = %s""", row.item_code)[0][0]
+                    if(check_valuation != 0):
+                        valuation_rate = frappe.db.sql("""select valuation_rate from `tabStock Ledger Entry` where item_code = %s order by `name` desc limit 1""", row.item_code)[0][0]
+                        price = flt(row.qty) * flt(valuation_rate)
+                    else:
+                        price = 0
                     frappe.db.sql("""update `tabSales Invoice Item` set cogs = %s where `name` = %s""", (price, row.name))
 
 def submit_sales_invoice_6(doc, method):

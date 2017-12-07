@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.45'
+__version__ = '1.0.46'
 
+#1.0.46:
+#   - Fix get item from SO in PO
+#   - Fix Sales Invoice submit when item is item service
 #1.0.45:
 #   - Fix get item from SO in PO
 #1.0.44:
