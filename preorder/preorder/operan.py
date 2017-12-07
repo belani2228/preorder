@@ -87,7 +87,6 @@ def submit_quotation_4(doc, method):
     if check != 0:
         ab = frappe.db.sql("""select group_concat(concat('-=-', item_description, '-=-') separator ', ') from `tabQuotation Item` where parent = %s and is_product_assembly = '1'""", doc.name)[0][0]
         ac = ab.replace("-=-", "'")
-#        frappe.throw("delete from `tabQuotation Assembly Item` where parent = '"+doc.name+"' and parent_item not in ("+ac+")")
         frappe.db.sql("delete from `tabQuotation Assembly Item` where parent = '"+doc.name+"' and parent_item not in ("+ac+")")
 
 def cancel_quotation(doc, method):
@@ -231,6 +230,13 @@ def submit_sales_order_5(doc, method):
                     base_qty = frappe.db.sql("""select qty from `tabProduct Assembly Item` where `name` = %s""", ass.product_assembly_item)[0][0]
                     adjust_qty = flt(base_qty) * flt(qty_so)
                     frappe.db.sql("""update `tabQuotation Assembly Item` set qty = %s where `name` = %s""", (adjust_qty, ass.name))
+
+def submit_sales_order_6(doc, method):
+    check = frappe.db.sql("""select count(*) from `tabSales Order Item` where parent = %s and is_product_assembly = '1'""", doc.name)[0][0]
+    if check != 0:
+        ab = frappe.db.sql("""select group_concat(concat('-=-', item_description, '-=-') separator ', ') from `tabSales Order Item` where parent = %s and is_product_assembly = '1'""", doc.name)[0][0]
+        ac = ab.replace("-=-", "'")
+        frappe.db.sql("delete from `tabQuotation Assembly Item` where parent = '"+doc.name+"' and parent_item not in ("+ac+")")
 
 def cancel_sales_order(doc, method):
     temp = []

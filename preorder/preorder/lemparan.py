@@ -166,6 +166,7 @@ def get_items_from_pelunasan(sales_order, total_delivery, percen):
 @frappe.whitelist()
 def get_sales_invoice(sales_order, tipe):
     invoice_list = frappe.db.sql("""select sales_invoice, posting_date, net_total from `tabSales Order Invoice` where docstatus = '1' and parent = %s order by sales_invoice asc""", sales_order, as_dict=True)
+    si_list = []
     for d in invoice_list:
         si_list.append(frappe._dict({
             'sales_invoice': d.sales_invoice,

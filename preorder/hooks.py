@@ -114,6 +114,7 @@ doc_events = {
 			"preorder.preorder.operan.submit_sales_order_3",
 			"preorder.preorder.operan.submit_sales_order_4",
 			"preorder.preorder.operan.submit_sales_order_5",
+			"preorder.preorder.operan.submit_sales_order_6",
 			"preorder.preorder.operan.update_item_price"
 		],
 		"before_cancel": [
