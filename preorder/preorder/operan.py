@@ -42,11 +42,6 @@ def update_quotation(doc, method):
             a = frappe.db.sql("""select count(*) from `tabQuotation Item` where item_description = %s""", row.parent_item)[0][0]
             if flt(a) == 0:
                 frappe.db.sql("""delete from `tabQuotation Assembly Item` where parent_item = %s and parent = %s""", (row.parent_item, doc.name))
-    check = frappe.db.sql("""select count(*) from `tabQuotation Item` where parent = %s and is_product_assembly = '1'""", doc.name)[0][0]
-    if check != 0:
-        ab = frappe.db.sql("""select group_concat(item_description separator ', ') from `tabQuotation Item` where parent = %s and is_product_assembly = '1'""", doc.name)[0][0]
-        frappe.db.sql("""delete from `tabQuotation Assembly Item` where parent = %s and parent_item not in (%s)""", (doc.name, ab))
-
 #            b = frappe.db.sql("""select count(*) from `tabQuotation Assembly Item` where product_assembly_item = %s""", row.product_assembly_item)[0][0]
 #            if flt(b) >= 2:
 #                frappe.db.sql("""delete from `tabQuotation Assembly Item` where product_assembly_item = %s limit 1""", row.product_assembly_item)
@@ -86,6 +81,12 @@ def submit_quotation_3(doc, method):
             a = frappe.db.sql("""select count(*) from `tabInquiry Item` where docstatus = '1' and parent = %s and qty > qty_used""", i)[0][0]
             if a == 0:
                 frappe.db.sql("""update `tabInquiry` set status = 'Completed' where `name` = %s""", i)
+
+def submit_quotation_4(doc, method):
+    check = frappe.db.sql("""select count(*) from `tabQuotation Item` where parent = %s and is_product_assembly = '1'""", doc.name)[0][0]
+    if check != 0:
+        ab = frappe.db.sql("""select group_concat(item_description separator ', ') from `tabQuotation Item` where parent = %s and is_product_assembly = '1'""", doc.name)[0][0]
+        frappe.db.sql("""delete from `tabQuotation Assembly Item` where parent = %s and parent_item not in (%s)""", (doc.name, ab))
 
 def cancel_quotation(doc, method):
     for row in doc.items:

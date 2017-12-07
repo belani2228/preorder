@@ -93,7 +93,8 @@ doc_events = {
 		"on_submit": [
 			"preorder.preorder.operan.submit_quotation",
 			"preorder.preorder.operan.submit_quotation_2",
-			"preorder.preorder.operan.submit_quotation_3"
+			"preorder.preorder.operan.submit_quotation_3",
+			"preorder.preorder.operan.submit_quotation_4"
 		],
 		"before_cancel": [
 			"preorder.preorder.operan.cancel_quotation",
