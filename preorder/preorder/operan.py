@@ -309,7 +309,7 @@ def validate_sales_invoice(doc, method):
         pass
 
 def submit_sales_invoice(doc, method):
-    if doc.type_of_invoice == 'Standard':
+    if doc.type_of_invoice == 'Full Payment':
         frappe.db.sql("""update `tabSales Invoice` set sales_order = null, delivery_note = null where `name` = %s""", doc.name)
     elif doc.type_of_invoice == 'Down Payment':
         frappe.db.sql("""update `tabSales Order` set down_payment = %s where `name` = %s""", (doc.name, doc.sales_order))
@@ -343,7 +343,7 @@ def submit_sales_invoice(doc, method):
                     "net_total": doc.net_total
                 })
                 so_invoice.insert()
-    elif doc.type_of_invoice == 'Payment':
+    elif doc.type_of_invoice == 'Termin Payment':
         dn = frappe.db.sql("""select * from `tabSales Invoice DN` where parent = %s""", doc.name, as_dict=1)
         for d in dn:
             frappe.db.sql("""update `tabDelivery Note` set sales_invoice = %s where `name` = %s""", (doc.name, d.delivery_note))
@@ -385,7 +385,7 @@ def submit_sales_invoice_4(doc, method):
                 frappe.db.sql("""update `tabInquiry` set sales_invoice_link = %s where `name` = %s""", (descr, row.inquiry))
 
 def submit_sales_invoice_5(doc, method):
-    if doc.type_of_invoice == "Standard" or doc.type_of_invoice == "Non Project Payment" or doc.type_of_invoice == "Retention":
+    if doc.type_of_invoice == "Full Payment" or doc.type_of_invoice == "Non Project Payment" or doc.type_of_invoice == "Retention":
         for row in doc.items:
             if row.so_detail:
                 check_packed_item = frappe.db.sql("""select count(*) from `tabPacked Item` where parent_detail_docname = %s""", row.so_detail)[0][0]
@@ -424,7 +424,7 @@ def submit_sales_invoice_6(doc, method):
 def cancel_sales_invoice(doc, method):
     if doc.type_of_invoice == 'Down Payment':
         frappe.db.sql("""update `tabSales Order` set down_payment = null where `name` = %s""", doc.sales_order)
-    elif doc.type_of_invoice == 'Payment':
+    elif doc.type_of_invoice == 'Termin Payment':
         dn = frappe.db.sql("""select * from `tabSales Invoice DN` where parent = %s""", doc.name, as_dict=1)
         for d in dn:
             frappe.db.sql("""update `tabDelivery Note` set sales_invoice = null where `name` = %s""", d.delivery_note)
@@ -484,7 +484,7 @@ def submit_purchase_receipt(doc, method):
         frappe.db.sql("""update `tabPurchase Receipt` set purchase_order = %s where `name` = %s""", (po, doc.name))
 
 def submit_purchase_invoice(doc, method):
-    if doc.type_of_invoice == "Payment":
+    if doc.type_of_invoice == "Termin Payment":
         pr = frappe.db.sql("""select purchase_receipt from `tabPurchase Invoice PR` where parent = %s""", doc.name, as_dict=1)
         for row in pr:
             frappe.db.sql("""update `tabPurchase Receipt` set invoice_payment = %s where `name` = %s""", (doc.name, row.purchase_receipt))
@@ -495,7 +495,7 @@ def submit_purchase_invoice_2(doc, method):
             frappe.throw(_("You must press the <b>Get Items</b> button"))
 
 def cancel_purchase_invoice(doc, method):
-    if doc.type_of_invoice == "Payment":
+    if doc.type_of_invoice == "Termin Payment":
         pr = frappe.db.sql("""select purchase_receipt from `tabPurchase Invoice PR` where parent = %s""", doc.name, as_dict=1)
         for row in pr:
             frappe.db.sql("""update `tabPurchase Receipt` set invoice_payment = null where `name` = %s""", row.purchase_receipt)

@@ -113,10 +113,10 @@ def get_items_tampungan(related_doc, tipe, percen):
     item_dp = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_dp'""")[0][0]
     item = frappe.db.get_value("Item", item_dp, ["item_name", "description", "stock_uom", "income_account", "expense_account"], as_dict=1)
     if tipe == "Down Payment":
-        so = frappe.db.get_value("Sales Order", related_doc, ["net_total"], as_dict=1)
+        so = frappe.db.get_value("Sales Order", related_doc, ["total"], as_dict=1)
     else:
-        so = frappe.db.get_value("Delivery Note", related_doc, ["net_total"], as_dict=1)
-    rate = (flt(percen)/100) * flt(so.net_total)
+        so = frappe.db.get_value("Delivery Note", related_doc, ["total"], as_dict=1)
+    rate = (flt(percen)/100) * flt(so.total)
     si_list.append(frappe._dict({
         'item_code': item_dp,
         'item_name': item.item_name,
