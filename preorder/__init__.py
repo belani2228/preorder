@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.53'
+__version__ = '1.0.54'
 
+#1.0.54:
+#   - Minor fix
 #1.0.53:
 #   - Multiple discount on SO, DN, SI & PO
 #1.0.52:

@@ -17,7 +17,7 @@ frappe.query_reports["Net Profit"] = {
 			"label": __("From Date"),
 			"fieldtype": "Date",
 			"width": "80",
-			"default": sys_defaults.year_start_date,
+			"default": frappe.datetime.month_start(frappe.datetime.get_today()),//sys_defaults.year_start_date,
 			"reqd": 1
 		},
 		{

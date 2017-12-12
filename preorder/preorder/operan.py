@@ -282,7 +282,7 @@ def validate_delivery_note(doc, method):
             if doc.customer_group == 'Reseller' and status_so != 'To Deliver':
                 error = 1
     if error == 1:
-        frappe.msgprint(_("For customer <b>reseler</b>, the invoice must be paid off"))
+        frappe.throw(_("For customer <b>reseller</b>, the invoice must be paid off"))
     tampung = []
     for row in doc.items:
         item_group = frappe.db.get_value("Item", row.item_code, "item_group")
@@ -293,7 +293,7 @@ def validate_delivery_note(doc, method):
                 tampung.append(row.item_code)
     if tampung:
         descr = ', '.join(tampung)
-        frappe.msgprint(_("Please create Product Bundle for item "+descr))
+        frappe.throw(_("Please create Product Bundle for item "+descr))
 
 def submit_delivery_note(doc, method):
     for row in doc.items:
@@ -323,7 +323,7 @@ def submit_sales_invoice(doc, method):
             "sales_invoice": doc.name,
             "posting_date": doc.posting_date,
             "type_of_invoice": doc.type_of_invoice,
-            "net_total": doc.net_total
+            "net_total": doc.total
         })
         so_invoice.insert()
     elif doc.type_of_invoice == 'Progress Payment':
