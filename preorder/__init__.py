@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.54'
+__version__ = '1.0.55'
 
+#1.0.55:
+#   - Minor Sales Invoice cogs
 #1.0.54:
 #   - Minor fix
 #1.0.53:

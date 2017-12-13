@@ -388,14 +388,14 @@ def submit_sales_invoice_5(doc, method):
     if doc.type_of_invoice == "Full Payment" or doc.type_of_invoice == "Non Project Payment" or doc.type_of_invoice == "Retention":
         for row in doc.items:
             if row.so_detail:
-                check_packed_item = frappe.db.sql("""select count(*) from `tabPacked Item` where parent_detail_docname = %s""", row.so_detail)[0][0]
+                check_packed_item = frappe.db.sql("""select count(*) from `tabProduct Bundle` where new_item_code = %s""", row.item_code)[0][0]
                 if flt(check_packed_item) != 0:
-                    so_qty = frappe.db.sql("""select qty from `tabSales Order Item` where `name` = %s""", row.so_detail)[0][0]
-                    packed_item = frappe.db.sql("""select * from `tabPacked Item` where parent_detail_docname = %s""", row.so_detail, as_dict=1)
+#                    so_qty = frappe.db.sql("""select qty from `tabSales Order Item` where `name` = %s""", row.so_detail)[0][0]
+                    packed_item = frappe.db.sql("""select * from `tabProduct Bundle Item` where parent = %s""", row.item_code, as_dict=1)
                     temp_cogs = []
                     for pl in packed_item:
                         valuation_rate = frappe.db.sql("""select valuation_rate from `tabStock Ledger Entry` where item_code = %s order by `name` desc limit 1""", pl.item_code)[0][0]
-                        si_qty = (flt(row.qty) / flt(so_qty)) * flt(pl.qty)
+                        si_qty = flt(row.qty) * flt(pl.qty)
                         price = flt(si_qty) * flt(valuation_rate)
                         temp_cogs.append(price)
                     cogs = sum(temp_cogs)
