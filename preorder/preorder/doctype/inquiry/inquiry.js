@@ -28,7 +28,7 @@ frappe.ui.form.on('Inquiry', {
 	validate_series: function(frm){
 		if(frm.doc.inquiry_type == 'Request'){
 			frm.doc.naming_series = 'R.YY.-.####'
-		}else if (frm.doc.inquiry_type == 'Request Flader') {
+		}else if (frm.doc.inquiry_type == 'Request Flender') {
 			frm.doc.naming_series = 'RF.YY.-.####'
 		}else if (frm.doc.inquiry_type == 'Request Project') {
 			frm.doc.naming_series = 'RP.YY.-.####'
