@@ -6,6 +6,7 @@ from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
 from frappe.model.naming import make_autoname
 from dateutil import parser
+from num2words import num2words
 
 def autoname_sales_order(doc, method):
     if doc.naming_series == "VPI":
@@ -307,6 +308,13 @@ def cancel_delivery_note(doc, method):
 
 def validate_sales_invoice(doc, method):
         pass
+
+def change_sales_invoice(doc, method):
+        words = num2words(round(doc.outstanding_amount,0), lang='en')
+        w1 = words.replace('-', ' ')
+        w2 = w1.replace(',', '')
+        #frappe.throw(_(words))
+        frappe.db.sql("""update `tabSales Invoice` set outstanding_in_words = %s where `name` = %s""", (w2, doc.name))
 
 def submit_sales_invoice(doc, method):
     if doc.type_of_invoice == 'Full Payment':

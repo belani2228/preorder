@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.60'
+__version__ = '1.0.61'
 
+#1.0.61:
+#   - Update quotation custom script
 #1.0.60:
 #   - Update get SO in PO
 #1.0.59:
