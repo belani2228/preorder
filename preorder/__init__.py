@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.59'
+__version__ = '1.0.60'
 
+#1.0.60:
+#   - Update get SO in PO
 #1.0.59:
 #   - Add request flender in Inquiry
 #1.0.58:
