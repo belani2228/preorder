@@ -43,9 +43,44 @@ def execute(filters=None):
 			else:
 				so_date = ""
 				so_name = ""
-				so_status = "aa"
-			data.append([cl.transaction_date, so_name, cl.status_so])
-#			data.append([so_date, so_name, so_status, invoice_1, si_1_status, invoice_2, si_3, si_4, si_5, si_6])
+				so_status = ""
+			if flt(q) < flt(count_1):
+				si_1 = frappe.db.sql("""select distinct(si.`name`) from `tabSales Invoice` si inner join `tabSales Invoice Item` sii on si.`name` = sii.parent where si.docstatus != '2' and sii.sales_order = %s and si.type_of_invoice = 'Full Payment' order by si.`name` asc limit %s,%s""", (cl.name, q, i))[0][0]
+				si_1_status = frappe.db.get_value("Sales Invoice", si_1, "status")
+			else:
+				si_1 = ""
+				si_1_status = ""
+			if flt(q) < flt(count_2):
+				si_2 = frappe.db.sql("""select distinct(si.`name`) from `tabSales Invoice Item` sii inner join `tabSales Invoice` si on si.`name` = sii.parent where si.docstatus != '2' and si.sales_order = %s and si.type_of_invoice = 'Down Payment' order by si.idx asc limit %s,%s""", (cl.name, q, i))[0][0]
+				si_2_status = frappe.db.get_value("Sales Invoice", si_2, "status")
+			else:
+				si_2 = ""
+				si_2_status = ""
+			if flt(q) < flt(count_3):
+				si_3 = frappe.db.sql("""select distinct(si.`name`) from `tabSales Invoice` si inner join `tabSales Invoice Item` sii on si.`name` = sii.parent where si.docstatus != '2' and sii.sales_order = %s and si.type_of_invoice = 'Non Project Payment' order by si.`name` asc limit %s,%s""", (cl.name, q, i))[0][0]
+				si_3_status = frappe.db.get_value("Sales Invoice", si_3, "status")
+			else:
+				si_3 = ""
+				si_3_status = ""
+			if flt(q) < flt(count_4):
+				si_4 = frappe.db.sql("""select distinct(si.`name`) from `tabDelivery Note` dn inner join `tabDelivery Note Item` dni on dn.`name` = dni.parent inner join `tabSales Invoice` si on dn.`name` = si.delivery_note where si.docstatus != '2' and si.type_of_invoice = 'Progress Payment' and dni.against_sales_order = %s order by si.`name` asc limit %s,%s""", (cl.name, q, i))[0][0]
+				si_4_status = frappe.db.get_value("Sales Invoice", si_4, "status")
+			else:
+				si_4 = ""
+				si_4_status = ""
+			if flt(q) < flt(count_5):
+				si_5 = frappe.db.sql("""select distinct(si.`name`) from `tabSales Invoice Item` sii inner join `tabSales Invoice` si on si.`name` = sii.parent where si.docstatus != '2' and si.sales_order = %s and si.type_of_invoice = 'Termin Payment' order by si.idx asc limit %s,%s""", (cl.name, q, i))[0][0]
+				si_5_status = frappe.db.get_value("Sales Invoice", si_5, "status")
+			else:
+				si_5 = ""
+				si_5_status = ""
+			if flt(q) < flt(count_6):
+				si_6 = frappe.db.sql("""select distinct(si.`name`) from `tabSales Invoice Item` sii inner join `tabSales Invoice` si on si.`name` = sii.parent where si.docstatus != '2' and si.sales_order = %s and si.type_of_invoice = 'Retention' order by si.idx asc limit %s,%s""", (cl.name, q, i))[0][0]
+				si_6_status = frappe.db.get_value("Sales Invoice", si_6, "status")
+			else:
+				si_6 = ""
+				si_6_status = ""
+			data.append([so_date, so_name, so_status, si_1, si_1_status, si_2, si_2_status, si_3, si_3_status, si_4, si_4_status, si_5, si_5_status, si_6, si_6_status])
 
 	return columns, data
 
@@ -57,12 +92,17 @@ def get_columns():
 		_("Sales Order")+":Link/Sales Order:110",
 		_("Status")+":Data:130",
 		_("Full Payment")+":Link/Sales Invoice:110",
-		_("Status")+":Data:80",
+		_("Status 1")+":Data:90",
 		_("Down Payment")+":Link/Sales Invoice:110",
+		_("Status 2")+":Data:90",
 		_("Non Project Payment")+":Link/Sales Invoice:130",
+		_("Status 3")+":Data:90",
 		_("Progress Payment")+":Link/Sales Invoice:110",
+		_("Status 4")+":Data:90",
 		_("Termin Payment")+":Link/Sales Invoice:110",
+		_("Status 5")+":Data:90",
 		_("Retention")+":Link/Sales Invoice:110",
+		_("Status 6")+":Data:90",
 	]
 
 	return columns
