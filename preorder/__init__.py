@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.62'
+__version__ = '1.0.63'
 
+#1.0.63:
+#   - Add report Invoice Check
 #1.0.62:
 #   - Minor fix, ngak tau gw dimana, pusing
 #1.0.61:

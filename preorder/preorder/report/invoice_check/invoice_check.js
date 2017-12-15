@@ -20,5 +20,10 @@ frappe.query_reports["Invoice Check"] = {
 			"default": frappe.datetime.get_today(),
 			"reqd": 1
 		},
-	]
+		{
+			"fieldname": "need_down_payment",
+			"label": __("Need Down Payment"),
+			"fieldtype": "Check",
+			"default": 0
+		},	]
 }
