@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.64'
+__version__ = '1.0.65'
 
+#1.0.65:
+#   - Update custom script dll
 #1.0.64:
 #   - Fix report Invoice Check
 #1.0.63:
