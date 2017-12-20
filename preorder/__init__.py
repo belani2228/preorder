@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.67'
+__version__ = '1.0.68'
 
+#1.0.68:
+#   - Update custom script related to discount  buying
+#   - Update few form to accommodate discount buying
 #1.0.67:
-#   - Update custom script related to discount
-#   - Update few form to accommodate discount
+#   - Update custom script related to discount selling
+#   - Update few form to accommodate discount selling
 #1.0.66:
 #   - Update custom script dll
 #1.0.65:

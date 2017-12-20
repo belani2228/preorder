@@ -54,10 +54,10 @@ def get_po_items(tipe, related_doc, percen):
     item_dp = frappe.db.sql("""select `value` from `tabSingles` where doctype = 'Item Settings' and field = 'default_item_for_dp'""")[0][0]
     item = frappe.db.get_value("Item", item_dp, ["item_name", "description", "stock_uom", "income_account", "expense_account"], as_dict=1)
     if tipe == "Down Payment":
-        so = frappe.db.get_value("Purchase Order", related_doc, ["net_total"], as_dict=1)
+        so = frappe.db.get_value("Purchase Order", related_doc, ["total"], as_dict=1)
     else:
-        so = frappe.db.get_value("Purchase Receipt", related_doc, ["net_total"], as_dict=1)
-    rate = (flt(percen)/100) * flt(so.net_total)
+        so = frappe.db.get_value("Purchase Receipt", related_doc, ["total"], as_dict=1)
+    rate = (flt(percen)/100) * flt(so.total)
     pi_list.append(frappe._dict({
         'item_code': item_dp,
         'item_name': item.item_name,
@@ -74,12 +74,14 @@ def get_po_items(tipe, related_doc, percen):
 def get_purchase_receipt(supplier, po):
     if supplier and po:
         pr_list = []
-        invoice_list = frappe.db.sql("""select `name`, posting_date, base_net_total, net_total from `tabPurchase Receipt` where docstatus = '1' and status = 'To Bill' and supplier = %s and invoice_payment is null and purchase_order = %s""", (supplier, po), as_dict=True)
+        invoice_list = frappe.db.sql("""select `name`, posting_date, base_total, base_net_total, total, net_total from `tabPurchase Receipt` where docstatus = '1' and status = 'To Bill' and supplier = %s and invoice_payment is null and purchase_order = %s""", (supplier, po), as_dict=True)
         for d in invoice_list:
             pr_list.append(frappe._dict({
                 'purchase_receipt': d.name,
                 'posting_date': d.posting_date,
+				'total': d.total,
                 'net_total': d.net_total,
+				'base_total': d.base_total,
                 'base_net_total': d.base_net_total
             }))
 
@@ -107,19 +109,23 @@ def get_items_payment(supplier):
 def get_purchase_invoice(supplier, po, invoice_type, net_total, base_net_total):
     pi_list = []
     if invoice_type == 'Non Project Payment':
-        invoice_list = frappe.db.sql("""select `name`, posting_date, base_net_total, net_total from `tabPurchase Invoice` where docstatus = '1' and type_of_invoice = 'Down Payment' and purchase_order = %s""", po, as_dict=True)
+        invoice_list = frappe.db.sql("""select `name`, posting_date, base_total, base_net_total, total, net_total from `tabPurchase Invoice` where docstatus = '1' and type_of_invoice = 'Down Payment' and purchase_order = %s""", po, as_dict=True)
     else:
-        invoice_list = frappe.db.sql("""select `name`, posting_date, base_net_total, net_total from `tabPurchase Invoice` where docstatus = '1' and purchase_order = %s""", po, as_dict=True)
+        invoice_list = frappe.db.sql("""select `name`, posting_date, base_total, base_net_total, total, net_total from `tabPurchase Invoice` where docstatus = '1' and purchase_order = %s""", po, as_dict=True)
     for d in invoice_list:
         total_po = frappe.db.sql("""select net_total from `tabPurchase Order` where docstatus = '1' and `name` = %s""", po)[0][0]
         base_total_po = frappe.db.sql("""select base_net_total from `tabPurchase Order` where docstatus = '1' and `name` = %s""", po)[0][0]
         alokasi = (flt(net_total) / flt(total_po)) * flt(d.net_total)
+        alokasi_total = (flt(net_total) / flt(total_po)) * flt(d.total)
         base_alokasi = (flt(base_net_total) / flt(base_total_po)) * flt(d.base_net_total)
+        base_alokasi_total = (flt(base_net_total) / flt(base_total_po)) * flt(d.base_total)
         if alokasi != 0:
             pi_list.append(frappe._dict({
                 'purchase_invoice': d.name,
                 'posting_date': d.posting_date,
+                'base_total': base_alokasi_total,
                 'base_net_total': base_alokasi,
+                'total': alokasi_total,
                 'net_total': alokasi
             }))
     return pi_list
