@@ -134,11 +134,12 @@ def get_items_tampungan(related_doc, tipe, percen):
 def get_delivery_note(sales_order):
     if sales_order:
         dn_list = []
-        invoice_list = frappe.db.sql("""select distinct(dn.`name`), dn.posting_date, dn.net_total from `tabDelivery Note` dn inner join `tabDelivery Note Item` dni on dn.`name` = dni.parent where dn.docstatus = '1' and dni.against_sales_order = %s and dn.sales_invoice is null""", sales_order, as_dict=True)
+        invoice_list = frappe.db.sql("""select distinct(dn.`name`), dn.posting_date, dn.total, dn.net_total from `tabDelivery Note` dn inner join `tabDelivery Note Item` dni on dn.`name` = dni.parent where dn.docstatus = '1' and dni.against_sales_order = %s and dn.sales_invoice is null""", sales_order, as_dict=True)
         for d in invoice_list:
             dn_list.append(frappe._dict({
                 'delivery_note': d.name,
                 'posting_date': d.posting_date,
+                'total': d.total,
                 'net_total': d.net_total
             }))
 
@@ -165,12 +166,13 @@ def get_items_from_pelunasan(sales_order, total_delivery, percen):
 
 @frappe.whitelist()
 def get_sales_invoice(sales_order, tipe):
-    invoice_list = frappe.db.sql("""select sales_invoice, posting_date, net_total from `tabSales Order Invoice` where docstatus = '1' and parent = %s order by sales_invoice asc""", sales_order, as_dict=True)
+    invoice_list = frappe.db.sql("""select sales_invoice, posting_date, total, net_total from `tabSales Order Invoice` where docstatus = '1' and parent = %s order by sales_invoice asc""", sales_order, as_dict=True)
     si_list = []
     for d in invoice_list:
         si_list.append(frappe._dict({
             'sales_invoice': d.sales_invoice,
             'posting_date': d.posting_date,
+            'total': d.total,
             'net_total': d.net_total
         }))
     return si_list
@@ -179,11 +181,12 @@ def get_sales_invoice(sales_order, tipe):
 def get_sales_invoice2(sales_order, delivery, tipe, total):
     if sales_order != 'none':
         si_list = []
-        invoice_list = frappe.db.sql("""select sales_invoice, posting_date, net_total from `tabSales Order Invoice` where docstatus = '1' and parent = %s order by sales_invoice asc""", sales_order, as_dict=True)
+        invoice_list = frappe.db.sql("""select sales_invoice, posting_date, total, net_total from `tabSales Order Invoice` where docstatus = '1' and parent = %s order by sales_invoice asc""", sales_order, as_dict=True)
         for d in invoice_list:
             si_list.append(frappe._dict({
                 'sales_invoice': d.sales_invoice,
                 'posting_date': d.posting_date,
+                'total': d.total,
                 'net_total': d.net_total
             }))
         return si_list
@@ -191,13 +194,15 @@ def get_sales_invoice2(sales_order, delivery, tipe, total):
         so = frappe.db.sql("""select distinct(against_sales_order) as so from `tabDelivery Note Item` where docstatus = '1' and parent = %s """, delivery, as_dict=True)
         for ss in so:
             si_list = []
-            invoice_list = frappe.db.sql("""select sales_invoice, posting_date, net_total from `tabSales Order Invoice` where docstatus = '1' and parent = %s order by sales_invoice asc""", ss.so, as_dict=True)
+            invoice_list = frappe.db.sql("""select sales_invoice, posting_date, total, net_total from `tabSales Order Invoice` where docstatus = '1' and parent = %s order by sales_invoice asc""", ss.so, as_dict=True)
             for d in invoice_list:
                 total_so = frappe.db.sql("""select net_total as so from `tabSales Order` where docstatus = '1' and `name` = %s """, ss.so)[0][0]
+                total_si = (flt(total) / flt(total_so)) * flt(d.total)
                 net_total = (flt(total) / flt(total_so)) * flt(d.net_total)
                 si_list.append(frappe._dict({
                     'sales_invoice': d.sales_invoice,
                     'posting_date': d.posting_date,
+                    'total': total_si,
                     'net_total': net_total
                 }))
             return si_list

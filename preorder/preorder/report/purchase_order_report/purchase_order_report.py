@@ -17,7 +17,7 @@ def execute(filters=None):
 		for q in range(0,count):
 			i = flt(q)+1
 			items = frappe.db.sql("""select `name` from `tabPurchase Order Item` where parent = %s order by idx asc limit %s,%s """, (cl.name, q, i))[0][0]
-			det = frappe.db.get_value("Purchase Order Item", items, ["item_code", "description", "qty", "rate", "received_qty"], as_dict=1)
+			det = frappe.db.get_value("Purchase Order Item", items, ["item_code", "description", "qty", "rate", "received_qty", "item_status"], as_dict=1)
 			if det.received_qty == 0:
 				status_oto = "Not yet Received"
 			elif det.received_qty < det.qty:
@@ -25,9 +25,9 @@ def execute(filters=None):
 			else:
 				status_oto = "Full Received"
 			if flt(q) == 0:
-				data.append([cl.name, cl.supplier_name, det.item_code, det.description, det.qty, det.rate, cl.transaction_date, cl.payment, cl.delivery_time, cl.delivery_term, cl.freight, status_oto])
+				data.append([cl.name, cl.supplier_name, det.item_code, det.description, det.qty, det.rate, cl.transaction_date, cl.payment, cl.delivery_time, cl.delivery_term, cl.freight, status_oto, det.item_status])
 			else:
-				data.append(['', '', det.item_code, det.description, det.qty, det.rate, '', '', '', '', '', status_oto])
+				data.append(['', '', det.item_code, det.description, det.qty, det.rate, '', '', '', '', '', status_oto, det.item_status])
 
 	return columns, data
 
@@ -47,6 +47,7 @@ def get_columns():
 		_("Delivery Term")+"::150",
 		_("Freight")+"::100",
 		_("Status")+"::100",
+		_("Item Status")+"::100",
 	]
 
 	return columns

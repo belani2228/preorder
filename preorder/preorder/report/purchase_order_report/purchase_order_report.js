@@ -17,7 +17,7 @@ frappe.query_reports["Purchase Order Report"] = {
 			"label": __("From Date"),
 			"fieldtype": "Date",
 			"width": "80",
-			"default": sys_defaults.year_start_date,
+			"default": frappe.datetime.month_start(frappe.datetime.get_today()),
 			"reqd": 1
 		},
 		{
@@ -28,5 +28,12 @@ frappe.query_reports["Purchase Order Report"] = {
 			"default": frappe.datetime.get_today(),
 			"reqd": 1
 		},
-	]
+	],
+	"formatter":function (row, cell, value, columnDef, dataContext, default_formatter) {
+		value = default_formatter(row, cell, value, columnDef, dataContext);
+		if (columnDef.id != "Purchase Order" && columnDef.id != "Supplier Name" && dataContext["Item Status"] == "Completed") {
+			value = "<span style='color:#DF01D7 !important'>" + value + "</span>";
+		}
+		return value;
+	}
 }

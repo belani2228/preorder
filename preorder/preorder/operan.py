@@ -331,7 +331,8 @@ def submit_sales_invoice(doc, method):
             "sales_invoice": doc.name,
             "posting_date": doc.posting_date,
             "type_of_invoice": doc.type_of_invoice,
-            "net_total": doc.total
+            "total": doc.total,
+            "net_total": doc.net_total
         })
         so_invoice.insert()
     elif doc.type_of_invoice == 'Progress Payment':
@@ -348,6 +349,7 @@ def submit_sales_invoice(doc, method):
                     "sales_invoice": doc.name,
                     "posting_date": doc.posting_date,
                     "type_of_invoice": doc.type_of_invoice,
+                    "total": doc.total,
                     "net_total": doc.net_total
                 })
                 so_invoice.insert()
@@ -364,7 +366,8 @@ def submit_sales_invoice(doc, method):
             "sales_invoice": doc.name,
             "posting_date": doc.posting_date,
             "type_of_invoice": doc.type_of_invoice,
-            "net_total": doc.net_total
+            "total": doc.total,
+            "net_total": doc.total
         })
         so_invoice.insert()
 

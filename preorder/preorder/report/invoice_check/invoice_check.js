@@ -25,5 +25,6 @@ frappe.query_reports["Invoice Check"] = {
 			"label": __("Need Down Payment"),
 			"fieldtype": "Check",
 			"default": 0
-		},	]
+		},
+	]
 }
