@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-__version__ = '1.0.68'
+__version__ = '1.0.69'
 
+#1.0.69:
+#   - Fix report Net Profit
 #1.0.68:
 #   - Update custom script related to discount  buying
 #   - Update few form to accommodate discount buying
